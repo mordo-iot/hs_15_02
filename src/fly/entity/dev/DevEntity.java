@@ -207,7 +207,7 @@ public class DevEntity implements java.io.Serializable {
      * 关系描述
 	 */
     @RelationlDescription(relation = "OneToOne",
-		joinEntity="DevEntity"	,joinColumn="ID"	)
+		joinEntity="DevEntity"	,joinColumn="PARENT_ID"	)
 			
 			
 		private DevEntity dev;
