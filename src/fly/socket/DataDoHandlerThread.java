@@ -68,7 +68,8 @@ public class DataDoHandlerThread extends Thread
 	  	          break;
 	  	        }
 	  	      }
-	  	      byte[] data = ArrayUtils.subarray(reciveBytes, 0, offset);	  	      
+	  	      byte[] data = ArrayUtils.subarray(reciveBytes, 0, offset);	
+	  	      logger.debug("-------------数据处理开始--------------");
 	  	      if(data.length>2){
 	  	    	  logger.debug("Data数据信息监听: 请求数据长度byte: " + data.length);
 	  	    	  logger.debug("Data数据信息监听: 请求数据内容十六进制: " + dataService.printHexString(data));
@@ -80,12 +81,14 @@ public class DataDoHandlerThread extends Thread
 	  	    			//2.进行转义0xDB 0xDC替换为0xC0，数据中的0xDB 0xDD替换为0xDB
 		  	    		 data = dataService.dataChange(data);	  	    
 		  	    		 //3.数据处理
-		  	    		 byte[] rep = dataService.dataHandler(data);
-		  	    		 //4.进行转义0xC0替换为0xDB 0xDC，数据中的0xDB替换为0xDB 0xDD 加上奇偶校验位 并加上帧头尾
-		  	    		 rep = dataService.dataChangeBack(rep);
-		  	    		 logger.debug("Data数据信息监听: 返回数据长度byte: " + rep.length);
-			  	    	 logger.debug("Data数据信息监听: 返回数据内容十六进制: " + dataService.printHexString(rep));
-		  	    		 out.write(rep);
+		  	    		 byte[] rep = dataService.dataHandler(data,socket);
+		  	    		 if(rep!=null){
+		  	    			//4.进行转义0xC0替换为0xDB 0xDC，数据中的0xDB替换为0xDB 0xDD 加上奇偶校验位 并加上帧头尾
+			  	    		 rep = dataService.dataChangeBack(rep);
+			  	    		 logger.debug("Data数据信息监听: 返回数据长度byte: " + rep.length);
+				  	    	 logger.debug("Data数据信息监听: 返回数据内容十六进制: " + dataService.printHexString(rep));
+			  	    		 out.write(rep);
+		  	    		 }		  	    		 
 	  	    		 }else{
 	  	    			logger.debug("Data数据信息监听: 奇偶校验不正确！ ");
 	  	    		 }	  	    		 	  	    		 
@@ -93,7 +96,8 @@ public class DataDoHandlerThread extends Thread
 	  	    		logger.debug("Data数据信息监听: 帧头帧尾不符合格式！ ");
 	  	    	  }
 	  	    	  
-	  	      }	  	      
+	  	      }	 
+	  	    logger.debug("-------------数据处理结束--------------");
            }
     }catch (Exception e) {
    		logger.debug("Data信息监听:数据处理出错！");
