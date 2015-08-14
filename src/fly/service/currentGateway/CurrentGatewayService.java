@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.dev.DevEntity;
+
 import fly.entity.currentGateway.CurrentGatewayEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
@@ -21,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 室内网关当前信息服务类
  * @author feng.gu
- * @date 2015-08-10 10:02:14
+ * @date 2015-08-14 10:19:54
  * @version V1.0
  * 
  */
@@ -134,13 +135,232 @@ public class CurrentGatewayService {
 						DevEntity.class);
 				obj.setDev(dev);
 			}
-
 		}
 		return obj;
 	}
 
 	/**
-	 * 根据id读取记录集合
+	 * 根据条件查询记录集合（不分页）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @return
+	 */
+	public List<Object> getListByCondition(Map<String, Object> queryMap) {
+		List<Object> list = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object devId = queryMap.get("devId");
+		Object devId_gt = queryMap.get("devId_gt");
+		Object devId_ge = queryMap.get("devId_ge");
+		Object devId_lt = queryMap.get("devId_lt");
+		Object devId_le = queryMap.get("devId_le");
+		Object devId_in = queryMap.get("devId_in");
+		Object level = queryMap.get("level");
+		Object level_gt = queryMap.get("level_gt");
+		Object level_ge = queryMap.get("level_ge");
+		Object level_lt = queryMap.get("level_lt");
+		Object level_le = queryMap.get("level_le");
+		Object level_in = queryMap.get("level_in");
+		Object alarmupdatetime = queryMap.get("alarmupdatetime");
+		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
+		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
+		Object alarmupdatetime_isNotNull = queryMap
+				.get("alarmupdatetime_isNotNull");
+		Object normal = queryMap.get("normal");
+		Object normal_like = queryMap.get("normal_like");
+		Object normal_isNull = queryMap.get("normal_isNull");
+		Object normal_isNotNull = queryMap.get("normal_isNotNull");
+		Object online = queryMap.get("online");
+		Object online_like = queryMap.get("online_like");
+		Object online_isNull = queryMap.get("online_isNull");
+		Object online_isNotNull = queryMap.get("online_isNotNull");
+		Object power = queryMap.get("power");
+		Object power_like = queryMap.get("power_like");
+		Object power_isNull = queryMap.get("power_isNull");
+		Object power_isNotNull = queryMap.get("power_isNotNull");
+		Object devupdatetime = queryMap.get("devupdatetime");
+		Object devupdatetime_like = queryMap.get("devupdatetime_like");
+		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
+		Object devupdatetime_isNotNull = queryMap
+				.get("devupdatetime_isNotNull");
+
+		QueryCondition qc = new QueryCondition(CurrentGatewayEntity.ID,
+				QueryCondition.gt, "0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
+					QueryCondition.eq, id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
+					QueryCondition.gt, id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
+					QueryCondition.ge, id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
+					QueryCondition.lt, id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
+					QueryCondition.le, id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
+					QueryCondition.in, id_in));
+		}
+		if (devId != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
+					QueryCondition.eq, devId));
+		}
+		if (devId_gt != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
+					QueryCondition.gt, devId_gt));
+		}
+		if (devId_ge != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
+					QueryCondition.ge, devId_ge));
+		}
+		if (devId_lt != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
+					QueryCondition.lt, devId_lt));
+		}
+		if (devId_le != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
+					QueryCondition.le, devId_le));
+		}
+		if (devId_in != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
+					QueryCondition.in, devId_in));
+		}
+		if (level != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
+					QueryCondition.eq, level));
+		}
+		if (level_gt != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
+					QueryCondition.gt, level_gt));
+		}
+		if (level_ge != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
+					QueryCondition.ge, level_ge));
+		}
+		if (level_lt != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
+					QueryCondition.lt, level_lt));
+		}
+		if (level_le != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
+					QueryCondition.le, level_le));
+		}
+		if (level_in != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
+					QueryCondition.in, level_in));
+		}
+		if (alarmupdatetime != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.ALARMUPDATETIME, QueryCondition.eq,
+					alarmupdatetime));
+		}
+		if (alarmupdatetime_like != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.ALARMUPDATETIME, QueryCondition.like,
+					alarmupdatetime_like));
+		}
+		if (alarmupdatetime_isNull != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.ALARMUPDATETIME,
+					QueryCondition.isNull, alarmupdatetime_isNull));
+		}
+		if (alarmupdatetime_isNotNull != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.ALARMUPDATETIME,
+					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
+		}
+		if (normal != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.NORMAL,
+					QueryCondition.eq, normal));
+		}
+		if (normal_like != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.NORMAL,
+					QueryCondition.like, normal_like));
+		}
+		if (normal_isNull != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.NORMAL,
+					QueryCondition.isNull, normal_isNull));
+		}
+		if (normal_isNotNull != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.NORMAL,
+					QueryCondition.isNotNull, normal_isNotNull));
+		}
+		if (online != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ONLINE,
+					QueryCondition.eq, online));
+		}
+		if (online_like != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ONLINE,
+					QueryCondition.like, online_like));
+		}
+		if (online_isNull != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ONLINE,
+					QueryCondition.isNull, online_isNull));
+		}
+		if (online_isNotNull != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ONLINE,
+					QueryCondition.isNotNull, online_isNotNull));
+		}
+		if (power != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.POWER,
+					QueryCondition.eq, power));
+		}
+		if (power_like != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.POWER,
+					QueryCondition.like, power_like));
+		}
+		if (power_isNull != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.POWER,
+					QueryCondition.isNull, power_isNull));
+		}
+		if (power_isNotNull != null) {
+			qc.andCondition(new QueryCondition(CurrentGatewayEntity.POWER,
+					QueryCondition.isNotNull, power_isNotNull));
+		}
+		if (devupdatetime != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.DEVUPDATETIME, QueryCondition.eq,
+					devupdatetime));
+		}
+		if (devupdatetime_like != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.DEVUPDATETIME, QueryCondition.like,
+					devupdatetime_like));
+		}
+		if (devupdatetime_isNull != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.DEVUPDATETIME, QueryCondition.isNull,
+					devupdatetime_isNull));
+		}
+		if (devupdatetime_isNotNull != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentGatewayEntity.DEVUPDATETIME,
+					QueryCondition.isNotNull, devupdatetime_isNotNull));
+		}
+
+		list = dbManager.queryByCondition(CurrentGatewayEntity.class, qc);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
@@ -199,7 +419,7 @@ public class CurrentGatewayService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
@@ -223,7 +443,7 @@ public class CurrentGatewayService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
-					QueryCondition.in, devId));
+					QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
@@ -247,7 +467,7 @@ public class CurrentGatewayService {
 		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
-					QueryCondition.in, level));
+					QueryCondition.eq, level));
 		}
 		if (level_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
@@ -408,8 +628,6 @@ public class CurrentGatewayService {
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param delDevList
-	 *            是否删除关联信息
 	 */
 	public boolean delList(Map<String, Object> queryMap, Boolean delDevList) {
 		boolean result = false;
@@ -461,7 +679,7 @@ public class CurrentGatewayService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.ID,
@@ -485,7 +703,7 @@ public class CurrentGatewayService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
-					QueryCondition.in, devId));
+					QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.DEV_ID,
@@ -509,7 +727,7 @@ public class CurrentGatewayService {
 		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
-					QueryCondition.in, level));
+					QueryCondition.eq, level));
 		}
 		if (level_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentGatewayEntity.LEVEL,
@@ -619,6 +837,7 @@ public class CurrentGatewayService {
 					CurrentGatewayEntity.DEVUPDATETIME,
 					QueryCondition.isNotNull, devupdatetime_isNotNull));
 		}
+
 		if (qc.getQueryNextCondition() != null) {
 			TransactionManager tx = DbUtils.getTranManager();
 			try {
@@ -660,4 +879,5 @@ public class CurrentGatewayService {
 		}
 		return result;
 	}
+
 }

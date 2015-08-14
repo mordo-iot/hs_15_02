@@ -3,10 +3,24 @@ package fly.service;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.framework.system.db.manager.DBManager;
+import com.framework.system.db.query.PageList;
+
+import fly.entity.alarmCurrent.AlarmCurrentEntity;
+import fly.entity.alarmHistory.AlarmHistoryEntity;
+import fly.entity.currentKeyalarm.CurrentKeyalarmEntity;
+import fly.entity.dev.DevEntity;
+import fly.entity.historyKeyalarm.HistoryKeyalarmEntity;
+import fly.service.alarmCurrent.AlarmCurrentService;
+import fly.service.alarmHistory.AlarmHistoryService;
+import fly.service.currentKeyalarm.CurrentKeyalarmService;
+import fly.service.dev.DevService;
+import fly.service.historyKeyalarm.HistoryKeyalarmService;
 
 public class DataService {	
 	private static Logger logger = Logger.getLogger(DataService.class);
@@ -14,6 +28,13 @@ public class DataService {
 	private DBManager dbManager = DBManager.getInstance();
 
 	private static DataService dataService;
+	
+	private static DevService devService=DevService.getInstance();
+	private static AlarmCurrentService alarmCurrentService=AlarmCurrentService.getInstance();
+	private static AlarmHistoryService alarmHistoryService=AlarmHistoryService.getInstance();
+	private static CurrentKeyalarmService currentKeyalarmService=CurrentKeyalarmService.getInstance();
+	private static HistoryKeyalarmService historyKeyalarmService=HistoryKeyalarmService.getInstance();
+	
 
 	/**
 	 * 获取实例
@@ -32,6 +53,7 @@ public class DataService {
 		try {
 			if(data.length>11){
 				Date date = new Date();
+				//检查源是否是信号发射器
 				byte dataType=data[10];
 				if(dataType==(byte)0x07){
 					//01000000 02010399 132F 07 010201A1					
@@ -72,12 +94,199 @@ public class DataService {
 					result[24] = (byte)0x18;
 					result[25] = (byte)0x00;
 					result[26] = (byte)0x00;
-					//C0020103990100000008020303070C092904040801021E0000180000B4C0				
+					//020103990100000008020303070C092904040801021E0000180000B4				
 					//----封装回复帧结束 ----
 					
 				}else if(dataType==(byte)0x09){
-					//C0 01000000 02010399 E828 09 02 0303070C092739050801021E005FC0
-					//应用帧
+					//01000000 02010399 E828 09 02 03 03070C092739 05 08 01021E 00 5F
+					//应用帧					
+					//参数个数
+					int num = this.byteToDecimal(data[11]);
+					logger.debug("参数个数："+num);
+					
+					//系统时间
+					String time = "";
+					if(data[12]==(byte)0x03){							
+						byte[] dateByte = {data[13],data[14],data[15],data[16],data[17],data[18]};
+						time = this.timeBytesToString(dateByte);						
+						num--;
+					}
+					if(time==null||"".equals(time)){
+						time = formater.format(date);
+					}
+					logger.debug("系统时间："+time);
+					
+					int zhizhen=19;
+					//对报警参数循环解析
+					while(num>0){
+						int devType=0;						
+						byte[] devMac = {data[zhizhen+1],data[zhizhen+2],data[zhizhen+3],data[zhizhen+4]};
+						String devCode = this.printHexString(devMac);
+						if(data[zhizhen+1]==(byte)0x08){
+							//一键报警设备
+							devType=9;
+						}
+						//根据类型和编号查询设备是否存在
+						DevEntity dev = null;
+						if(devType!=0&&devCode!=null&&!"".equals(devCode)){
+							Map<String, Object> queryMap = new HashMap<String, Object>();
+							queryMap.put("type", devType);
+							queryMap.put("code", devCode.toLowerCase());
+							PageList pagelist = devService.getListByCondition(queryMap, 1, 1);
+							if(pagelist!=null&&pagelist.getResultList()!=null&&pagelist.getResultList().size()>0){
+								dev = (DevEntity)pagelist.getResultList().get(0);
+							}
+						}
+						if(dev!=null){	
+							//获取当前AlarmCurrentEntity
+							AlarmCurrentEntity alarmCurrent =null;
+							Map<String, Object> queryMap = new HashMap<String, Object>();
+							queryMap.put("devId", dev.getId());
+							PageList pagelist = alarmCurrentService.getListByCondition(queryMap, 1, 1);
+							if(pagelist!=null&&pagelist.getResultList()!=null&&pagelist.getResultList().size()>0){
+								alarmCurrent = (AlarmCurrentEntity)pagelist.getResultList().get(0);
+							}else{
+								alarmCurrent = new AlarmCurrentEntity();
+							}
+							AlarmHistoryEntity alarmHistory = new AlarmHistoryEntity();
+							//数据报警开始							
+							if(data[zhizhen]==(byte)0x05){
+								
+								//报警数据
+								if(devType==9){
+									//一键报警设备
+									CurrentKeyalarmEntity currentKeyalarm =null;
+									Map<String, Object> map = new HashMap<String, Object>();
+									map.put("devId", dev.getId());
+									PageList pagelist2 = currentKeyalarmService.getListByCondition(map, 1, 1);
+									if(pagelist2!=null&&pagelist2.getResultList()!=null&&pagelist2.getResultList().size()>0){
+										currentKeyalarm = (CurrentKeyalarmEntity)pagelist2.getResultList().get(0);
+									}else{
+										currentKeyalarm = new CurrentKeyalarmEntity();
+									}
+									HistoryKeyalarmEntity historyKeyalarm = new HistoryKeyalarmEntity();
+									int temp = this.readBit(data[zhizhen+5], 0);
+									if(temp==1){
+										//报警mordo_state_current_keyalarm,mordo_state_history_keyalarm,mordo_alarm_current,mordo_alarm_history
+										currentKeyalarm.setAlarm("Y");
+										currentKeyalarm.setAlarmupdatetime(time);
+										currentKeyalarm.setDevId(dev.getId());
+										
+										historyKeyalarm.setAlarm("Y");
+										historyKeyalarm.setAlarmupdatetime(time);
+										historyKeyalarm.setDevId(dev.getId());
+										
+										alarmCurrent.setCode("E041");
+										alarmCurrent.setContent("一键报警主动报警");
+										alarmCurrent.setCreatedate(time);
+										alarmCurrent.setDevId(dev.getId());
+										
+										alarmHistory.setCode("E041");
+										alarmHistory.setContent("一键报警主动报警");
+										alarmHistory.setCreatedate(time);
+										alarmHistory.setDevId(dev.getId());
+										
+										currentKeyalarmService.save(currentKeyalarm);
+										historyKeyalarmService.save(historyKeyalarm);
+										alarmCurrentService.save(alarmCurrent);
+										alarmHistoryService.save(alarmHistory);
+										
+									}else if(temp==0){
+										//取消报警mordo_state_current_keyalarm,mordo_state_history_keyalarm
+										currentKeyalarm.setAlarm("N");
+										currentKeyalarm.setAlarmupdatetime(time);
+										currentKeyalarm.setDevId(dev.getId());
+										
+										historyKeyalarm.setAlarm("N");
+										historyKeyalarm.setAlarmupdatetime(time);
+										historyKeyalarm.setDevId(dev.getId());
+										currentKeyalarmService.save(currentKeyalarm);
+										historyKeyalarmService.save(historyKeyalarm);
+									}
+								}
+							}else if(data[zhizhen]==(byte)0x06){
+								//设备报警开始								
+							    int temp = this.readBit(data[zhizhen+5], 0);
+							    int temp2 = this.readBit(data[zhizhen+5], 1);
+							    
+							    
+							    if(devType==9){
+									//一键报警设备
+									CurrentKeyalarmEntity currentKeyalarm =null;
+									Map<String, Object> map = new HashMap<String, Object>();
+									map.put("devId", dev.getId());
+									PageList pagelist2 = alarmCurrentService.getListByCondition(map, 1, 1);
+									if(pagelist2!=null&&pagelist2.getResultList()!=null&&pagelist2.getResultList().size()>0){
+										currentKeyalarm = (CurrentKeyalarmEntity)pagelist2.getResultList().get(0);
+									}else{
+										currentKeyalarm = new CurrentKeyalarmEntity();
+									}
+									HistoryKeyalarmEntity historyKeyalarm = new HistoryKeyalarmEntity();
+									
+									if(temp==1){
+								    	//故障mordo_state_current_keyalarm,mordo_alarm_current,mordo_alarm_history
+										currentKeyalarm.setNormal("N");
+										currentKeyalarm.setDevupdatetime(time);
+										currentKeyalarm.setDevId(dev.getId());
+										
+										alarmCurrent.setCode("E003");
+										alarmCurrent.setContent("一键报警设备故障");
+										alarmCurrent.setCreatedate(time);
+										alarmCurrent.setDevId(dev.getId());
+										
+										alarmHistory.setCode("E003");
+										alarmHistory.setContent("一键报警设备故障");
+										alarmHistory.setCreatedate(time);
+										alarmHistory.setDevId(dev.getId());
+										
+										currentKeyalarmService.save(currentKeyalarm);
+										alarmCurrentService.save(alarmCurrent);
+										alarmHistoryService.save(alarmHistory);
+								    }else if(temp==0){
+								    	//正常mordo_state_current_keyalarm
+								    	currentKeyalarm.setNormal("Y");
+										currentKeyalarm.setDevupdatetime(time);
+										currentKeyalarm.setDevId(dev.getId());
+										currentKeyalarmService.save(currentKeyalarm);
+								    }
+								    if(temp2==1){
+								    	//低电量mordo_state_current_keyalarm,mordo_alarm_current,mordo_alarm_history
+								    	currentKeyalarm.setPower("N");
+										currentKeyalarm.setDevupdatetime(time);
+										currentKeyalarm.setDevId(dev.getId());
+										
+										alarmCurrent.setCode("E002");
+										alarmCurrent.setContent("一键报警低电压");
+										alarmCurrent.setCreatedate(time);
+										alarmCurrent.setDevId(dev.getId());
+										
+										alarmHistory.setCode("E002");
+										alarmHistory.setContent("一键报警低电压");
+										alarmHistory.setCreatedate(time);
+										alarmHistory.setDevId(dev.getId());
+										
+										currentKeyalarmService.save(currentKeyalarm);
+										alarmCurrentService.save(alarmCurrent);
+										alarmHistoryService.save(alarmHistory);
+								    }else if(temp2==0){
+								    	//正常mordo_state_current_keyalarm
+								    	currentKeyalarm.setPower("Y");
+										currentKeyalarm.setDevupdatetime(time);
+										currentKeyalarm.setDevId(dev.getId());
+										currentKeyalarmService.save(currentKeyalarm);
+								    }
+							    }
+							}
+							
+						}else{
+							logger.debug("设备数据不存在，type："+devType+" code："+devCode);
+						}
+						zhizhen=zhizhen+6;
+						num--;
+					}
+					
+					
+					
 					
 					
 					
@@ -120,7 +329,7 @@ public class DataService {
 	 * @param index 76543210
 	 * @return
 	 */
-	private int readBit(byte content,int index){
+	public int readBit(byte content,int index){
 		int result = 0;
 		content = (byte) (content >> index);
 		if((content&0x01)==0x01){
@@ -145,7 +354,7 @@ public class DataService {
 		int second = bytes[5];
 		
 		Date date = new Date();
-		date.setYear(year);
+		date.setYear(year+2012-1900);
 		date.setMonth(month);
 		date.setDate(day);
 		date.setHours(hour);
@@ -176,6 +385,18 @@ public class DataService {
 		result[5] = this.decimalToBytes(String.valueOf(second), 1)[0];
 		return result;
 	}
+	
+	/**
+	 * 转换1字节byte到十进制
+	 * @param bytes
+	 * @return
+	 */	
+	public int byteToDecimal(byte data){
+		byte[] a = new byte[1];
+		a[0] = data;
+		BigInteger bi = new BigInteger(a);
+		return bi.intValue(); 
+	} 
 	
 	
 	/**
@@ -365,7 +586,7 @@ public class DataService {
 
 	
 	public static void main(String[] sage){
-		String a="C00100000002010399144A07010201C3C0";
+		String a="C00100000002010399E98B09020303070D0C1A18050801021E00E5C0";
 		DataService dataService = DataService.getInstance();
 		byte[] data= dataService.HexString2Bytes(a);
 		//判断帧头帧尾0xc0

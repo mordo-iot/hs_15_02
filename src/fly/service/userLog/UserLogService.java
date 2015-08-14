@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.user.UserEntity;
+
 import fly.entity.userLog.UserLogEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
@@ -21,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 系统日志服务类
  * @author feng.gu
- * @date 2015-08-07 14:48:16
+ * @date 2015-08-14 10:44:58
  * @version V1.0
  * 
  */
@@ -55,6 +56,7 @@ public class UserLogService {
 			try {
 				tx.beginTransaction();
 				dbManager.saveNoTransaction(userLog);
+				// 关联信息保存
 				if (userLog.getUser() != null) {
 					dbManager.saveNoTransaction(userLog.getUser());
 				}
@@ -88,6 +90,7 @@ public class UserLogService {
 				for (UserLogEntity userLog : userLogList) {
 					if (userLog != null) {
 						dbManager.saveNoTransaction(userLog);
+						// 关联信息保存
 						if (userLog.getUser() != null) {
 							dbManager.saveNoTransaction(userLog.getUser());
 						}
@@ -129,13 +132,162 @@ public class UserLogService {
 						obj.getUserId(), UserEntity.class);
 				obj.setUser(user);
 			}
-
 		}
 		return obj;
 	}
 
 	/**
-	 * 根据id读取记录集合
+	 * 根据条件查询记录集合（不分页）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @return
+	 */
+	public List<Object> getListByCondition(Map<String, Object> queryMap) {
+		List<Object> list = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object userId = queryMap.get("userId");
+		Object userId_gt = queryMap.get("userId_gt");
+		Object userId_ge = queryMap.get("userId_ge");
+		Object userId_lt = queryMap.get("userId_lt");
+		Object userId_le = queryMap.get("userId_le");
+		Object userId_in = queryMap.get("userId_in");
+		Object log = queryMap.get("log");
+		Object log_like = queryMap.get("log_like");
+		Object log_isNull = queryMap.get("log_isNull");
+		Object log_isNotNull = queryMap.get("log_isNotNull");
+		Object level = queryMap.get("level");
+		Object level_gt = queryMap.get("level_gt");
+		Object level_ge = queryMap.get("level_ge");
+		Object level_lt = queryMap.get("level_lt");
+		Object level_le = queryMap.get("level_le");
+		Object level_in = queryMap.get("level_in");
+		Object createdate = queryMap.get("createdate");
+		Object createdate_like = queryMap.get("createdate_like");
+		Object createdate_isNull = queryMap.get("createdate_isNull");
+		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+
+		QueryCondition qc = new QueryCondition(UserLogEntity.ID,
+				QueryCondition.gt, "0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.ID,
+					QueryCondition.eq, id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.ID,
+					QueryCondition.gt, id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.ID,
+					QueryCondition.ge, id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.ID,
+					QueryCondition.lt, id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.ID,
+					QueryCondition.le, id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.ID,
+					QueryCondition.in, id_in));
+		}
+		if (userId != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
+					QueryCondition.eq, userId));
+		}
+		if (userId_gt != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
+					QueryCondition.gt, userId_gt));
+		}
+		if (userId_ge != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
+					QueryCondition.ge, userId_ge));
+		}
+		if (userId_lt != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
+					QueryCondition.lt, userId_lt));
+		}
+		if (userId_le != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
+					QueryCondition.le, userId_le));
+		}
+		if (userId_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
+					QueryCondition.in, userId_in));
+		}
+		if (log != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
+					QueryCondition.eq, log));
+		}
+		if (log_like != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
+					QueryCondition.like, log_like));
+		}
+		if (log_isNull != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
+					QueryCondition.isNull, log_isNull));
+		}
+		if (log_isNotNull != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
+					QueryCondition.isNotNull, log_isNotNull));
+		}
+		if (level != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
+					QueryCondition.eq, level));
+		}
+		if (level_gt != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
+					QueryCondition.gt, level_gt));
+		}
+		if (level_ge != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
+					QueryCondition.ge, level_ge));
+		}
+		if (level_lt != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
+					QueryCondition.lt, level_lt));
+		}
+		if (level_le != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
+					QueryCondition.le, level_le));
+		}
+		if (level_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
+					QueryCondition.in, level_in));
+		}
+		if (createdate != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
+					QueryCondition.eq, createdate));
+		}
+		if (createdate_like != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
+					QueryCondition.like, createdate_like));
+		}
+		if (createdate_isNull != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
+					QueryCondition.isNull, createdate_isNull));
+		}
+		if (createdate_isNotNull != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
+					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+
+		list = dbManager.queryByCondition(UserLogEntity.class, qc);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
@@ -180,7 +332,7 @@ public class UserLogService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.ID,
@@ -204,7 +356,7 @@ public class UserLogService {
 		}
 		if (userId != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
-					QueryCondition.in, userId));
+					QueryCondition.eq, userId));
 		}
 		if (userId_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
@@ -244,7 +396,7 @@ public class UserLogService {
 		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
-					QueryCondition.in, level));
+					QueryCondition.eq, level));
 		}
 		if (level_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
@@ -332,8 +484,6 @@ public class UserLogService {
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param delUserList
-	 *            是否删除关联信息
 	 */
 	public boolean delList(Map<String, Object> queryMap, Boolean delUserList) {
 		boolean result = false;
@@ -371,7 +521,7 @@ public class UserLogService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.ID,
@@ -395,7 +545,7 @@ public class UserLogService {
 		}
 		if (userId != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
-					QueryCondition.in, userId));
+					QueryCondition.eq, userId));
 		}
 		if (userId_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.USER_ID,
@@ -435,7 +585,7 @@ public class UserLogService {
 		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
-					QueryCondition.in, level));
+					QueryCondition.eq, level));
 		}
 		if (level_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
@@ -473,6 +623,7 @@ public class UserLogService {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
 		}
+
 		if (qc.getQueryNextCondition() != null) {
 			TransactionManager tx = DbUtils.getTranManager();
 			try {
@@ -514,4 +665,5 @@ public class UserLogService {
 		}
 		return result;
 	}
+
 }

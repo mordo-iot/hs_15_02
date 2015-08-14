@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.dev.DevEntity;
+
 import fly.entity.alarmHistory.AlarmHistoryEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
@@ -21,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 历史报警信息服务类
  * @author feng.gu
- * @date 2015-08-10 09:55:49
+ * @date 2015-08-14 10:15:42
  * @version V1.0
  * 
  */
@@ -132,13 +133,222 @@ public class AlarmHistoryService {
 						DevEntity.class);
 				obj.setDev(dev);
 			}
-
 		}
 		return obj;
 	}
 
 	/**
-	 * 根据id读取记录集合
+	 * 根据条件查询记录集合（不分页）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @return
+	 */
+	public List<Object> getListByCondition(Map<String, Object> queryMap) {
+		List<Object> list = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object code = queryMap.get("code");
+		Object code_like = queryMap.get("code_like");
+		Object code_isNull = queryMap.get("code_isNull");
+		Object code_isNotNull = queryMap.get("code_isNotNull");
+		Object devId = queryMap.get("devId");
+		Object devId_gt = queryMap.get("devId_gt");
+		Object devId_ge = queryMap.get("devId_ge");
+		Object devId_lt = queryMap.get("devId_lt");
+		Object devId_le = queryMap.get("devId_le");
+		Object devId_in = queryMap.get("devId_in");
+		Object content = queryMap.get("content");
+		Object content_like = queryMap.get("content_like");
+		Object content_isNull = queryMap.get("content_isNull");
+		Object content_isNotNull = queryMap.get("content_isNotNull");
+		Object createdate = queryMap.get("createdate");
+		Object createdate_like = queryMap.get("createdate_like");
+		Object createdate_isNull = queryMap.get("createdate_isNull");
+		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object handlestate = queryMap.get("handlestate");
+		Object handlestate_gt = queryMap.get("handlestate_gt");
+		Object handlestate_ge = queryMap.get("handlestate_ge");
+		Object handlestate_lt = queryMap.get("handlestate_lt");
+		Object handlestate_le = queryMap.get("handlestate_le");
+		Object handlestate_in = queryMap.get("handlestate_in");
+		Object handledesc = queryMap.get("handledesc");
+		Object handledesc_like = queryMap.get("handledesc_like");
+		Object handledesc_isNull = queryMap.get("handledesc_isNull");
+		Object handledesc_isNotNull = queryMap.get("handledesc_isNotNull");
+		Object handledate = queryMap.get("handledate");
+		Object handledate_like = queryMap.get("handledate_like");
+		Object handledate_isNull = queryMap.get("handledate_isNull");
+		Object handledate_isNotNull = queryMap.get("handledate_isNotNull");
+
+		QueryCondition qc = new QueryCondition(AlarmHistoryEntity.ID,
+				QueryCondition.gt, "0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
+					QueryCondition.eq, id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
+					QueryCondition.gt, id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
+					QueryCondition.ge, id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
+					QueryCondition.lt, id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
+					QueryCondition.le, id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
+					QueryCondition.in, id_in));
+		}
+		if (code != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CODE,
+					QueryCondition.eq, code));
+		}
+		if (code_like != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CODE,
+					QueryCondition.like, code_like));
+		}
+		if (code_isNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CODE,
+					QueryCondition.isNull, code_isNull));
+		}
+		if (code_isNotNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CODE,
+					QueryCondition.isNotNull, code_isNotNull));
+		}
+		if (devId != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
+					QueryCondition.eq, devId));
+		}
+		if (devId_gt != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
+					QueryCondition.gt, devId_gt));
+		}
+		if (devId_ge != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
+					QueryCondition.ge, devId_ge));
+		}
+		if (devId_lt != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
+					QueryCondition.lt, devId_lt));
+		}
+		if (devId_le != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
+					QueryCondition.le, devId_le));
+		}
+		if (devId_in != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
+					QueryCondition.in, devId_in));
+		}
+		if (content != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
+					QueryCondition.eq, content));
+		}
+		if (content_like != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
+					QueryCondition.like, content_like));
+		}
+		if (content_isNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
+					QueryCondition.isNull, content_isNull));
+		}
+		if (content_isNotNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
+					QueryCondition.isNotNull, content_isNotNull));
+		}
+		if (createdate != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
+					QueryCondition.eq, createdate));
+		}
+		if (createdate_like != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
+					QueryCondition.like, createdate_like));
+		}
+		if (createdate_isNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
+					QueryCondition.isNull, createdate_isNull));
+		}
+		if (createdate_isNotNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
+					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+		if (handlestate != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
+					QueryCondition.eq, handlestate));
+		}
+		if (handlestate_gt != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
+					QueryCondition.gt, handlestate_gt));
+		}
+		if (handlestate_ge != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
+					QueryCondition.ge, handlestate_ge));
+		}
+		if (handlestate_lt != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
+					QueryCondition.lt, handlestate_lt));
+		}
+		if (handlestate_le != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
+					QueryCondition.le, handlestate_le));
+		}
+		if (handlestate_in != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
+					QueryCondition.in, handlestate_in));
+		}
+		if (handledesc != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
+					QueryCondition.eq, handledesc));
+		}
+		if (handledesc_like != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
+					QueryCondition.like, handledesc_like));
+		}
+		if (handledesc_isNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
+					QueryCondition.isNull, handledesc_isNull));
+		}
+		if (handledesc_isNotNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
+					QueryCondition.isNotNull, handledesc_isNotNull));
+		}
+		if (handledate != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
+					QueryCondition.eq, handledate));
+		}
+		if (handledate_like != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
+					QueryCondition.like, handledate_like));
+		}
+		if (handledate_isNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
+					QueryCondition.isNull, handledate_isNull));
+		}
+		if (handledate_isNotNull != null) {
+			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
+					QueryCondition.isNotNull, handledate_isNotNull));
+		}
+
+		list = dbManager.queryByCondition(AlarmHistoryEntity.class, qc);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
@@ -195,7 +405,7 @@ public class AlarmHistoryService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
@@ -235,7 +445,7 @@ public class AlarmHistoryService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
-					QueryCondition.in, devId));
+					QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
@@ -291,7 +501,7 @@ public class AlarmHistoryService {
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
-					QueryCondition.in, handlestate));
+					QueryCondition.eq, handlestate));
 		}
 		if (handlestate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
@@ -396,8 +606,6 @@ public class AlarmHistoryService {
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param delDevList
-	 *            是否删除关联信息
 	 */
 	public boolean delList(Map<String, Object> queryMap, Boolean delDevList) {
 		boolean result = false;
@@ -447,7 +655,7 @@ public class AlarmHistoryService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.ID,
@@ -487,7 +695,7 @@ public class AlarmHistoryService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
-					QueryCondition.in, devId));
+					QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.DEV_ID,
@@ -543,7 +751,7 @@ public class AlarmHistoryService {
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
-					QueryCondition.in, handlestate));
+					QueryCondition.eq, handlestate));
 		}
 		if (handlestate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
@@ -597,6 +805,7 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
 					QueryCondition.isNotNull, handledate_isNotNull));
 		}
+
 		if (qc.getQueryNextCondition() != null) {
 			TransactionManager tx = DbUtils.getTranManager();
 			try {
@@ -638,4 +847,5 @@ public class AlarmHistoryService {
 		}
 		return result;
 	}
+
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.dev.DevEntity;
+
 import fly.entity.historyLocationBody.HistoryLocationBodyEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
@@ -21,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器身体历史状态服务类
  * @author feng.gu
- * @date 2015-08-10 10:17:23
+ * @date 2015-08-14 10:31:05
  * @version V1.0
  * 
  */
@@ -136,13 +137,146 @@ public class HistoryLocationBodyService {
 						DevEntity.class);
 				obj.setDev(dev);
 			}
-
 		}
 		return obj;
 	}
 
 	/**
-	 * 根据id读取记录集合
+	 * 根据条件查询记录集合（不分页）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @return
+	 */
+	public List<Object> getListByCondition(Map<String, Object> queryMap) {
+		List<Object> list = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object devId = queryMap.get("devId");
+		Object devId_gt = queryMap.get("devId_gt");
+		Object devId_ge = queryMap.get("devId_ge");
+		Object devId_lt = queryMap.get("devId_lt");
+		Object devId_le = queryMap.get("devId_le");
+		Object devId_in = queryMap.get("devId_in");
+		Object bodystate = queryMap.get("bodystate");
+		Object bodystate_like = queryMap.get("bodystate_like");
+		Object bodystate_isNull = queryMap.get("bodystate_isNull");
+		Object bodystate_isNotNull = queryMap.get("bodystate_isNotNull");
+		Object bodyupdatetime = queryMap.get("bodyupdatetime");
+		Object bodyupdatetime_like = queryMap.get("bodyupdatetime_like");
+		Object bodyupdatetime_isNull = queryMap.get("bodyupdatetime_isNull");
+		Object bodyupdatetime_isNotNull = queryMap
+				.get("bodyupdatetime_isNotNull");
+
+		QueryCondition qc = new QueryCondition(HistoryLocationBodyEntity.ID,
+				QueryCondition.gt, "0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
+					QueryCondition.eq, id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
+					QueryCondition.gt, id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
+					QueryCondition.ge, id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
+					QueryCondition.lt, id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
+					QueryCondition.le, id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
+					QueryCondition.in, id_in));
+		}
+		if (devId != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.eq, devId));
+		}
+		if (devId_gt != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.gt,
+					devId_gt));
+		}
+		if (devId_ge != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.ge,
+					devId_ge));
+		}
+		if (devId_lt != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.lt,
+					devId_lt));
+		}
+		if (devId_le != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.le,
+					devId_le));
+		}
+		if (devId_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.in,
+					devId_in));
+		}
+		if (bodystate != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYSTATE, QueryCondition.eq,
+					bodystate));
+		}
+		if (bodystate_like != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYSTATE, QueryCondition.like,
+					bodystate_like));
+		}
+		if (bodystate_isNull != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYSTATE, QueryCondition.isNull,
+					bodystate_isNull));
+		}
+		if (bodystate_isNotNull != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYSTATE,
+					QueryCondition.isNotNull, bodystate_isNotNull));
+		}
+		if (bodyupdatetime != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYUPDATETIME,
+					QueryCondition.eq, bodyupdatetime));
+		}
+		if (bodyupdatetime_like != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYUPDATETIME,
+					QueryCondition.like, bodyupdatetime_like));
+		}
+		if (bodyupdatetime_isNull != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYUPDATETIME,
+					QueryCondition.isNull, bodyupdatetime_isNull));
+		}
+		if (bodyupdatetime_isNotNull != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYUPDATETIME,
+					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
+		}
+
+		list = dbManager.queryByCondition(HistoryLocationBodyEntity.class, qc);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
@@ -182,7 +316,7 @@ public class HistoryLocationBodyService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
@@ -206,7 +340,7 @@ public class HistoryLocationBodyService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryLocationBodyEntity.DEV_ID, QueryCondition.in, devId));
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(
@@ -326,8 +460,6 @@ public class HistoryLocationBodyService {
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param delDevList
-	 *            是否删除关联信息
 	 */
 	public boolean delList(Map<String, Object> queryMap, Boolean delDevList) {
 		boolean result = false;
@@ -360,7 +492,7 @@ public class HistoryLocationBodyService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryLocationBodyEntity.ID,
@@ -384,7 +516,7 @@ public class HistoryLocationBodyService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryLocationBodyEntity.DEV_ID, QueryCondition.in, devId));
+					HistoryLocationBodyEntity.DEV_ID, QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(
@@ -451,6 +583,7 @@ public class HistoryLocationBodyService {
 					HistoryLocationBodyEntity.BODYUPDATETIME,
 					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
 		}
+
 		if (qc.getQueryNextCondition() != null) {
 			TransactionManager tx = DbUtils.getTranManager();
 			try {
@@ -492,4 +625,5 @@ public class HistoryLocationBodyService {
 		}
 		return result;
 	}
+
 }

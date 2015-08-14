@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.userLog.UserLogEntity;
+
 import fly.entity.user.UserEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
@@ -21,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 系统账号服务类
  * @author feng.gu
- * @date 2015-08-07 14:48:35
+ * @date 2015-08-14 10:46:14
  * @version V1.0
  * 
  */
@@ -57,7 +58,7 @@ public class UserService {
 				dbManager.saveNoTransaction(user);
 				if (user.getUserLogList() != null
 						&& user.getUserLogList().size() > 0) {
-					// 绑定现在的关系
+					// 关联信息保存
 					for (UserLogEntity userLog : user.getUserLogList()) {
 						dbManager.saveNoTransaction(userLog);
 					}
@@ -94,7 +95,7 @@ public class UserService {
 						dbManager.saveNoTransaction(user);
 						if (user.getUserLogList() != null
 								&& user.getUserLogList().size() > 0) {
-							// 绑定现在的关系
+							// 关联信息保存
 							for (UserLogEntity userLog : user.getUserLogList()) {
 								dbManager.saveNoTransaction(userLog);
 							}
@@ -149,17 +150,14 @@ public class UserService {
 	}
 
 	/**
-	 * 根据id读取记录集合
+	 * 根据条件查询记录集合（不分页）
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param pageno
-	 * @param pagesize
 	 * @return
 	 */
-	public PageList getListByCondition(Map<String, Object> queryMap,
-			int pageno, int pagesize) {
-		PageList pagelist = null;
+	public List<Object> getListByCondition(Map<String, Object> queryMap) {
+		List<Object> list = null;
 		if (queryMap == null) {
 			queryMap = new HashMap<String, Object>();
 		}
@@ -196,7 +194,7 @@ public class UserService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(UserEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.ID,
@@ -252,7 +250,170 @@ public class UserService {
 		}
 		if (permissions != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
-					QueryCondition.in, permissions));
+					QueryCondition.eq, permissions));
+		}
+		if (permissions_gt != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
+					QueryCondition.gt, permissions_gt));
+		}
+		if (permissions_ge != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
+					QueryCondition.ge, permissions_ge));
+		}
+		if (permissions_lt != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
+					QueryCondition.lt, permissions_lt));
+		}
+		if (permissions_le != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
+					QueryCondition.le, permissions_le));
+		}
+		if (permissions_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
+					QueryCondition.in, permissions_in));
+		}
+		if (createdate != null) {
+			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
+					QueryCondition.eq, createdate));
+		}
+		if (createdate_like != null) {
+			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
+					QueryCondition.like, createdate_like));
+		}
+		if (createdate_isNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
+					QueryCondition.isNull, createdate_isNull));
+		}
+		if (createdate_isNotNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
+					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+		if (lstlogindate != null) {
+			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
+					QueryCondition.eq, lstlogindate));
+		}
+		if (lstlogindate_like != null) {
+			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
+					QueryCondition.like, lstlogindate_like));
+		}
+		if (lstlogindate_isNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
+					QueryCondition.isNull, lstlogindate_isNull));
+		}
+		if (lstlogindate_isNotNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
+					QueryCondition.isNotNull, lstlogindate_isNotNull));
+		}
+
+		list = dbManager.queryByCondition(UserEntity.class, qc);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 */
+	public PageList getListByCondition(Map<String, Object> queryMap,
+			int pageno, int pagesize) {
+		PageList pagelist = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object name = queryMap.get("name");
+		Object name_like = queryMap.get("name_like");
+		Object name_isNull = queryMap.get("name_isNull");
+		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object password = queryMap.get("password");
+		Object password_like = queryMap.get("password_like");
+		Object password_isNull = queryMap.get("password_isNull");
+		Object password_isNotNull = queryMap.get("password_isNotNull");
+		Object permissions = queryMap.get("permissions");
+		Object permissions_gt = queryMap.get("permissions_gt");
+		Object permissions_ge = queryMap.get("permissions_ge");
+		Object permissions_lt = queryMap.get("permissions_lt");
+		Object permissions_le = queryMap.get("permissions_le");
+		Object permissions_in = queryMap.get("permissions_in");
+		Object createdate = queryMap.get("createdate");
+		Object createdate_like = queryMap.get("createdate_like");
+		Object createdate_isNull = queryMap.get("createdate_isNull");
+		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object lstlogindate = queryMap.get("lstlogindate");
+		Object lstlogindate_like = queryMap.get("lstlogindate_like");
+		Object lstlogindate_isNull = queryMap.get("lstlogindate_isNull");
+		Object lstlogindate_isNotNull = queryMap.get("lstlogindate_isNotNull");
+
+		QueryCondition qc = new QueryCondition(UserEntity.ID,
+				QueryCondition.gt, "0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(UserEntity.ID,
+					QueryCondition.eq, id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(UserEntity.ID,
+					QueryCondition.gt, id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(UserEntity.ID,
+					QueryCondition.ge, id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(UserEntity.ID,
+					QueryCondition.lt, id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(UserEntity.ID,
+					QueryCondition.le, id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.ID,
+					QueryCondition.in, id_in));
+		}
+		if (name != null) {
+			qc.andCondition(new QueryCondition(UserEntity.NAME,
+					QueryCondition.eq, name));
+		}
+		if (name_like != null) {
+			qc.andCondition(new QueryCondition(UserEntity.NAME,
+					QueryCondition.like, name_like));
+		}
+		if (name_isNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.NAME,
+					QueryCondition.isNull, name_isNull));
+		}
+		if (name_isNotNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.NAME,
+					QueryCondition.isNotNull, name_isNotNull));
+		}
+		if (password != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
+					QueryCondition.eq, password));
+		}
+		if (password_like != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
+					QueryCondition.like, password_like));
+		}
+		if (password_isNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
+					QueryCondition.isNull, password_isNull));
+		}
+		if (password_isNotNull != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
+					QueryCondition.isNotNull, password_isNotNull));
+		}
+		if (permissions != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
+					QueryCondition.eq, permissions));
 		}
 		if (permissions_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
@@ -354,8 +515,6 @@ public class UserService {
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param delUserLogList
-	 *            是否删除关联信息
 	 */
 	public boolean delList(Map<String, Object> queryMap, Boolean delUserLogList) {
 		boolean result = false;
@@ -395,7 +554,7 @@ public class UserService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(UserEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.ID,
@@ -451,7 +610,7 @@ public class UserService {
 		}
 		if (permissions != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
-					QueryCondition.in, permissions));
+					QueryCondition.eq, permissions));
 		}
 		if (permissions_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,

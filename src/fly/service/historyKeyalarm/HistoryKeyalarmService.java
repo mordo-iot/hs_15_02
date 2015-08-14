@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.dev.DevEntity;
+
 import fly.entity.historyKeyalarm.HistoryKeyalarmEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
@@ -21,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 一键报警历史信息服务类
  * @author feng.gu
- * @date 2015-08-10 10:15:43
+ * @date 2015-08-14 10:30:22
  * @version V1.0
  * 
  */
@@ -134,13 +135,137 @@ public class HistoryKeyalarmService {
 						DevEntity.class);
 				obj.setDev(dev);
 			}
-
 		}
 		return obj;
 	}
 
 	/**
-	 * 根据id读取记录集合
+	 * 根据条件查询记录集合（不分页）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @return
+	 */
+	public List<Object> getListByCondition(Map<String, Object> queryMap) {
+		List<Object> list = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object devId = queryMap.get("devId");
+		Object devId_gt = queryMap.get("devId_gt");
+		Object devId_ge = queryMap.get("devId_ge");
+		Object devId_lt = queryMap.get("devId_lt");
+		Object devId_le = queryMap.get("devId_le");
+		Object devId_in = queryMap.get("devId_in");
+		Object alarm = queryMap.get("alarm");
+		Object alarm_like = queryMap.get("alarm_like");
+		Object alarm_isNull = queryMap.get("alarm_isNull");
+		Object alarm_isNotNull = queryMap.get("alarm_isNotNull");
+		Object alarmupdatetime = queryMap.get("alarmupdatetime");
+		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
+		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
+		Object alarmupdatetime_isNotNull = queryMap
+				.get("alarmupdatetime_isNotNull");
+
+		QueryCondition qc = new QueryCondition(HistoryKeyalarmEntity.ID,
+				QueryCondition.gt, "0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
+					QueryCondition.eq, id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
+					QueryCondition.gt, id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
+					QueryCondition.ge, id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
+					QueryCondition.lt, id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
+					QueryCondition.le, id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
+					QueryCondition.in, id_in));
+		}
+		if (devId != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
+					QueryCondition.eq, devId));
+		}
+		if (devId_gt != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
+					QueryCondition.gt, devId_gt));
+		}
+		if (devId_ge != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
+					QueryCondition.ge, devId_ge));
+		}
+		if (devId_lt != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
+					QueryCondition.lt, devId_lt));
+		}
+		if (devId_le != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
+					QueryCondition.le, devId_le));
+		}
+		if (devId_in != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
+					QueryCondition.in, devId_in));
+		}
+		if (alarm != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ALARM,
+					QueryCondition.eq, alarm));
+		}
+		if (alarm_like != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ALARM,
+					QueryCondition.like, alarm_like));
+		}
+		if (alarm_isNull != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ALARM,
+					QueryCondition.isNull, alarm_isNull));
+		}
+		if (alarm_isNotNull != null) {
+			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ALARM,
+					QueryCondition.isNotNull, alarm_isNotNull));
+		}
+		if (alarmupdatetime != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryKeyalarmEntity.ALARMUPDATETIME, QueryCondition.eq,
+					alarmupdatetime));
+		}
+		if (alarmupdatetime_like != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryKeyalarmEntity.ALARMUPDATETIME, QueryCondition.like,
+					alarmupdatetime_like));
+		}
+		if (alarmupdatetime_isNull != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryKeyalarmEntity.ALARMUPDATETIME,
+					QueryCondition.isNull, alarmupdatetime_isNull));
+		}
+		if (alarmupdatetime_isNotNull != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryKeyalarmEntity.ALARMUPDATETIME,
+					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
+		}
+
+		list = dbManager.queryByCondition(HistoryKeyalarmEntity.class, qc);
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
@@ -180,7 +305,7 @@ public class HistoryKeyalarmService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
@@ -204,7 +329,7 @@ public class HistoryKeyalarmService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
-					QueryCondition.in, devId));
+					QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
@@ -313,8 +438,6 @@ public class HistoryKeyalarmService {
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
-	 * @param delDevList
-	 *            是否删除关联信息
 	 */
 	public boolean delList(Map<String, Object> queryMap, Boolean delDevList) {
 		boolean result = false;
@@ -347,7 +470,7 @@ public class HistoryKeyalarmService {
 				QueryCondition.gt, "0");
 		if (id != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
-					QueryCondition.in, id));
+					QueryCondition.eq, id));
 		}
 		if (id_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.ID,
@@ -371,7 +494,7 @@ public class HistoryKeyalarmService {
 		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
-					QueryCondition.in, devId));
+					QueryCondition.eq, devId));
 		}
 		if (devId_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryKeyalarmEntity.DEV_ID,
@@ -429,6 +552,7 @@ public class HistoryKeyalarmService {
 					HistoryKeyalarmEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
 		}
+
 		if (qc.getQueryNextCondition() != null) {
 			TransactionManager tx = DbUtils.getTranManager();
 			try {
@@ -470,4 +594,5 @@ public class HistoryKeyalarmService {
 		}
 		return result;
 	}
+
 }
