@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器身体历史状态服务类
  * @author feng.gu
- * @date 2015-08-14 10:31:05
+ * @date 2015-08-17 09:50:50
  * @version V1.0
  * 
  */
@@ -169,11 +169,13 @@ public class HistoryLocationBodyService {
 		Object bodystate_like = queryMap.get("bodystate_like");
 		Object bodystate_isNull = queryMap.get("bodystate_isNull");
 		Object bodystate_isNotNull = queryMap.get("bodystate_isNotNull");
+		Object bodystate_in = queryMap.get("bodystate_in");
 		Object bodyupdatetime = queryMap.get("bodyupdatetime");
 		Object bodyupdatetime_like = queryMap.get("bodyupdatetime_like");
 		Object bodyupdatetime_isNull = queryMap.get("bodyupdatetime_isNull");
 		Object bodyupdatetime_isNotNull = queryMap
 				.get("bodyupdatetime_isNotNull");
+		Object bodyupdatetime_in = queryMap.get("bodyupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationBodyEntity.ID,
 				QueryCondition.gt, "0");
@@ -250,6 +252,11 @@ public class HistoryLocationBodyService {
 					HistoryLocationBodyEntity.BODYSTATE,
 					QueryCondition.isNotNull, bodystate_isNotNull));
 		}
+		if (bodystate_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYSTATE, QueryCondition.in,
+					bodystate_in));
+		}
 		if (bodyupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationBodyEntity.BODYUPDATETIME,
@@ -269,6 +276,11 @@ public class HistoryLocationBodyService {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationBodyEntity.BODYUPDATETIME,
 					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
+		}
+		if (bodyupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYUPDATETIME,
+					QueryCondition.in, bodyupdatetime_in));
 		}
 
 		list = dbManager.queryByCondition(HistoryLocationBodyEntity.class, qc);
@@ -306,11 +318,13 @@ public class HistoryLocationBodyService {
 		Object bodystate_like = queryMap.get("bodystate_like");
 		Object bodystate_isNull = queryMap.get("bodystate_isNull");
 		Object bodystate_isNotNull = queryMap.get("bodystate_isNotNull");
+		Object bodystate_in = queryMap.get("bodystate_in");
 		Object bodyupdatetime = queryMap.get("bodyupdatetime");
 		Object bodyupdatetime_like = queryMap.get("bodyupdatetime_like");
 		Object bodyupdatetime_isNull = queryMap.get("bodyupdatetime_isNull");
 		Object bodyupdatetime_isNotNull = queryMap
 				.get("bodyupdatetime_isNotNull");
+		Object bodyupdatetime_in = queryMap.get("bodyupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationBodyEntity.ID,
 				QueryCondition.gt, "0");
@@ -387,6 +401,11 @@ public class HistoryLocationBodyService {
 					HistoryLocationBodyEntity.BODYSTATE,
 					QueryCondition.isNotNull, bodystate_isNotNull));
 		}
+		if (bodystate_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYSTATE, QueryCondition.in,
+					bodystate_in));
+		}
 		if (bodyupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationBodyEntity.BODYUPDATETIME,
@@ -406,6 +425,11 @@ public class HistoryLocationBodyService {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationBodyEntity.BODYUPDATETIME,
 					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
+		}
+		if (bodyupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationBodyEntity.BODYUPDATETIME,
+					QueryCondition.in, bodyupdatetime_in));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryLocationBodyEntity.class,

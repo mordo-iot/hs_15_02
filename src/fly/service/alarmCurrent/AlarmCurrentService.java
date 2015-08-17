@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 当前报警信息服务类
  * @author feng.gu
- * @date 2015-08-14 10:10:13
+ * @date 2015-08-17 09:50:49
  * @version V1.0
  * 
  */
@@ -159,6 +159,7 @@ public class AlarmCurrentService {
 		Object code_like = queryMap.get("code_like");
 		Object code_isNull = queryMap.get("code_isNull");
 		Object code_isNotNull = queryMap.get("code_isNotNull");
+		Object code_in = queryMap.get("code_in");
 		Object devId = queryMap.get("devId");
 		Object devId_gt = queryMap.get("devId_gt");
 		Object devId_ge = queryMap.get("devId_ge");
@@ -169,10 +170,12 @@ public class AlarmCurrentService {
 		Object content_like = queryMap.get("content_like");
 		Object content_isNull = queryMap.get("content_isNull");
 		Object content_isNotNull = queryMap.get("content_isNotNull");
+		Object content_in = queryMap.get("content_in");
 		Object createdate = queryMap.get("createdate");
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 		Object handlestate = queryMap.get("handlestate");
 		Object handlestate_gt = queryMap.get("handlestate_gt");
 		Object handlestate_ge = queryMap.get("handlestate_ge");
@@ -183,10 +186,12 @@ public class AlarmCurrentService {
 		Object handledesc_like = queryMap.get("handledesc_like");
 		Object handledesc_isNull = queryMap.get("handledesc_isNull");
 		Object handledesc_isNotNull = queryMap.get("handledesc_isNotNull");
+		Object handledesc_in = queryMap.get("handledesc_in");
 		Object handledate = queryMap.get("handledate");
 		Object handledate_like = queryMap.get("handledate_like");
 		Object handledate_isNull = queryMap.get("handledate_isNull");
 		Object handledate_isNotNull = queryMap.get("handledate_isNotNull");
+		Object handledate_in = queryMap.get("handledate_in");
 
 		QueryCondition qc = new QueryCondition(AlarmCurrentEntity.ID,
 				QueryCondition.gt, "0");
@@ -230,6 +235,10 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CODE,
 					QueryCondition.isNotNull, code_isNotNull));
 		}
+		if (code_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CODE,
+					QueryCondition.in, code_in));
+		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.DEV_ID,
 					QueryCondition.eq, devId));
@@ -270,6 +279,10 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CONTENT,
 					QueryCondition.isNotNull, content_isNotNull));
 		}
+		if (content_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CONTENT,
+					QueryCondition.in, content_in));
+		}
 		if (createdate != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CREATEDATE,
 					QueryCondition.eq, createdate));
@@ -285,6 +298,10 @@ public class AlarmCurrentService {
 		if (createdate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLESTATE,
@@ -326,6 +343,10 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDESC,
 					QueryCondition.isNotNull, handledesc_isNotNull));
 		}
+		if (handledesc_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDESC,
+					QueryCondition.in, handledesc_in));
+		}
 		if (handledate != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.eq, handledate));
@@ -341,6 +362,10 @@ public class AlarmCurrentService {
 		if (handledate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.isNotNull, handledate_isNotNull));
+		}
+		if (handledate_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
+					QueryCondition.in, handledate_in));
 		}
 
 		list = dbManager.queryByCondition(AlarmCurrentEntity.class, qc);
@@ -372,6 +397,7 @@ public class AlarmCurrentService {
 		Object code_like = queryMap.get("code_like");
 		Object code_isNull = queryMap.get("code_isNull");
 		Object code_isNotNull = queryMap.get("code_isNotNull");
+		Object code_in = queryMap.get("code_in");
 		Object devId = queryMap.get("devId");
 		Object devId_gt = queryMap.get("devId_gt");
 		Object devId_ge = queryMap.get("devId_ge");
@@ -382,10 +408,12 @@ public class AlarmCurrentService {
 		Object content_like = queryMap.get("content_like");
 		Object content_isNull = queryMap.get("content_isNull");
 		Object content_isNotNull = queryMap.get("content_isNotNull");
+		Object content_in = queryMap.get("content_in");
 		Object createdate = queryMap.get("createdate");
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 		Object handlestate = queryMap.get("handlestate");
 		Object handlestate_gt = queryMap.get("handlestate_gt");
 		Object handlestate_ge = queryMap.get("handlestate_ge");
@@ -396,10 +424,12 @@ public class AlarmCurrentService {
 		Object handledesc_like = queryMap.get("handledesc_like");
 		Object handledesc_isNull = queryMap.get("handledesc_isNull");
 		Object handledesc_isNotNull = queryMap.get("handledesc_isNotNull");
+		Object handledesc_in = queryMap.get("handledesc_in");
 		Object handledate = queryMap.get("handledate");
 		Object handledate_like = queryMap.get("handledate_like");
 		Object handledate_isNull = queryMap.get("handledate_isNull");
 		Object handledate_isNotNull = queryMap.get("handledate_isNotNull");
+		Object handledate_in = queryMap.get("handledate_in");
 
 		QueryCondition qc = new QueryCondition(AlarmCurrentEntity.ID,
 				QueryCondition.gt, "0");
@@ -443,6 +473,10 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CODE,
 					QueryCondition.isNotNull, code_isNotNull));
 		}
+		if (code_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CODE,
+					QueryCondition.in, code_in));
+		}
 		if (devId != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.DEV_ID,
 					QueryCondition.eq, devId));
@@ -483,6 +517,10 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CONTENT,
 					QueryCondition.isNotNull, content_isNotNull));
 		}
+		if (content_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CONTENT,
+					QueryCondition.in, content_in));
+		}
 		if (createdate != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CREATEDATE,
 					QueryCondition.eq, createdate));
@@ -498,6 +536,10 @@ public class AlarmCurrentService {
 		if (createdate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLESTATE,
@@ -539,6 +581,10 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDESC,
 					QueryCondition.isNotNull, handledesc_isNotNull));
 		}
+		if (handledesc_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDESC,
+					QueryCondition.in, handledesc_in));
+		}
 		if (handledate != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.eq, handledate));
@@ -554,6 +600,10 @@ public class AlarmCurrentService {
 		if (handledate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.isNotNull, handledate_isNotNull));
+		}
+		if (handledate_in != null) {
+			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
+					QueryCondition.in, handledate_in));
 		}
 
 		pagelist = dbManager.queryByCondition(AlarmCurrentEntity.class, qc,

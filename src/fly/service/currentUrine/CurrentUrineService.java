@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 尿湿当前信息服务类
  * @author feng.gu
- * @date 2015-08-14 10:24:17
+ * @date 2015-08-17 09:50:50
  * @version V1.0
  * 
  */
@@ -165,28 +165,34 @@ public class CurrentUrineService {
 		Object alarm_like = queryMap.get("alarm_like");
 		Object alarm_isNull = queryMap.get("alarm_isNull");
 		Object alarm_isNotNull = queryMap.get("alarm_isNotNull");
+		Object alarm_in = queryMap.get("alarm_in");
 		Object alarmupdatetime = queryMap.get("alarmupdatetime");
 		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
 		Object normal_isNotNull = queryMap.get("normal_isNotNull");
+		Object normal_in = queryMap.get("normal_in");
 		Object online = queryMap.get("online");
 		Object online_like = queryMap.get("online_like");
 		Object online_isNull = queryMap.get("online_isNull");
 		Object online_isNotNull = queryMap.get("online_isNotNull");
+		Object online_in = queryMap.get("online_in");
 		Object power = queryMap.get("power");
 		Object power_like = queryMap.get("power_like");
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
+		Object power_in = queryMap.get("power_in");
 		Object devupdatetime = queryMap.get("devupdatetime");
 		Object devupdatetime_like = queryMap.get("devupdatetime_like");
 		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
 		Object devupdatetime_isNotNull = queryMap
 				.get("devupdatetime_isNotNull");
+		Object devupdatetime_in = queryMap.get("devupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(CurrentUrineEntity.ID,
 				QueryCondition.gt, "0");
@@ -254,6 +260,10 @@ public class CurrentUrineService {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.ALARM,
 					QueryCondition.isNotNull, alarm_isNotNull));
 		}
+		if (alarm_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.ALARM,
+					QueryCondition.in, alarm_in));
+		}
 		if (alarmupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					CurrentUrineEntity.ALARMUPDATETIME, QueryCondition.eq,
@@ -274,6 +284,11 @@ public class CurrentUrineService {
 					CurrentUrineEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
 		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentUrineEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
+		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.NORMAL,
 					QueryCondition.eq, normal));
@@ -289,6 +304,10 @@ public class CurrentUrineService {
 		if (normal_isNotNull != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.NORMAL,
 					QueryCondition.isNotNull, normal_isNotNull));
+		}
+		if (normal_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.NORMAL,
+					QueryCondition.in, normal_in));
 		}
 		if (online != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.ONLINE,
@@ -306,6 +325,10 @@ public class CurrentUrineService {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.ONLINE,
 					QueryCondition.isNotNull, online_isNotNull));
 		}
+		if (online_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.ONLINE,
+					QueryCondition.in, online_in));
+		}
 		if (power != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.POWER,
 					QueryCondition.eq, power));
@@ -321,6 +344,10 @@ public class CurrentUrineService {
 		if (power_isNotNull != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.POWER,
 					QueryCondition.isNotNull, power_isNotNull));
+		}
+		if (power_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.POWER,
+					QueryCondition.in, power_in));
 		}
 		if (devupdatetime != null) {
 			qc.andCondition(new QueryCondition(
@@ -341,6 +368,11 @@ public class CurrentUrineService {
 			qc.andCondition(new QueryCondition(
 					CurrentUrineEntity.DEVUPDATETIME, QueryCondition.isNotNull,
 					devupdatetime_isNotNull));
+		}
+		if (devupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentUrineEntity.DEVUPDATETIME, QueryCondition.in,
+					devupdatetime_in));
 		}
 
 		list = dbManager.queryByCondition(CurrentUrineEntity.class, qc);
@@ -378,28 +410,34 @@ public class CurrentUrineService {
 		Object alarm_like = queryMap.get("alarm_like");
 		Object alarm_isNull = queryMap.get("alarm_isNull");
 		Object alarm_isNotNull = queryMap.get("alarm_isNotNull");
+		Object alarm_in = queryMap.get("alarm_in");
 		Object alarmupdatetime = queryMap.get("alarmupdatetime");
 		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
 		Object normal_isNotNull = queryMap.get("normal_isNotNull");
+		Object normal_in = queryMap.get("normal_in");
 		Object online = queryMap.get("online");
 		Object online_like = queryMap.get("online_like");
 		Object online_isNull = queryMap.get("online_isNull");
 		Object online_isNotNull = queryMap.get("online_isNotNull");
+		Object online_in = queryMap.get("online_in");
 		Object power = queryMap.get("power");
 		Object power_like = queryMap.get("power_like");
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
+		Object power_in = queryMap.get("power_in");
 		Object devupdatetime = queryMap.get("devupdatetime");
 		Object devupdatetime_like = queryMap.get("devupdatetime_like");
 		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
 		Object devupdatetime_isNotNull = queryMap
 				.get("devupdatetime_isNotNull");
+		Object devupdatetime_in = queryMap.get("devupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(CurrentUrineEntity.ID,
 				QueryCondition.gt, "0");
@@ -467,6 +505,10 @@ public class CurrentUrineService {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.ALARM,
 					QueryCondition.isNotNull, alarm_isNotNull));
 		}
+		if (alarm_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.ALARM,
+					QueryCondition.in, alarm_in));
+		}
 		if (alarmupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					CurrentUrineEntity.ALARMUPDATETIME, QueryCondition.eq,
@@ -487,6 +529,11 @@ public class CurrentUrineService {
 					CurrentUrineEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
 		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentUrineEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
+		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.NORMAL,
 					QueryCondition.eq, normal));
@@ -502,6 +549,10 @@ public class CurrentUrineService {
 		if (normal_isNotNull != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.NORMAL,
 					QueryCondition.isNotNull, normal_isNotNull));
+		}
+		if (normal_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.NORMAL,
+					QueryCondition.in, normal_in));
 		}
 		if (online != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.ONLINE,
@@ -519,6 +570,10 @@ public class CurrentUrineService {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.ONLINE,
 					QueryCondition.isNotNull, online_isNotNull));
 		}
+		if (online_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.ONLINE,
+					QueryCondition.in, online_in));
+		}
 		if (power != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.POWER,
 					QueryCondition.eq, power));
@@ -534,6 +589,10 @@ public class CurrentUrineService {
 		if (power_isNotNull != null) {
 			qc.andCondition(new QueryCondition(CurrentUrineEntity.POWER,
 					QueryCondition.isNotNull, power_isNotNull));
+		}
+		if (power_in != null) {
+			qc.andCondition(new QueryCondition(CurrentUrineEntity.POWER,
+					QueryCondition.in, power_in));
 		}
 		if (devupdatetime != null) {
 			qc.andCondition(new QueryCondition(
@@ -554,6 +613,11 @@ public class CurrentUrineService {
 			qc.andCondition(new QueryCondition(
 					CurrentUrineEntity.DEVUPDATETIME, QueryCondition.isNotNull,
 					devupdatetime_isNotNull));
+		}
+		if (devupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					CurrentUrineEntity.DEVUPDATETIME, QueryCondition.in,
+					devupdatetime_in));
 		}
 
 		pagelist = dbManager.queryByCondition(CurrentUrineEntity.class, qc,

@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 系统账号服务类
  * @author feng.gu
- * @date 2015-08-14 10:46:14
+ * @date 2015-08-17 09:50:49
  * @version V1.0
  * 
  */
@@ -171,10 +171,12 @@ public class UserService {
 		Object name_like = queryMap.get("name_like");
 		Object name_isNull = queryMap.get("name_isNull");
 		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object name_in = queryMap.get("name_in");
 		Object password = queryMap.get("password");
 		Object password_like = queryMap.get("password_like");
 		Object password_isNull = queryMap.get("password_isNull");
 		Object password_isNotNull = queryMap.get("password_isNotNull");
+		Object password_in = queryMap.get("password_in");
 		Object permissions = queryMap.get("permissions");
 		Object permissions_gt = queryMap.get("permissions_gt");
 		Object permissions_ge = queryMap.get("permissions_ge");
@@ -185,10 +187,12 @@ public class UserService {
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 		Object lstlogindate = queryMap.get("lstlogindate");
 		Object lstlogindate_like = queryMap.get("lstlogindate_like");
 		Object lstlogindate_isNull = queryMap.get("lstlogindate_isNull");
 		Object lstlogindate_isNotNull = queryMap.get("lstlogindate_isNotNull");
+		Object lstlogindate_in = queryMap.get("lstlogindate_in");
 
 		QueryCondition qc = new QueryCondition(UserEntity.ID,
 				QueryCondition.gt, "0");
@@ -232,6 +236,10 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.NAME,
 					QueryCondition.isNotNull, name_isNotNull));
 		}
+		if (name_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.NAME,
+					QueryCondition.in, name_in));
+		}
 		if (password != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
 					QueryCondition.eq, password));
@@ -247,6 +255,10 @@ public class UserService {
 		if (password_isNotNull != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
 					QueryCondition.isNotNull, password_isNotNull));
+		}
+		if (password_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
+					QueryCondition.in, password_in));
 		}
 		if (permissions != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
@@ -288,6 +300,10 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
 		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
+		}
 		if (lstlogindate != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
 					QueryCondition.eq, lstlogindate));
@@ -303,6 +319,10 @@ public class UserService {
 		if (lstlogindate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
 					QueryCondition.isNotNull, lstlogindate_isNotNull));
+		}
+		if (lstlogindate_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
+					QueryCondition.in, lstlogindate_in));
 		}
 
 		list = dbManager.queryByCondition(UserEntity.class, qc);
@@ -334,10 +354,12 @@ public class UserService {
 		Object name_like = queryMap.get("name_like");
 		Object name_isNull = queryMap.get("name_isNull");
 		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object name_in = queryMap.get("name_in");
 		Object password = queryMap.get("password");
 		Object password_like = queryMap.get("password_like");
 		Object password_isNull = queryMap.get("password_isNull");
 		Object password_isNotNull = queryMap.get("password_isNotNull");
+		Object password_in = queryMap.get("password_in");
 		Object permissions = queryMap.get("permissions");
 		Object permissions_gt = queryMap.get("permissions_gt");
 		Object permissions_ge = queryMap.get("permissions_ge");
@@ -348,10 +370,12 @@ public class UserService {
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 		Object lstlogindate = queryMap.get("lstlogindate");
 		Object lstlogindate_like = queryMap.get("lstlogindate_like");
 		Object lstlogindate_isNull = queryMap.get("lstlogindate_isNull");
 		Object lstlogindate_isNotNull = queryMap.get("lstlogindate_isNotNull");
+		Object lstlogindate_in = queryMap.get("lstlogindate_in");
 
 		QueryCondition qc = new QueryCondition(UserEntity.ID,
 				QueryCondition.gt, "0");
@@ -395,6 +419,10 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.NAME,
 					QueryCondition.isNotNull, name_isNotNull));
 		}
+		if (name_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.NAME,
+					QueryCondition.in, name_in));
+		}
 		if (password != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
 					QueryCondition.eq, password));
@@ -410,6 +438,10 @@ public class UserService {
 		if (password_isNotNull != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
 					QueryCondition.isNotNull, password_isNotNull));
+		}
+		if (password_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.PASSWORD,
+					QueryCondition.in, password_in));
 		}
 		if (permissions != null) {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
@@ -451,6 +483,10 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
 		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
+		}
 		if (lstlogindate != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
 					QueryCondition.eq, lstlogindate));
@@ -466,6 +502,10 @@ public class UserService {
 		if (lstlogindate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
 					QueryCondition.isNotNull, lstlogindate_isNotNull));
+		}
+		if (lstlogindate_in != null) {
+			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
+					QueryCondition.in, lstlogindate_in));
 		}
 
 		pagelist = dbManager.queryByCondition(UserEntity.class, qc, pageno,

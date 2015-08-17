@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 尿湿历史信息服务类
  * @author feng.gu
- * @date 2015-08-14 10:36:07
+ * @date 2015-08-17 09:50:50
  * @version V1.0
  * 
  */
@@ -165,11 +165,13 @@ public class HistoryUrineService {
 		Object alarm_like = queryMap.get("alarm_like");
 		Object alarm_isNull = queryMap.get("alarm_isNull");
 		Object alarm_isNotNull = queryMap.get("alarm_isNotNull");
+		Object alarm_in = queryMap.get("alarm_in");
 		Object alarmupdatetime = queryMap.get("alarmupdatetime");
 		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryUrineEntity.ID,
 				QueryCondition.gt, "0");
@@ -237,6 +239,10 @@ public class HistoryUrineService {
 			qc.andCondition(new QueryCondition(HistoryUrineEntity.ALARM,
 					QueryCondition.isNotNull, alarm_isNotNull));
 		}
+		if (alarm_in != null) {
+			qc.andCondition(new QueryCondition(HistoryUrineEntity.ALARM,
+					QueryCondition.in, alarm_in));
+		}
 		if (alarmupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryUrineEntity.ALARMUPDATETIME, QueryCondition.eq,
@@ -256,6 +262,11 @@ public class HistoryUrineService {
 			qc.andCondition(new QueryCondition(
 					HistoryUrineEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
+		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryUrineEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
 		}
 
 		list = dbManager.queryByCondition(HistoryUrineEntity.class, qc);
@@ -293,11 +304,13 @@ public class HistoryUrineService {
 		Object alarm_like = queryMap.get("alarm_like");
 		Object alarm_isNull = queryMap.get("alarm_isNull");
 		Object alarm_isNotNull = queryMap.get("alarm_isNotNull");
+		Object alarm_in = queryMap.get("alarm_in");
 		Object alarmupdatetime = queryMap.get("alarmupdatetime");
 		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryUrineEntity.ID,
 				QueryCondition.gt, "0");
@@ -365,6 +378,10 @@ public class HistoryUrineService {
 			qc.andCondition(new QueryCondition(HistoryUrineEntity.ALARM,
 					QueryCondition.isNotNull, alarm_isNotNull));
 		}
+		if (alarm_in != null) {
+			qc.andCondition(new QueryCondition(HistoryUrineEntity.ALARM,
+					QueryCondition.in, alarm_in));
+		}
 		if (alarmupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryUrineEntity.ALARMUPDATETIME, QueryCondition.eq,
@@ -384,6 +401,11 @@ public class HistoryUrineService {
 			qc.andCondition(new QueryCondition(
 					HistoryUrineEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
+		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryUrineEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryUrineEntity.class, qc,

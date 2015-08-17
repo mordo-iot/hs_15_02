@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 系统日志服务类
  * @author feng.gu
- * @date 2015-08-14 10:44:58
+ * @date 2015-08-17 09:50:49
  * @version V1.0
  * 
  */
@@ -164,6 +164,7 @@ public class UserLogService {
 		Object log_like = queryMap.get("log_like");
 		Object log_isNull = queryMap.get("log_isNull");
 		Object log_isNotNull = queryMap.get("log_isNotNull");
+		Object log_in = queryMap.get("log_in");
 		Object level = queryMap.get("level");
 		Object level_gt = queryMap.get("level_gt");
 		Object level_ge = queryMap.get("level_ge");
@@ -174,6 +175,7 @@ public class UserLogService {
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 
 		QueryCondition qc = new QueryCondition(UserLogEntity.ID,
 				QueryCondition.gt, "0");
@@ -241,6 +243,10 @@ public class UserLogService {
 			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
 					QueryCondition.isNotNull, log_isNotNull));
 		}
+		if (log_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
+					QueryCondition.in, log_in));
+		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
 					QueryCondition.eq, level));
@@ -280,6 +286,10 @@ public class UserLogService {
 		if (createdate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
 		}
 
 		list = dbManager.queryByCondition(UserLogEntity.class, qc);
@@ -317,6 +327,7 @@ public class UserLogService {
 		Object log_like = queryMap.get("log_like");
 		Object log_isNull = queryMap.get("log_isNull");
 		Object log_isNotNull = queryMap.get("log_isNotNull");
+		Object log_in = queryMap.get("log_in");
 		Object level = queryMap.get("level");
 		Object level_gt = queryMap.get("level_gt");
 		Object level_ge = queryMap.get("level_ge");
@@ -327,6 +338,7 @@ public class UserLogService {
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 
 		QueryCondition qc = new QueryCondition(UserLogEntity.ID,
 				QueryCondition.gt, "0");
@@ -394,6 +406,10 @@ public class UserLogService {
 			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
 					QueryCondition.isNotNull, log_isNotNull));
 		}
+		if (log_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.LOG,
+					QueryCondition.in, log_in));
+		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
 					QueryCondition.eq, level));
@@ -433,6 +449,10 @@ public class UserLogService {
 		if (createdate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
+		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
 		}
 
 		pagelist = dbManager.queryByCondition(UserLogEntity.class, qc, pageno,

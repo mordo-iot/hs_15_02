@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 门磁历史信息服务类
  * @author feng.gu
- * @date 2015-08-14 10:29:36
+ * @date 2015-08-17 09:50:50
  * @version V1.0
  * 
  */
@@ -165,6 +165,7 @@ public class HistoryDoorService {
 		Object openclose_like = queryMap.get("openclose_like");
 		Object openclose_isNull = queryMap.get("openclose_isNull");
 		Object openclose_isNotNull = queryMap.get("openclose_isNotNull");
+		Object openclose_in = queryMap.get("openclose_in");
 		Object level = queryMap.get("level");
 		Object level_gt = queryMap.get("level_gt");
 		Object level_ge = queryMap.get("level_ge");
@@ -176,6 +177,7 @@ public class HistoryDoorService {
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryDoorEntity.ID,
 				QueryCondition.gt, "0");
@@ -243,6 +245,10 @@ public class HistoryDoorService {
 			qc.andCondition(new QueryCondition(HistoryDoorEntity.OPENCLOSE,
 					QueryCondition.isNotNull, openclose_isNotNull));
 		}
+		if (openclose_in != null) {
+			qc.andCondition(new QueryCondition(HistoryDoorEntity.OPENCLOSE,
+					QueryCondition.in, openclose_in));
+		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(HistoryDoorEntity.LEVEL,
 					QueryCondition.eq, level));
@@ -286,6 +292,11 @@ public class HistoryDoorService {
 			qc.andCondition(new QueryCondition(
 					HistoryDoorEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
+		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryDoorEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
 		}
 
 		list = dbManager.queryByCondition(HistoryDoorEntity.class, qc);
@@ -323,6 +334,7 @@ public class HistoryDoorService {
 		Object openclose_like = queryMap.get("openclose_like");
 		Object openclose_isNull = queryMap.get("openclose_isNull");
 		Object openclose_isNotNull = queryMap.get("openclose_isNotNull");
+		Object openclose_in = queryMap.get("openclose_in");
 		Object level = queryMap.get("level");
 		Object level_gt = queryMap.get("level_gt");
 		Object level_ge = queryMap.get("level_ge");
@@ -334,6 +346,7 @@ public class HistoryDoorService {
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryDoorEntity.ID,
 				QueryCondition.gt, "0");
@@ -401,6 +414,10 @@ public class HistoryDoorService {
 			qc.andCondition(new QueryCondition(HistoryDoorEntity.OPENCLOSE,
 					QueryCondition.isNotNull, openclose_isNotNull));
 		}
+		if (openclose_in != null) {
+			qc.andCondition(new QueryCondition(HistoryDoorEntity.OPENCLOSE,
+					QueryCondition.in, openclose_in));
+		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(HistoryDoorEntity.LEVEL,
 					QueryCondition.eq, level));
@@ -444,6 +461,11 @@ public class HistoryDoorService {
 			qc.andCondition(new QueryCondition(
 					HistoryDoorEntity.ALARMUPDATETIME,
 					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
+		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryDoorEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryDoorEntity.class, qc,

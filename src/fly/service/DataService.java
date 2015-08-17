@@ -16,13 +16,17 @@ import com.framework.system.db.manager.DBManager;
 import fly.entity.alarmCurrent.AlarmCurrentEntity;
 import fly.entity.alarmHistory.AlarmHistoryEntity;
 import fly.entity.currentKeyalarm.CurrentKeyalarmEntity;
+import fly.entity.currentWandai.CurrentWandaiEntity;
 import fly.entity.dev.DevEntity;
 import fly.entity.historyKeyalarm.HistoryKeyalarmEntity;
+import fly.entity.historyWandai.HistoryWandaiEntity;
 import fly.service.alarmCurrent.AlarmCurrentService;
 import fly.service.alarmHistory.AlarmHistoryService;
 import fly.service.currentKeyalarm.CurrentKeyalarmService;
+import fly.service.currentWandai.CurrentWandaiService;
 import fly.service.dev.DevService;
 import fly.service.historyKeyalarm.HistoryKeyalarmService;
+import fly.service.historyWandai.HistoryWandaiService;
 import fly.socket.SendDataThread;
 
 public class DataService {	
@@ -34,13 +38,15 @@ public class DataService {
 	/**
 	 * 保存信号发射器对应的护工胸牌code,socket
 	 */
-	private static Map<String,Socket> socketMap = new HashMap<String,Socket>();
+	public static Map<String,Socket> socketMap = new HashMap<String,Socket>();
 
 	private static DevService devService=DevService.getInstance();
 	private static AlarmCurrentService alarmCurrentService=AlarmCurrentService.getInstance();
 	private static AlarmHistoryService alarmHistoryService=AlarmHistoryService.getInstance();
 	private static CurrentKeyalarmService currentKeyalarmService=CurrentKeyalarmService.getInstance();
 	private static HistoryKeyalarmService historyKeyalarmService=HistoryKeyalarmService.getInstance();
+	private static CurrentWandaiService currentWandaiService=CurrentWandaiService.getInstance();
+	private static HistoryWandaiService historyWandaiService=HistoryWandaiService.getInstance();
 	
 
 	/**
@@ -130,8 +136,17 @@ public class DataService {
 						logger.debug("数据类型:报警终端问询帧");
 						//01000000 02010399 132F 07 010201A1					
 						//问询帧
+						//参数个数
+						int pnum=1;
+						//查询设备编号 type=2,4,9,10,11,13
+						Map<String, Object> queryMap = new HashMap<String, Object>();
+						queryMap.put("type_in", "2,4,9,10,11,13");
+						List<Object> list = devService.getListByCondition(queryMap);
+						if(list!=null&&list.size()>0){
+							pnum+=list.size();
+						}
 						//----封装回复帧开始 ----
-						result = new byte[27];
+						result = new byte[17+10*(pnum-1)];
 						//目的终端
 						result[0]=data[4];
 						result[1]=data[5];
@@ -143,9 +158,9 @@ public class DataService {
 						result[6]=data[2];
 						result[7]=data[3];
 						//消息类型
-						result[8]=(byte)0x08;
+						result[8]=(byte)0x08;					
 						//参数个数
-						result[9]=(byte)0x02;
+						result[9]=(byte)pnum;
 						//系统时间0x03
 						result[10] = (byte)0x03;
 						byte[] time = this.timeToBytes(date);
@@ -156,16 +171,23 @@ public class DataService {
 						result[15] = time[4];
 						result[16] = time[5];
 						//配置信息*n 0x04
-						result[17] = (byte)0x04;
-						result[18] = (byte)0x08;
-						result[19] = (byte)0x01;
-						result[20] = (byte)0x02;
-						result[21] = (byte)0x1e;
-						result[22] = (byte)0x00;
-						result[23] = (byte)0x00;
-						result[24] = (byte)0x18;
-						result[25] = (byte)0x00;
-						result[26] = (byte)0x00;
+						if(list!=null&&list.size()>0){
+							for(int i=0;i<list.size();i++){
+								DevEntity dev = (DevEntity)list.get(i);
+								String devCode = dev.getCode();
+								byte[] devByte = HexString2Bytes(devCode);
+								result[17+10*i] = (byte)0x04;
+								result[18+10*i] = (byte)devByte[0];
+								result[19+10*i] = (byte)devByte[1];
+								result[20+10*i] = (byte)devByte[2];
+								result[21+10*i] = (byte)devByte[3];
+								result[22+10*i] = (byte)0x00;
+								result[23+10*i] = (byte)0x00;
+								result[24+10*i] = (byte)0x18;
+								result[25+10*i] = (byte)0x00;
+								result[26+10*i] = (byte)0x00;
+							}
+						}											
 						//020103990100000008020303070C092904040801021E0000180000B4				
 						//----封装回复帧结束 ----
 						
@@ -194,10 +216,28 @@ public class DataService {
 							int devType=0;						
 							byte[] devMac = {data[zhizhen+1],data[zhizhen+2],data[zhizhen+3],data[zhizhen+4]};
 							String devCode = this.printHexString(devMac);
-							if(data[zhizhen+1]==(byte)0x08){
+							if(data[zhizhen+1]==(byte)0x03){
+								//智能感应垫
+								devType=2;	
+							}else if(data[zhizhen+1]==(byte)0x05){
+								//园区内定位设备
+								devType=4;	
+							}else if(data[zhizhen+1]==(byte)0x08){
 								//一键报警设备
 								devType=9;								
-							}
+							}else if(data[zhizhen+1]==(byte)0x09){
+								//无线门磁终端
+								devType=10;	
+							}else if(data[zhizhen+1]==(byte)0x0f){
+								//尿湿感应设备
+								devType=11;	
+							}else if(data[zhizhen+1]==(byte)0x11){
+								//腕带设备
+								devType=12;	
+							}else if(data[zhizhen+1]==(byte)0x12){
+								//红外
+								devType=13;	
+							} 
 							//根据类型和编号查询设备是否存在
 							DevEntity dev = null;
 							if(devType!=0&&devCode!=null&&!"".equals(devCode)){
@@ -296,6 +336,78 @@ public class DataService {
 //											
 //											//----封装发射器应用帧结束 ----
 										}
+									}else if(devType==12){
+										//腕带报警
+										//C00100000002010399EE6E0902030307110B032805110002C201F0C0
+										CurrentWandaiEntity currentWandai =null;
+										Map<String, Object> map = new HashMap<String, Object>();
+										map.put("devId", dev.getId());
+										List<Object> list2 = currentWandaiService.getListByCondition(map);
+										if(list2!=null&&list2.size()>0){
+											currentWandai = (CurrentWandaiEntity)list2.get(0);
+										}else{
+											currentWandai = new CurrentWandaiEntity();
+										}
+										HistoryWandaiEntity historyWandai = new HistoryWandaiEntity();
+										int temp = this.readBit(data[zhizhen+5], 0);
+										if(temp==1){
+											logger.debug("数据类型:报警终端应用帧：腕带呼叫器：主动报警："+dev.getCode());
+											//报警mordo_state_current_Wandai,mordo_state_history_Wandai,mordo_alarm_current,mordo_alarm_history
+											currentWandai.setAlarm("Y");
+											currentWandai.setAlarmupdatetime(time);
+											currentWandai.setDevId(dev.getId());
+											
+											historyWandai.setAlarm("Y");
+											historyWandai.setAlarmupdatetime(time);
+											historyWandai.setDevId(dev.getId());
+											
+											alarmCurrent.setCode("E061");
+											alarmCurrent.setContent("腕带呼叫器主动报警");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E061");
+											alarmHistory.setContent("腕带呼叫器主动报警");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentWandaiService.save(currentWandai);
+											historyWandaiService.save(historyWandai);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+											
+											//----封装发射器应用帧开始 ----
+											sendData = new byte[23];											
+											
+											//报警类型
+											sendData[17]=(byte)0x02;										
+											sendData[18]=(byte)0x00;
+											sendData[19]=(byte)0x20;
+													
+											//----封装发射器应用帧结束 ----
+											
+										}else if(temp==0){
+											logger.debug("数据类型:报警终端应用帧：腕带呼叫器：取消报警:"+dev.getCode());
+											//取消报警mordo_state_current_Wandai,mordo_state_history_Wandai
+											currentWandai.setAlarm("N");
+											currentWandai.setAlarmupdatetime(time);
+											currentWandai.setDevId(dev.getId());
+											
+											historyWandai.setAlarm("N");
+											historyWandai.setAlarmupdatetime(time);
+											historyWandai.setDevId(dev.getId());
+											currentWandaiService.save(currentWandai);
+											historyWandaiService.save(historyWandai);
+//											//----封装发射器应用帧开始 ----
+//											sendData = new byte[23];											
+//											
+//											//报警类型
+//											sendData[17]=(byte)0x02;										
+//											sendData[18]=(byte)0x80;
+//											sendData[19]=(byte)0x40;
+//											
+//											//----封装发射器应用帧结束 ----
+									    }
 									}
 								}else if(data[zhizhen]==(byte)0x06){
 									//设备报警开始								
@@ -314,7 +426,6 @@ public class DataService {
 										}else{
 											currentKeyalarm = new CurrentKeyalarmEntity();
 										}
-										HistoryKeyalarmEntity historyKeyalarm = new HistoryKeyalarmEntity();
 										
 										if(temp==1){
 											logger.debug("数据类型:报警终端应用帧：一键报警设备：设备故障:"+dev.getCode());
@@ -372,6 +483,74 @@ public class DataService {
 											currentKeyalarm.setDevId(dev.getId());
 											currentKeyalarmService.save(currentKeyalarm);
 									    }
+								    }else if(devType==12){
+								    	//腕带
+										CurrentWandaiEntity currentWandai =null;
+										Map<String, Object> map = new HashMap<String, Object>();
+										map.put("devId", dev.getId());
+										List<Object> list2 = alarmCurrentService.getListByCondition(map);
+										if(list2!=null&&list2.size()>0){
+											currentWandai = (CurrentWandaiEntity)list2.get(0);
+										}else{
+											currentWandai = new CurrentWandaiEntity();
+										}
+										
+										if(temp==1){
+											logger.debug("数据类型:报警终端应用帧：腕带呼叫器：设备故障:"+dev.getCode());
+									    	//故障mordo_state_current_Wandai,mordo_alarm_current,mordo_alarm_history
+											currentWandai.setNormal("N");
+											currentWandai.setDevupdatetime(time);
+											currentWandai.setDevId(dev.getId());
+											
+											alarmCurrent.setCode("E003");
+											alarmCurrent.setContent("腕带呼叫器设备故障");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E003");
+											alarmHistory.setContent("腕带呼叫器设备故障");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentWandaiService.save(currentWandai);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+									    }else if(temp==0){
+									    	logger.debug("数据类型:报警终端应用帧：腕带呼叫器设备：设备正常:"+dev.getCode());
+									    	//正常mordo_state_current_Wandai
+									    	currentWandai.setNormal("Y");
+											currentWandai.setDevupdatetime(time);
+											currentWandai.setDevId(dev.getId());
+											currentWandaiService.save(currentWandai);
+									    }
+									    if(temp2==1){
+									    	logger.debug("数据类型:报警终端应用帧：腕带呼叫器设备：低电压:"+dev.getCode());
+									    	//低电量mordo_state_current_Wandai,mordo_alarm_current,mordo_alarm_history
+									    	currentWandai.setPower("N");
+											currentWandai.setDevupdatetime(time);
+											currentWandai.setDevId(dev.getId());
+											
+											alarmCurrent.setCode("E002");
+											alarmCurrent.setContent("腕带呼叫器低电压");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E002");
+											alarmHistory.setContent("腕带呼叫器低电压");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentWandaiService.save(currentWandai);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+									    }else if(temp2==0){
+									    	logger.debug("数据类型:报警终端应用帧：腕带呼叫器设备：电压正常:"+dev.getCode());
+									    	//正常mordo_state_current_Wandai
+									    	currentWandai.setPower("Y");
+											currentWandai.setDevupdatetime(time);
+											currentWandai.setDevId(dev.getId());
+											currentWandaiService.save(currentWandai);
+									    }
 								    }
 								}
 								//向信号发射器发送数据
@@ -413,7 +592,7 @@ public class DataService {
 												//报警数据
 												sendData[20]=(byte)0x03;	
 												if(dev.getAlarmcontent()!=null&&dev.getAlarmcontent().length()==4){
-													byte[] alarmData = HexString2Bytes(dev.getAlarmcontent());
+													byte[] alarmData = decimalToBytes(dev.getAlarmcontent(),2);
 													sendData[21]=alarmData[0];
 													sendData[22]=alarmData[1];
 												}
@@ -654,10 +833,10 @@ public class DataService {
 			}
 		}else{
 			for(int i=0;i<num;i++){
-				if(i<temp.length-num){
+				if(i<num-temp.length){
 					result[i] = (byte)0x00;
 				}else{
-					result[i] = temp[i-(temp.length-num)];
+					result[i] = temp[i-(num-temp.length)];
 				}				
 			}
 		}
@@ -799,8 +978,10 @@ public class DataService {
 
 	
 	public static void main(String[] sage){
-//		String a="C00100000002010399E98B09020303070D0C1A18050801021E00E5C0";
-		String a="C0010000000A00010D002905002BC0";
+		String a="C00100000002010399EE3B0902030307110A080F050801021E014CC0";
+//		String a="C0010000000A00010D002905002BC0";
+//		String a="C00100000002010399132F07010201A1C0";
+			
 		DataService dataService = DataService.getInstance();
 		byte[] data= dataService.HexString2Bytes(a);
 		//判断帧头帧尾0xc0

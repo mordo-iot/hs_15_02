@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器位置历史状态服务类
  * @author feng.gu
- * @date 2015-08-14 10:33:26
+ * @date 2015-08-17 09:50:50
  * @version V1.0
  * 
  */
@@ -186,12 +186,14 @@ public class HistoryLocationPosService {
 		Object leaved_like = queryMap.get("leaved_like");
 		Object leaved_isNull = queryMap.get("leaved_isNull");
 		Object leaved_isNotNull = queryMap.get("leaved_isNotNull");
+		Object leaved_in = queryMap.get("leaved_in");
 		Object leavedupdatetime = queryMap.get("leavedupdatetime");
 		Object leavedupdatetime_like = queryMap.get("leavedupdatetime_like");
 		Object leavedupdatetime_isNull = queryMap
 				.get("leavedupdatetime_isNull");
 		Object leavedupdatetime_isNotNull = queryMap
 				.get("leavedupdatetime_isNotNull");
+		Object leavedupdatetime_in = queryMap.get("leavedupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationPosEntity.ID,
 				QueryCondition.gt, "0");
@@ -349,6 +351,10 @@ public class HistoryLocationPosService {
 			qc.andCondition(new QueryCondition(HistoryLocationPosEntity.LEAVED,
 					QueryCondition.isNotNull, leaved_isNotNull));
 		}
+		if (leaved_in != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationPosEntity.LEAVED,
+					QueryCondition.in, leaved_in));
+		}
 		if (leavedupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationPosEntity.LEAVEDUPDATETIME,
@@ -368,6 +374,11 @@ public class HistoryLocationPosService {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationPosEntity.LEAVEDUPDATETIME,
 					QueryCondition.isNotNull, leavedupdatetime_isNotNull));
+		}
+		if (leavedupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationPosEntity.LEAVEDUPDATETIME,
+					QueryCondition.in, leavedupdatetime_in));
 		}
 
 		list = dbManager.queryByCondition(HistoryLocationPosEntity.class, qc);
@@ -423,12 +434,14 @@ public class HistoryLocationPosService {
 		Object leaved_like = queryMap.get("leaved_like");
 		Object leaved_isNull = queryMap.get("leaved_isNull");
 		Object leaved_isNotNull = queryMap.get("leaved_isNotNull");
+		Object leaved_in = queryMap.get("leaved_in");
 		Object leavedupdatetime = queryMap.get("leavedupdatetime");
 		Object leavedupdatetime_like = queryMap.get("leavedupdatetime_like");
 		Object leavedupdatetime_isNull = queryMap
 				.get("leavedupdatetime_isNull");
 		Object leavedupdatetime_isNotNull = queryMap
 				.get("leavedupdatetime_isNotNull");
+		Object leavedupdatetime_in = queryMap.get("leavedupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationPosEntity.ID,
 				QueryCondition.gt, "0");
@@ -586,6 +599,10 @@ public class HistoryLocationPosService {
 			qc.andCondition(new QueryCondition(HistoryLocationPosEntity.LEAVED,
 					QueryCondition.isNotNull, leaved_isNotNull));
 		}
+		if (leaved_in != null) {
+			qc.andCondition(new QueryCondition(HistoryLocationPosEntity.LEAVED,
+					QueryCondition.in, leaved_in));
+		}
 		if (leavedupdatetime != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationPosEntity.LEAVEDUPDATETIME,
@@ -605,6 +622,11 @@ public class HistoryLocationPosService {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationPosEntity.LEAVEDUPDATETIME,
 					QueryCondition.isNotNull, leavedupdatetime_isNotNull));
+		}
+		if (leavedupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryLocationPosEntity.LEAVEDUPDATETIME,
+					QueryCondition.in, leavedupdatetime_in));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryLocationPosEntity.class,

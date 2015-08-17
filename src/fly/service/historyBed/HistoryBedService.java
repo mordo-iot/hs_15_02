@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 床垫历史信息服务类
  * @author feng.gu
- * @date 2015-08-14 10:27:14
+ * @date 2015-08-17 09:50:50
  * @version V1.0
  * 
  */
@@ -165,6 +165,7 @@ public class HistoryBedService {
 		Object havingbody_like = queryMap.get("havingbody_like");
 		Object havingbody_isNull = queryMap.get("havingbody_isNull");
 		Object havingbody_isNotNull = queryMap.get("havingbody_isNotNull");
+		Object havingbody_in = queryMap.get("havingbody_in");
 		Object level = queryMap.get("level");
 		Object level_gt = queryMap.get("level_gt");
 		Object level_ge = queryMap.get("level_ge");
@@ -176,6 +177,7 @@ public class HistoryBedService {
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryBedEntity.ID,
 				QueryCondition.gt, "0");
@@ -243,6 +245,10 @@ public class HistoryBedService {
 			qc.andCondition(new QueryCondition(HistoryBedEntity.HAVINGBODY,
 					QueryCondition.isNotNull, havingbody_isNotNull));
 		}
+		if (havingbody_in != null) {
+			qc.andCondition(new QueryCondition(HistoryBedEntity.HAVINGBODY,
+					QueryCondition.in, havingbody_in));
+		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(HistoryBedEntity.LEVEL,
 					QueryCondition.eq, level));
@@ -286,6 +292,11 @@ public class HistoryBedService {
 			qc.andCondition(new QueryCondition(
 					HistoryBedEntity.ALARMUPDATETIME, QueryCondition.isNotNull,
 					alarmupdatetime_isNotNull));
+		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryBedEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
 		}
 
 		list = dbManager.queryByCondition(HistoryBedEntity.class, qc);
@@ -323,6 +334,7 @@ public class HistoryBedService {
 		Object havingbody_like = queryMap.get("havingbody_like");
 		Object havingbody_isNull = queryMap.get("havingbody_isNull");
 		Object havingbody_isNotNull = queryMap.get("havingbody_isNotNull");
+		Object havingbody_in = queryMap.get("havingbody_in");
 		Object level = queryMap.get("level");
 		Object level_gt = queryMap.get("level_gt");
 		Object level_ge = queryMap.get("level_ge");
@@ -334,6 +346,7 @@ public class HistoryBedService {
 		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
 		Object alarmupdatetime_isNotNull = queryMap
 				.get("alarmupdatetime_isNotNull");
+		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
 
 		QueryCondition qc = new QueryCondition(HistoryBedEntity.ID,
 				QueryCondition.gt, "0");
@@ -401,6 +414,10 @@ public class HistoryBedService {
 			qc.andCondition(new QueryCondition(HistoryBedEntity.HAVINGBODY,
 					QueryCondition.isNotNull, havingbody_isNotNull));
 		}
+		if (havingbody_in != null) {
+			qc.andCondition(new QueryCondition(HistoryBedEntity.HAVINGBODY,
+					QueryCondition.in, havingbody_in));
+		}
 		if (level != null) {
 			qc.andCondition(new QueryCondition(HistoryBedEntity.LEVEL,
 					QueryCondition.eq, level));
@@ -444,6 +461,11 @@ public class HistoryBedService {
 			qc.andCondition(new QueryCondition(
 					HistoryBedEntity.ALARMUPDATETIME, QueryCondition.isNotNull,
 					alarmupdatetime_isNotNull));
+		}
+		if (alarmupdatetime_in != null) {
+			qc.andCondition(new QueryCondition(
+					HistoryBedEntity.ALARMUPDATETIME, QueryCondition.in,
+					alarmupdatetime_in));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryBedEntity.class, qc,
