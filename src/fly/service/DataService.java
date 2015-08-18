@@ -1503,7 +1503,7 @@ public class DataService {
 	 * byte数组转十六进制string
 	 * @param b
 	 */	
-	public String printHexString(byte[] b) {
+	public static String printHexString(byte[] b) {
         String hs="";
         String stmp="";
         for (int n=0;n<b.length;n++) {
