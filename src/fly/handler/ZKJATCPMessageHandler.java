@@ -8,12 +8,14 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -30,11 +32,13 @@ import fly.entity.dev.DevEntity;
 import fly.entity.historyLocationManual.HistoryLocationManualEntity;
 import fly.entity.historyLocationPos.HistoryLocationPosEntity;
 import fly.init.SystemInit;
+import fly.service.DataService;
 import fly.service.alarmCurrent.AlarmCurrentService;
 import fly.service.alarmHistory.AlarmHistoryService;
 import fly.service.currentLocation.CurrentLocationService;
 import fly.service.historyLocationManual.HistoryLocationManualService;
 import fly.service.historyLocationPos.HistoryLocationPosService;
+import fly.socket.SendDataThread;
 import fly.util.Distance;
 import fly.util.JsonUtil;
 
@@ -45,6 +49,8 @@ public class ZKJATCPMessageHandler {
 			"yyyyMMddHHmmss");
 	private static Map<String, String> jizhan = new HashMap<String, String>();
 	private DBManager dbManager = DBManager.getInstance();
+	
+	private DataService dataService = DataService.getInstance();
 
 	private static AlarmCurrentService alarmCurrentService = AlarmCurrentService
 			.getInstance();
@@ -66,7 +72,7 @@ public class ZKJATCPMessageHandler {
 				Date sdate = new Date();
 				String time = formater.format(sdate);
 				String[] sage = data.split("\\|");
-
+                boolean alarm=false;
 				if ((data != null)
 						&& ((data.contains("SOS")) || (data.contains("LOW")))) {
 					imei = sage[2];
@@ -74,7 +80,7 @@ public class ZKJATCPMessageHandler {
 					QueryCondition qc = new QueryCondition(DevEntity.CODE,
 							QueryCondition.eq, imei);
 					qc.andCondition(new QueryCondition(DevEntity.TYPE,
-							QueryCondition.eq, Integer.valueOf(1)));
+							QueryCondition.eq, "16"));
 
 					logger.debug("----------------");
 					logger.debug("imei: " + imei);
@@ -125,7 +131,8 @@ public class ZKJATCPMessageHandler {
 														
 							alarmHistory.setCode("E023");
 							alarmHistory.setContent("老人定位器手动报警");
-							alarmHistory.setCreatedate(time);							
+							alarmHistory.setCreatedate(time);		
+							alarm = true;
 						} else if ("LOW".equals(content)) {
 							currentLocation.setPower("N");
 							currentLocation.setDevupdatetime(formater.format(sdate));
@@ -148,6 +155,76 @@ public class ZKJATCPMessageHandler {
 						alarmCurrentService.save(alarmCurrent);
 						alarmHistoryService.save(alarmHistory);
 						
+						if(alarm){
+							//----封装发射器应用帧开始 ----
+							byte[] sendData = new byte[23];											
+							
+							//报警类型
+							sendData[17]=(byte)0x02;										
+							sendData[18]=(byte)0x00;
+							sendData[19]=(byte)0x40;
+									
+							//----封装发射器应用帧结束 ----
+							
+							//向信号发射器发送数据
+							if(sendData!=null&&sendData.length>0&&dev.getAlarmdevid()!=null&&!"".equals(dev.getAlarmdevid())&&dev.getAlarmcontent()!=null&&!"".equals(dev.getAlarmcontent())){
+								String[] sage2 = dev.getAlarmdevid().split(",");
+								if(sage2!=null&&sage2.length>0){
+									for(int i=0;i<sage2.length;i++){
+										Socket devSocket = DataService.socketMap.get(sage2[i]);
+										if(devSocket!=null&&sage2[i].length()==8){
+											//----封装发射器应用帧开始 ----
+											//目的终端												
+											sendData[0]=(byte)0x0a;
+											sendData[1]=(byte)0x00;
+											sendData[2]=(byte)0x00;
+											sendData[3]=(byte)0x00;
+											//源终端
+											sendData[4]=(byte)0x01;
+											sendData[5]=(byte)0x00;
+											sendData[6]=(byte)0x00;
+											sendData[7]=(byte)0x00;												
+											//序列号
+											byte[] suiji = new byte[2];
+											Random random = new Random();
+											random.nextBytes(suiji);
+											sendData[8]=suiji[0];
+											sendData[9]=suiji[1];
+											//消息类型
+											sendData[10]=(byte)0x01;
+											//参数个数
+											sendData[11]=(byte)0x03;
+											//护工胸牌ID
+											byte[] mac = DataService.HexString2Bytes(sage2[i]);
+											sendData[12]=(byte)0x01;
+											sendData[13]=mac[0];
+											sendData[14]=mac[1];
+											sendData[15]=mac[2];
+											sendData[16]=mac[3];
+											
+											//报警数据
+											sendData[20]=(byte)0x03;	
+											if(dev.getAlarmcontent()!=null&&dev.getAlarmcontent().length()==4){
+												byte[] alarmData = DataService.decimalToBytes(dev.getAlarmcontent(),2);
+												sendData[21]=alarmData[0];
+												sendData[22]=alarmData[1];
+											}
+											//----封装发射器应用帧结束 ----
+											logger.debug("向信号发射器发送数据，胸牌code："+sage2[i]);
+											sendData = dataService.dataChangeBack(sendData);
+											//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
+											//C0 02010399 01000000 EAEE 0A 00 96C0
+											logger.debug("向信号发射器发送数据，数据内容："+DataService.printHexString(sendData));											
+											SendDataThread sendDataThread = new SendDataThread(devSocket,sendData);
+											sendDataThread.start();
+										}
+									}
+								}
+								
+							}
+						}
+						
+						
 					} else {
 						logger.error("ZKJA数据处理：未找到设备信息 code：" + imei);
 					}
@@ -160,7 +237,7 @@ public class ZKJATCPMessageHandler {
 					QueryCondition qc = new QueryCondition(DevEntity.CODE,
 							QueryCondition.eq, imei);
 					qc.andCondition(new QueryCondition(DevEntity.TYPE,
-							QueryCondition.eq, Integer.valueOf(1)));
+							QueryCondition.eq, "16"));
 
 
 					logger.debug("----------------");

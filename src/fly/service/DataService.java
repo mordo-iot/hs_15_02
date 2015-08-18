@@ -1480,7 +1480,7 @@ public class DataService {
 	 * @param num
 	 * @return
 	 */	
-	public byte[] decimalToBytes(String decimal,int num){
+	public static byte[] decimalToBytes(String decimal,int num){
 		BigInteger bi = new BigInteger(decimal);
 		byte[] temp = bi.toByteArray();
 		byte[] result = new byte[num];	

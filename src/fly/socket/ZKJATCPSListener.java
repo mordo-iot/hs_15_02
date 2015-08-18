@@ -16,7 +16,7 @@ public class ZKJATCPSListener extends Thread
   public void run() {
     try {
       logger.debug("中科健安数据信息监听：开始监听...");
-      ServerSocket serverSocket = new ServerSocket(7354);
+      ServerSocket serverSocket = new ServerSocket(SERVERPORT);
       while (true) {
         Socket client = serverSocket.accept();
         Date datestart = new Date();
