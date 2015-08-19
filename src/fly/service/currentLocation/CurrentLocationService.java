@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 import fly.entity.dev.DevEntity;
+import fly.entity.position.PositionEntity;
 
 import fly.entity.currentLocation.CurrentLocationEntity;
 import com.framework.system.db.connect.DbUtils;
@@ -22,7 +23,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器当前状态服务类
  * @author feng.gu
- * @date 2015-08-17 09:50:50
+ * @date 2015-08-19 15:45:47
  * @version V1.0
  * 
  */
@@ -61,6 +62,10 @@ public class CurrentLocationService {
 				if (currentLocation.getDev() != null) {
 					dbManager.saveNoTransaction(currentLocation.getDev());
 				}
+				// 关联信息保存
+				if (currentLocation.getPosition() != null) {
+					dbManager.saveNoTransaction(currentLocation.getPosition());
+				}
 				tx.commitAndClose();
 			} catch (Exception e) {
 				logger.error("数据库提交失败！");
@@ -96,6 +101,11 @@ public class CurrentLocationService {
 							dbManager.saveNoTransaction(currentLocation
 									.getDev());
 						}
+						// 关联信息保存
+						if (currentLocation.getPosition() != null) {
+							dbManager.saveNoTransaction(currentLocation
+									.getPosition());
+						}
 					}
 				}
 				tx.commitAndClose();
@@ -121,9 +131,12 @@ public class CurrentLocationService {
 	 *            主键
 	 * @param devShow
 	 *            是否查询关联信息
+	 * @param positionShow
+	 *            是否查询关联信息
 	 * @param obj
 	 */
-	public CurrentLocationEntity getById(Integer id, Boolean devShow) {
+	public CurrentLocationEntity getById(Integer id, Boolean devShow,
+			Boolean positionShow) {
 		CurrentLocationEntity obj = null;
 		if (id != null) {
 			obj = (CurrentLocationEntity) dbManager.getById(id,
@@ -134,6 +147,13 @@ public class CurrentLocationService {
 				DevEntity dev = (DevEntity) dbManager.getById(obj.getDevId(),
 						DevEntity.class);
 				obj.setDev(dev);
+			}
+			// 查询关联内容
+			if (positionShow != null && positionShow.booleanValue()
+					&& obj != null && obj.getCurrpositionId() > 0) {
+				PositionEntity position = (PositionEntity) dbManager.getById(
+						obj.getCurrpositionId(), PositionEntity.class);
+				obj.setPosition(position);
 			}
 		}
 		return obj;
@@ -163,12 +183,12 @@ public class CurrentLocationService {
 		Object devId_lt = queryMap.get("devId_lt");
 		Object devId_le = queryMap.get("devId_le");
 		Object devId_in = queryMap.get("devId_in");
-		Object currpositionid = queryMap.get("currpositionid");
-		Object currpositionid_gt = queryMap.get("currpositionid_gt");
-		Object currpositionid_ge = queryMap.get("currpositionid_ge");
-		Object currpositionid_lt = queryMap.get("currpositionid_lt");
-		Object currpositionid_le = queryMap.get("currpositionid_le");
-		Object currpositionid_in = queryMap.get("currpositionid_in");
+		Object currpositionId = queryMap.get("currpositionId");
+		Object currpositionId_gt = queryMap.get("currpositionId_gt");
+		Object currpositionId_ge = queryMap.get("currpositionId_ge");
+		Object currpositionId_lt = queryMap.get("currpositionId_lt");
+		Object currpositionId_le = queryMap.get("currpositionId_le");
+		Object currpositionId_in = queryMap.get("currpositionId_in");
 		Object currlog = queryMap.get("currlog");
 		Object currlog_gt = queryMap.get("currlog_gt");
 		Object currlog_ge = queryMap.get("currlog_ge");
@@ -293,35 +313,35 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.DEV_ID,
 					QueryCondition.in, devId_in));
 		}
-		if (currpositionid != null) {
+		if (currpositionId != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.eq,
-					currpositionid));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.eq,
+					currpositionId));
 		}
-		if (currpositionid_gt != null) {
+		if (currpositionId_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.gt,
-					currpositionid_gt));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.gt,
+					currpositionId_gt));
 		}
-		if (currpositionid_ge != null) {
+		if (currpositionId_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.ge,
-					currpositionid_ge));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.ge,
+					currpositionId_ge));
 		}
-		if (currpositionid_lt != null) {
+		if (currpositionId_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.lt,
-					currpositionid_lt));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.lt,
+					currpositionId_lt));
 		}
-		if (currpositionid_le != null) {
+		if (currpositionId_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.le,
-					currpositionid_le));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.le,
+					currpositionId_le));
 		}
-		if (currpositionid_in != null) {
+		if (currpositionId_in != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.in,
-					currpositionid_in));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.in,
+					currpositionId_in));
 		}
 		if (currlog != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.CURRLOG,
@@ -648,12 +668,12 @@ public class CurrentLocationService {
 		Object devId_lt = queryMap.get("devId_lt");
 		Object devId_le = queryMap.get("devId_le");
 		Object devId_in = queryMap.get("devId_in");
-		Object currpositionid = queryMap.get("currpositionid");
-		Object currpositionid_gt = queryMap.get("currpositionid_gt");
-		Object currpositionid_ge = queryMap.get("currpositionid_ge");
-		Object currpositionid_lt = queryMap.get("currpositionid_lt");
-		Object currpositionid_le = queryMap.get("currpositionid_le");
-		Object currpositionid_in = queryMap.get("currpositionid_in");
+		Object currpositionId = queryMap.get("currpositionId");
+		Object currpositionId_gt = queryMap.get("currpositionId_gt");
+		Object currpositionId_ge = queryMap.get("currpositionId_ge");
+		Object currpositionId_lt = queryMap.get("currpositionId_lt");
+		Object currpositionId_le = queryMap.get("currpositionId_le");
+		Object currpositionId_in = queryMap.get("currpositionId_in");
 		Object currlog = queryMap.get("currlog");
 		Object currlog_gt = queryMap.get("currlog_gt");
 		Object currlog_ge = queryMap.get("currlog_ge");
@@ -778,35 +798,35 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.DEV_ID,
 					QueryCondition.in, devId_in));
 		}
-		if (currpositionid != null) {
+		if (currpositionId != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.eq,
-					currpositionid));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.eq,
+					currpositionId));
 		}
-		if (currpositionid_gt != null) {
+		if (currpositionId_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.gt,
-					currpositionid_gt));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.gt,
+					currpositionId_gt));
 		}
-		if (currpositionid_ge != null) {
+		if (currpositionId_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.ge,
-					currpositionid_ge));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.ge,
+					currpositionId_ge));
 		}
-		if (currpositionid_lt != null) {
+		if (currpositionId_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.lt,
-					currpositionid_lt));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.lt,
+					currpositionId_lt));
 		}
-		if (currpositionid_le != null) {
+		if (currpositionId_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.le,
-					currpositionid_le));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.le,
+					currpositionId_le));
 		}
-		if (currpositionid_in != null) {
+		if (currpositionId_in != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.in,
-					currpositionid_in));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.in,
+					currpositionId_in));
 		}
 		if (currlog != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.CURRLOG,
@@ -1114,7 +1134,7 @@ public class CurrentLocationService {
 	 *            主键
 	 * @param obj
 	 */
-	public boolean del(Integer id, Boolean delDev) {
+	public boolean del(Integer id, Boolean delDev, Boolean delPosition) {
 		boolean result = false;
 		if (id != null && id > 0) {
 			TransactionManager tx = DbUtils.getTranManager();
@@ -1129,6 +1149,16 @@ public class CurrentLocationService {
 					if (currentLocation.getDevId() != null) {
 						dbManager.delNoTransaction(currentLocation.getDevId(),
 								DevEntity.class);
+					}
+				}
+				// 删除关联信息
+				if (delPosition != null && delPosition.booleanValue()) {
+					CurrentLocationEntity currentLocation = (CurrentLocationEntity) dbManager
+							.getById(id, CurrentLocationEntity.class);
+					if (currentLocation.getCurrpositionId() != null) {
+						dbManager.delNoTransaction(
+								currentLocation.getCurrpositionId(),
+								PositionEntity.class);
 					}
 				}
 				tx.commitAndClose();
@@ -1153,7 +1183,8 @@ public class CurrentLocationService {
 	 * @param queryMap
 	 *            查询条件集合
 	 */
-	public boolean delList(Map<String, Object> queryMap, Boolean delDevList) {
+	public boolean delList(Map<String, Object> queryMap, Boolean delDevList,
+			Boolean delPositionList) {
 		boolean result = false;
 		if (queryMap == null) {
 			queryMap = new HashMap<String, Object>();
@@ -1170,12 +1201,12 @@ public class CurrentLocationService {
 		Object devId_lt = queryMap.get("devId_lt");
 		Object devId_le = queryMap.get("devId_le");
 		Object devId_in = queryMap.get("devId_in");
-		Object currpositionid = queryMap.get("currpositionid");
-		Object currpositionid_gt = queryMap.get("currpositionid_gt");
-		Object currpositionid_ge = queryMap.get("currpositionid_ge");
-		Object currpositionid_lt = queryMap.get("currpositionid_lt");
-		Object currpositionid_le = queryMap.get("currpositionid_le");
-		Object currpositionid_in = queryMap.get("currpositionid_in");
+		Object currpositionId = queryMap.get("currpositionId");
+		Object currpositionId_gt = queryMap.get("currpositionId_gt");
+		Object currpositionId_ge = queryMap.get("currpositionId_ge");
+		Object currpositionId_lt = queryMap.get("currpositionId_lt");
+		Object currpositionId_le = queryMap.get("currpositionId_le");
+		Object currpositionId_in = queryMap.get("currpositionId_in");
 		Object currlog = queryMap.get("currlog");
 		Object currlog_gt = queryMap.get("currlog_gt");
 		Object currlog_ge = queryMap.get("currlog_ge");
@@ -1289,35 +1320,35 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.DEV_ID,
 					QueryCondition.in, devId_in));
 		}
-		if (currpositionid != null) {
+		if (currpositionId != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.eq,
-					currpositionid));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.eq,
+					currpositionId));
 		}
-		if (currpositionid_gt != null) {
+		if (currpositionId_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.gt,
-					currpositionid_gt));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.gt,
+					currpositionId_gt));
 		}
-		if (currpositionid_ge != null) {
+		if (currpositionId_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.ge,
-					currpositionid_ge));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.ge,
+					currpositionId_ge));
 		}
-		if (currpositionid_lt != null) {
+		if (currpositionId_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.lt,
-					currpositionid_lt));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.lt,
+					currpositionId_lt));
 		}
-		if (currpositionid_le != null) {
+		if (currpositionId_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.le,
-					currpositionid_le));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.le,
+					currpositionId_le));
 		}
-		if (currpositionid_in != null) {
+		if (currpositionId_in != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.CURRPOSITIONID, QueryCondition.in,
-					currpositionid_in));
+					CurrentLocationEntity.CURRPOSITION_ID, QueryCondition.in,
+					currpositionId_in));
 		}
 		if (currlog != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.CURRLOG,
@@ -1587,6 +1618,26 @@ public class CurrentLocationService {
 								QueryCondition.in, strIds);
 						dbManager.delByConditionsNoTransaction(DevEntity.class,
 								qc1);
+					}
+
+				}
+				// 删除关联信息
+				if (delPositionList != null && delPositionList.booleanValue()) {
+					List<Object> list = dbManager.queryByCondition(
+							CurrentLocationEntity.class, qc);
+					String strIds = "";
+					if (list != null && list.size() > 0) {
+						for (Object obj : list) {
+							CurrentLocationEntity entity = (CurrentLocationEntity) obj;
+							strIds += entity.getCurrpositionId() + ",";
+						}
+						strIds = strIds.substring(0, strIds.length() - 1);
+					}
+					if (strIds != null && !"".equals(strIds)) {
+						QueryCondition qc1 = new QueryCondition(
+								PositionEntity.ID, QueryCondition.in, strIds);
+						dbManager.delByConditionsNoTransaction(
+								PositionEntity.class, qc1);
 					}
 
 				}
