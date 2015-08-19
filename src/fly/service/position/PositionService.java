@@ -416,6 +416,8 @@ public class PositionService {
 					qc.andCondition(new QueryCondition(PositionEntity.ID,
 							QueryCondition.in, strIds));
 				}
+			}else{
+				return list;
 			}
 		}
 		list = dbManager.queryByCondition(PositionEntity.class, qc);

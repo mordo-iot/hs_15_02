@@ -41,7 +41,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 设备信息服务类
  * @author feng.gu
- * @date 2015-08-17 09:50:51
+ * @date 2015-08-19 16:47:56
  * @version V1.0
  * 
  */
@@ -1221,6 +1221,8 @@ public class DevService {
 					qc.andCondition(new QueryCondition(DevEntity.ID,
 							QueryCondition.in, strIds));
 				}
+			} else {
+				return list;
 			}
 		}
 		list = dbManager.queryByCondition(DevEntity.class, qc);
@@ -1641,6 +1643,8 @@ public class DevService {
 					qc.andCondition(new QueryCondition(DevEntity.ID,
 							QueryCondition.in, strIds));
 				}
+			} else {
+				return pagelist;
 			}
 		}
 		pagelist = dbManager.queryByCondition(DevEntity.class, qc, pageno,
@@ -2215,6 +2219,8 @@ public class DevService {
 					qc.andCondition(new QueryCondition(DevEntity.ID,
 							QueryCondition.in, strIds));
 				}
+			} else {
+				return result;
 			}
 		}
 		if (qc.getQueryNextCondition() != null) {

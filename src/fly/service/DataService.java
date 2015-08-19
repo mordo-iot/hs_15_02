@@ -1,5 +1,6 @@
 package fly.service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ import fly.entity.currentBed.CurrentBedEntity;
 import fly.entity.currentDoor.CurrentDoorEntity;
 import fly.entity.currentIr.CurrentIrEntity;
 import fly.entity.currentKeyalarm.CurrentKeyalarmEntity;
+import fly.entity.currentLocation.CurrentLocationEntity;
 import fly.entity.currentUrine.CurrentUrineEntity;
 import fly.entity.currentWandai.CurrentWandaiEntity;
 import fly.entity.dev.DevEntity;
@@ -26,14 +28,20 @@ import fly.entity.historyBed.HistoryBedEntity;
 import fly.entity.historyDoor.HistoryDoorEntity;
 import fly.entity.historyIr.HistoryIrEntity;
 import fly.entity.historyKeyalarm.HistoryKeyalarmEntity;
+import fly.entity.historyLocationBody.HistoryLocationBodyEntity;
+import fly.entity.historyLocationManual.HistoryLocationManualEntity;
+import fly.entity.historyLocationMove.HistoryLocationMoveEntity;
+import fly.entity.historyLocationPos.HistoryLocationPosEntity;
 import fly.entity.historyUrine.HistoryUrineEntity;
 import fly.entity.historyWandai.HistoryWandaiEntity;
+import fly.entity.position.PositionEntity;
 import fly.service.alarmCurrent.AlarmCurrentService;
 import fly.service.alarmHistory.AlarmHistoryService;
 import fly.service.currentBed.CurrentBedService;
 import fly.service.currentDoor.CurrentDoorService;
 import fly.service.currentIr.CurrentIrService;
 import fly.service.currentKeyalarm.CurrentKeyalarmService;
+import fly.service.currentLocation.CurrentLocationService;
 import fly.service.currentUrine.CurrentUrineService;
 import fly.service.currentWandai.CurrentWandaiService;
 import fly.service.dev.DevService;
@@ -41,8 +49,13 @@ import fly.service.historyBed.HistoryBedService;
 import fly.service.historyDoor.HistoryDoorService;
 import fly.service.historyIr.HistoryIrService;
 import fly.service.historyKeyalarm.HistoryKeyalarmService;
+import fly.service.historyLocationBody.HistoryLocationBodyService;
+import fly.service.historyLocationManual.HistoryLocationManualService;
+import fly.service.historyLocationMove.HistoryLocationMoveService;
+import fly.service.historyLocationPos.HistoryLocationPosService;
 import fly.service.historyUrine.HistoryUrineService;
 import fly.service.historyWandai.HistoryWandaiService;
+import fly.service.position.PositionService;
 import fly.socket.SendDataThread;
 
 public class DataService {	
@@ -55,8 +68,11 @@ public class DataService {
 	 * 保存信号发射器对应的护工胸牌code,socket
 	 */
 	public static Map<String,Socket> socketMap = new HashMap<String,Socket>();
+	
+	public static Map<String,Integer> statusMap = new HashMap<String,Integer>();
 
 	private static DevService devService=DevService.getInstance();
+	private static PositionService positionService=PositionService.getInstance();
 	private static AlarmCurrentService alarmCurrentService=AlarmCurrentService.getInstance();
 	private static AlarmHistoryService alarmHistoryService=AlarmHistoryService.getInstance();
 	private static CurrentKeyalarmService currentKeyalarmService=CurrentKeyalarmService.getInstance();
@@ -71,6 +87,11 @@ public class DataService {
 	private static HistoryIrService historyIrService=HistoryIrService.getInstance();
 	private static CurrentUrineService currentUrineService=CurrentUrineService.getInstance();
 	private static HistoryUrineService historyUrineService=HistoryUrineService.getInstance();
+	private static CurrentLocationService currentLocationService=CurrentLocationService.getInstance();
+	private static HistoryLocationBodyService historyLocationBodyService=HistoryLocationBodyService.getInstance();
+	private static HistoryLocationManualService historyLocationManualService=HistoryLocationManualService.getInstance();
+	private static HistoryLocationMoveService historyLocationMoveService=HistoryLocationMoveService.getInstance();
+	private static HistoryLocationPosService historyLocationPosService=HistoryLocationPosService.getInstance();
 	
 
 	/**
@@ -97,7 +118,7 @@ public class DataService {
 					byte dataType=data[10];
 					String sourceStr = this.printHexString(source);
 					if(dataType==(byte)0x05){
-						logger.debug("数据类型:信号发射器上行心跳帧："+sourceStr);
+						logger.debug("数据类型:信号发射器【上行心跳帧】："+sourceStr);
 						//上行心跳帧
 						//记录socket						
 						if(sourceStr!=null&&!"".equals(sourceStr)){
@@ -153,6 +174,425 @@ public class DataService {
 						logger.debug("数据类型：信号发射器回复帧");
 						return null;
 					}
+				}else if(source[0]==(byte)0x05){
+					    //园区一卡通
+						//状态应用帧:01000000 05000469 004D 0A 02 50 BE 52 8E
+						//定位应用帧:01000000 05000469 0327 09 01 51 060003A9 A6
+						//根据类型和编号查询设备是否存在
+						String devCode = printHexString(source);
+						DevEntity dev = null;
+						if(devCode!=null&&!"".equals(devCode)){
+							Map<String, Object> queryMap = new HashMap<String, Object>();
+							queryMap.put("type", "4");
+							queryMap.put("code", devCode.toLowerCase());
+							List<Object> list = devService.getListByCondition(queryMap);
+							if(list!=null&&list.size()>0){
+								dev = (DevEntity)list.get(0);
+							}
+						}	
+				        if(dev!=null){
+				        	//获取当前AlarmCurrentEntity
+							AlarmCurrentEntity alarmCurrent =null;
+							Map<String, Object> queryMap = new HashMap<String, Object>();
+							queryMap.put("devId", dev.getId());
+							List<Object> list = alarmCurrentService.getListByCondition(queryMap);
+							if(list!=null&&list.size()>0){
+								alarmCurrent = (AlarmCurrentEntity)list.get(0);
+							}else{
+								alarmCurrent = new AlarmCurrentEntity();
+							}
+							AlarmHistoryEntity alarmHistory = new AlarmHistoryEntity();
+							byte[] sendData= null;
+				        	//获取当前CurrentLocationEntity
+				        	CurrentLocationEntity currentLocation =null;
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("devId", dev.getId());
+							List<Object> list2 = currentLocationService.getListByCondition(map);
+							if(list2!=null&&list2.size()>0){
+								currentLocation = (CurrentLocationEntity)list2.get(0);
+							}else{
+								currentLocation = new CurrentLocationEntity();
+							}
+							HistoryLocationBodyEntity historyLocationBody = new HistoryLocationBodyEntity();
+							HistoryLocationManualEntity historyLocationManual = new HistoryLocationManualEntity();
+							HistoryLocationMoveEntity historyLocationMove = new HistoryLocationMoveEntity();
+							HistoryLocationPosEntity historyLocationPos = new HistoryLocationPosEntity();
+		                    String time=formater.format(date);
+							
+							if(data[10]==(byte)0x0A){
+								//状态应用帧
+								int parmnum = this.byteToDecimal(data[11]);
+								logger.debug("参数个数："+parmnum);
+								for(int i=0;i<parmnum;i++){
+									if(data[12+2*i]==(byte)0x50){
+										//身体状态
+										int temp1 = this.readBit(data[13+2*i], 0);
+										int temp2 = this.readBit(data[13+2*i], 4);
+										Integer tempint1 = statusMap.get(devCode+"_1");
+										Integer tempint2 = statusMap.get(devCode+"_2");
+										boolean tempboolean1=false;
+										boolean tempboolean2=false;
+										if(tempint1!=null&&tempint1.intValue()==temp1){
+											//状态无变化
+											tempboolean1 = false;
+										}else{
+											//状态有变化
+											tempboolean1 = true;
+											statusMap.put(devCode+"_1", temp1);
+										}										
+										if(tempint2!=null&&tempint2.intValue()==temp2){
+											//状态无变化
+											tempboolean2 = false;
+										}else{
+											//状态有变化
+											tempboolean2 = true;
+											statusMap.put(devCode+"_2", temp2);
+										}	
+										if(temp1==1&&tempboolean1){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【摔倒报警】："+dev.getCode());
+											//报警mordo_state_current_Location,mordo_state_history_Location,mordo_alarm_current,mordo_alarm_history
+											currentLocation.setBodystate("N");
+											currentLocation.setBodyupdatetime(time);
+											currentLocation.setDevId(dev.getId());
+											
+											historyLocationBody.setBodystate("N");
+											historyLocationBody.setBodyupdatetime(time);
+											historyLocationBody.setDevId(dev.getId());
+											
+											alarmCurrent.setCode("E022");
+											alarmCurrent.setContent("一卡通摔倒报警");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E022");
+											alarmHistory.setContent("一卡通摔倒报警");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											historyLocationBodyService.save(historyLocationBody);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+											
+											//----封装发射器应用帧开始 ----
+											sendData = new byte[23];											
+											
+											//报警类型
+											sendData[17]=(byte)0x02;										
+											sendData[18]=(byte)0x00;
+											sendData[19]=(byte)0x01;
+													
+											//----封装发射器应用帧结束 ----
+										}else if(temp1==0&&tempboolean1){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【摔倒取消报警】："+dev.getCode());
+											//取消报警mordo_state_current_Location,mordo_state_history_Location
+											currentLocation.setBodystate("Y");
+											currentLocation.setBodyupdatetime(time);
+											currentLocation.setDevId(dev.getId());
+											
+											historyLocationBody.setBodystate("Y");
+											historyLocationBody.setBodyupdatetime(time);
+											historyLocationBody.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											historyLocationBodyService.save(historyLocationBody);
+//											//----封装发射器应用帧开始 ----
+//											sendData = new byte[23];											
+//											
+//											//报警类型
+//											sendData[17]=(byte)0x02;										
+//											sendData[18]=(byte)0x80;
+//											sendData[19]=(byte)0x40;
+//											
+//											//----封装发射器应用帧结束 ----
+										}
+										if(temp2==1&&tempboolean2){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【手动报警】："+dev.getCode());
+											//报警mordo_state_current_Location,mordo_state_history_Location,mordo_alarm_current,mordo_alarm_history
+											currentLocation.setManualalarm("N");
+											currentLocation.setBodyupdatetime(time);
+											currentLocation.setDevId(dev.getId());
+											
+											historyLocationManual.setManualalarm("N");
+											historyLocationManual.setBodyupdatetime(time);
+											historyLocationManual.setDevId(dev.getId());
+											
+											alarmCurrent.setCode("E023");
+											alarmCurrent.setContent("一卡通手动报警");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E023");
+											alarmHistory.setContent("一卡通手动报警");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											historyLocationManualService.save(historyLocationManual);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+											
+											//----封装发射器应用帧开始 ----
+											sendData = new byte[23];											
+											
+											//报警类型
+											sendData[17]=(byte)0x02;										
+											sendData[18]=(byte)0x00;
+											sendData[19]=(byte)0x02;
+													
+											//----封装发射器应用帧结束 ----
+										}else if(temp2==0&&tempboolean2){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【手动取消报警】："+dev.getCode());
+											//取消报警mordo_state_current_Location,mordo_state_history_Location
+											currentLocation.setManualalarm("Y");
+											currentLocation.setBodyupdatetime(time);
+											currentLocation.setDevId(dev.getId());
+											
+											historyLocationManual.setManualalarm("Y");
+											historyLocationManual.setBodyupdatetime(time);
+											historyLocationManual.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											historyLocationManualService.save(historyLocationManual);
+//											//----封装发射器应用帧开始 ----
+//											sendData = new byte[23];											
+//											
+//											//报警类型
+//											sendData[17]=(byte)0x02;										
+//											sendData[18]=(byte)0x80;
+//											sendData[19]=(byte)0x40;
+//											
+//											//----封装发射器应用帧结束 ----
+										}
+										
+									}else if(data[12+2*i]==(byte)0x52){
+										//设备报警
+										int temp3 = this.readBit(data[13+2*i], 0);
+										int temp4 = this.readBit(data[13+2*i], 4);
+										Integer tempint3 = statusMap.get(devCode+"_3");
+										Integer tempint4 = statusMap.get(devCode+"_4");
+										boolean tempboolean3=false;
+										boolean tempboolean4=false;
+										if(tempint3!=null&&tempint3.intValue()==temp3){
+											//状态无变化
+											tempboolean3 = false;
+										}else{
+											//状态有变化
+											tempboolean3 = true;
+											statusMap.put(devCode+"_3", temp3);
+										}
+										if(tempint4!=null&&tempint4.intValue()==temp4){
+											//状态无变化
+											tempboolean4 = false;
+										}else{
+											//状态有变化
+											tempboolean4 = true;
+											statusMap.put(devCode+"_4", temp4);
+										}
+										if(temp3==1&&tempboolean3){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【低电压报警】："+dev.getCode());
+											//报警mordo_state_current_Location,mordo_state_history_Location,mordo_alarm_current,mordo_alarm_history
+											currentLocation.setPower("N");
+											currentLocation.setDevupdatetime(time);
+											currentLocation.setDevId(dev.getId());									
+											
+											alarmCurrent.setCode("E002");
+											alarmCurrent.setContent("一卡通低电压");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E002");
+											alarmHistory.setContent("一卡通低电压");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+	
+										}else if(temp3==0&&tempboolean3){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【低电压取消报警】："+dev.getCode());
+											currentLocation.setPower("Y");
+											currentLocation.setDevupdatetime(time);
+											currentLocation.setDevId(dev.getId());		
+											
+											currentLocationService.save(currentLocation);											
+										}
+										if(temp4==1&&tempboolean4){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【人卡分离报警】："+dev.getCode());
+											//报警mordo_state_current_Location,mordo_state_history_Location,mordo_alarm_current,mordo_alarm_history
+											currentLocation.setMoving("N");
+											currentLocation.setMovingupdatetime(time);
+											currentLocation.setDevId(dev.getId());
+											
+											historyLocationMove.setMoving("N");
+											historyLocationMove.setMovingupdatetime(time);
+											historyLocationMove.setDevId(dev.getId());
+											
+											alarmCurrent.setCode("E024");
+											alarmCurrent.setContent("一卡通人卡分离报警");
+											alarmCurrent.setCreatedate(time);
+											alarmCurrent.setDevId(dev.getId());
+											
+											alarmHistory.setCode("E024");
+											alarmHistory.setContent("一卡通人卡分离报警");
+											alarmHistory.setCreatedate(time);
+											alarmHistory.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											historyLocationMoveService.save(historyLocationMove);
+											alarmCurrentService.save(alarmCurrent);
+											alarmHistoryService.save(alarmHistory);
+											
+											//----封装发射器应用帧开始 ----
+											sendData = new byte[23];											
+											
+											//报警类型
+											sendData[17]=(byte)0x02;										
+											sendData[18]=(byte)0x00;
+											sendData[19]=(byte)0x10;
+													
+											//----封装发射器应用帧结束 ----
+										}else if(temp4==0&&tempboolean4){
+											logger.debug("数据类型:【园区一卡通】状态应用帧：【人卡分离取消报警】："+dev.getCode());
+											//取消报警mordo_state_current_Location,mordo_state_history_Location
+											currentLocation.setMoving("Y");
+											currentLocation.setMovingupdatetime(time);
+											currentLocation.setDevId(dev.getId());
+											
+											historyLocationMove.setMoving("Y");
+											historyLocationMove.setMovingupdatetime(time);
+											historyLocationMove.setDevId(dev.getId());
+											
+											currentLocationService.save(currentLocation);
+											historyLocationMoveService.save(historyLocationMove);
+//											//----封装发射器应用帧开始 ----
+//											sendData = new byte[23];											
+//											
+//											//报警类型
+//											sendData[17]=(byte)0x02;										
+//											sendData[18]=(byte)0x80;
+//											sendData[19]=(byte)0x40;
+//											
+//											//----封装发射器应用帧结束 ----
+										}
+									}
+								}																					
+							}else if(data[10]==(byte)0x09&&data[11]==(byte)0x01&&data[12]==(byte)0x51){
+								//定位应用帧C001000000 05000469 07D0 09 01 51 060003A9 A2 E9C0
+								logger.debug("数据类型:【园区一卡通】定位应用帧："+dev.getCode());
+								byte[] luyoujiedian={data[13],data[14],data[15],data[16]};
+								//根据类型和编号查询设备是否存在
+								String luyoujiedianStr = printHexString(luyoujiedian);
+								logger.debug("数据类型:【园区一卡通】路由节点code："+luyoujiedianStr);
+								DevEntity dev2 = null;
+								if(luyoujiedianStr!=null&&!"".equals(luyoujiedianStr)){
+									Map<String, Object> queryMap4 = new HashMap<String, Object>();
+									queryMap4.put("type", "6");
+									queryMap4.put("code", luyoujiedianStr.toLowerCase());
+									List<Object> list4 = devService.getListByCondition(queryMap4);
+									if(list4!=null&&list4.size()>0){
+										dev2 = (DevEntity)list4.get(0);
+									}
+								}
+								if(dev2!=null){
+									//查询dev对应的pos
+									Map<String, Object> queryMap3 = new HashMap<String, Object>();
+									queryMap3.put("devId", dev2.getId());
+									List<Object> list3 = positionService.getListByCondition(queryMap3);
+									if(list3!=null&&list3.size()>0){
+										PositionEntity pos = (PositionEntity)list3.get(0);
+										if(pos!=null){
+											logger.debug("数据类型:【园区一卡通】设备位置信息："+pos.getName());
+											currentLocation.setDevId(dev.getId());
+											currentLocation.setCurrlat(BigDecimal.valueOf(0));
+											currentLocation.setCurrlog(BigDecimal.valueOf(0));
+											currentLocation.setCurrpositionId(pos.getId());
+											currentLocation.setLeavedupdatetime(time);
+											
+											
+											historyLocationPos.setCurrlat(BigDecimal.valueOf(0));
+											historyLocationPos.setCurrlog(BigDecimal.valueOf(0));
+											historyLocationPos.setCurrpositionid(pos.getId());
+											historyLocationPos.setDevId(dev.getId());
+											historyLocationPos.setLeavedupdatetime(time);
+											
+											currentLocationService.save(currentLocation);
+											historyLocationPosService.save(historyLocationPos);	
+										}
+									}else{
+										logger.debug("数据类型:【园区一卡通】未找到设备位置信息！："+luyoujiedianStr);
+									}
+								}else{
+									logger.debug("数据类型:【园区一卡通】未找到路由节点数据！："+luyoujiedianStr);
+								}
+								
+								
+							}
+							
+							//向信号发射器发送数据
+							if(sendData!=null&&sendData.length>0&&dev.getAlarmdevid()!=null&&!"".equals(dev.getAlarmdevid())&&dev.getAlarmcontent()!=null&&!"".equals(dev.getAlarmcontent())){
+								String[] sage = dev.getAlarmdevid().split(",");
+								if(sage!=null&&sage.length>0){
+									for(int i=0;i<sage.length;i++){
+										Socket devSocket = socketMap.get(sage[i]);
+										if(devSocket!=null&&sage[i].length()==8){
+											//----封装发射器应用帧开始 ----
+											//目的终端												
+											sendData[0]=(byte)0x0a;
+											sendData[1]=(byte)0x00;
+											sendData[2]=(byte)0x00;
+											sendData[3]=(byte)0x00;
+											//源终端
+											sendData[4]=(byte)0x01;
+											sendData[5]=(byte)0x00;
+											sendData[6]=(byte)0x00;
+											sendData[7]=(byte)0x00;												
+											//序列号
+											byte[] suiji = new byte[2];
+											Random random = new Random();
+											random.nextBytes(suiji);
+											sendData[8]=suiji[0];
+											sendData[9]=suiji[1];
+											//消息类型
+											sendData[10]=(byte)0x01;
+											//参数个数
+											sendData[11]=(byte)0x03;
+											//护工胸牌ID
+											byte[] mac = HexString2Bytes(sage[i]);
+											sendData[12]=(byte)0x01;
+											sendData[13]=mac[0];
+											sendData[14]=mac[1];
+											sendData[15]=mac[2];
+											sendData[16]=mac[3];
+											
+											//报警数据
+											sendData[20]=(byte)0x03;	
+											if(dev.getAlarmcontent()!=null&&dev.getAlarmcontent().length()==4){
+												byte[] alarmData = decimalToBytes(dev.getAlarmcontent(),2);
+												sendData[21]=alarmData[0];
+												sendData[22]=alarmData[1];
+											}
+											//----封装发射器应用帧结束 ----
+											logger.debug("向信号发射器发送数据，胸牌code："+sage[i]);
+											sendData = dataService.dataChangeBack(sendData);
+											//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
+											//C0 02010399 01000000 EAEE 0A 00 96C0
+											logger.debug("向信号发射器发送数据，数据内容："+this.printHexString(sendData));											
+											SendDataThread sendDataThread = new SendDataThread(devSocket,sendData);
+											sendDataThread.start();
+										}
+									}
+								}
+								
+							}
+				        }else{
+							logger.debug("设备数据不存在，type："+4+" code："+devCode);
+						}
+				        
+				        
+																									
+					
 				}else if(source[0]==(byte)0x02){
 					//报警终端
 					byte dataType=data[10];
@@ -164,9 +604,9 @@ public class DataService {
 						int pnum=1;
 						//床垫设备个数
 						int bednum=0;
-						//查询设备编号 type=2,4,9,10,11,13
+						//查询设备编号 type=2,9,10,11,12,13
 						Map<String, Object> queryMap = new HashMap<String, Object>();
-						queryMap.put("type_in", "2,4,9,10,11,13");
+						queryMap.put("type_in", "2,9,10,11,12,13");
 						List<Object> list = devService.getListByCondition(queryMap);
 						
 						if(list!=null&&list.size()>0){
@@ -264,7 +704,7 @@ public class DataService {
 								//智能感应垫
 								devType=2;	
 							}else if(data[zhizhen+1]==(byte)0x05){
-								//园区内定位设备
+								//园区内定位设备7
 								devType=4;	
 							}else if(data[zhizhen+1]==(byte)0x08){
 								//一键报警设备
@@ -323,7 +763,7 @@ public class DataService {
 										HistoryKeyalarmEntity historyKeyalarm = new HistoryKeyalarmEntity();
 										int temp = this.readBit(data[zhizhen+5], 0);
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧：一键报警设备：主动报警："+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【一键报警设备：主动报警】："+dev.getCode());
 											//报警mordo_state_current_keyalarm,mordo_state_history_keyalarm,mordo_alarm_current,mordo_alarm_history
 											currentKeyalarm.setAlarm("Y");
 											currentKeyalarm.setAlarmupdatetime(time);
@@ -359,7 +799,7 @@ public class DataService {
 											//----封装发射器应用帧结束 ----
 											
 										}else if(temp==0){
-											logger.debug("数据类型:报警终端应用帧：一键报警设备：取消报警:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【一键报警设备：取消报警】:"+dev.getCode());
 											//取消报警mordo_state_current_keyalarm,mordo_state_history_keyalarm
 											currentKeyalarm.setAlarm("N");
 											currentKeyalarm.setAlarmupdatetime(time);
@@ -395,7 +835,7 @@ public class DataService {
 										HistoryWandaiEntity historyWandai = new HistoryWandaiEntity();
 										int temp = this.readBit(data[zhizhen+5], 0);
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧：腕带呼叫器：主动报警："+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【腕带呼叫器：主动报警】："+dev.getCode());
 											//报警mordo_state_current_Wandai,mordo_state_history_Wandai,mordo_alarm_current,mordo_alarm_history
 											currentWandai.setAlarm("Y");
 											currentWandai.setAlarmupdatetime(time);
@@ -431,7 +871,7 @@ public class DataService {
 											//----封装发射器应用帧结束 ----
 											
 										}else if(temp==0){
-											logger.debug("数据类型:报警终端应用帧：腕带呼叫器：取消报警:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【腕带呼叫器：取消报警】:"+dev.getCode());
 											//取消报警mordo_state_current_Wandai,mordo_state_history_Wandai
 											currentWandai.setAlarm("N");
 											currentWandai.setAlarmupdatetime(time);
@@ -487,7 +927,7 @@ public class DataService {
 										}
 										if(temp==0){
 											//门开
-											logger.debug("数据类型:报警终端应用帧：无线门磁终端："+alarmType+"："+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【无线门磁终端："+alarmType+"】："+dev.getCode());
 											//报警mordo_state_current_Door,mordo_state_history_Door,mordo_alarm_current,mordo_alarm_history
 											currentDoor.setOpenclose("N");
 											currentDoor.setAlarmupdatetime(time);
@@ -526,7 +966,7 @@ public class DataService {
 											//----封装发射器应用帧结束 ----
 											
 										}else if(temp==1){
-											logger.debug("数据类型:报警终端应用帧：无线门磁终端："+alarmType+":"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【无线门磁终端："+alarmType+"】:"+dev.getCode());
 											//取消报警mordo_state_current_Door,mordo_state_history_Door
 											currentDoor.setOpenclose("Y");
 											currentDoor.setAlarmupdatetime(time);
@@ -584,7 +1024,7 @@ public class DataService {
 										}
 										if(temp==0){
 											//无人
-											logger.debug("数据类型:报警终端应用帧：床垫设备："+alarmType+"："+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【床垫设备："+alarmType+"】："+dev.getCode());
 											//报警mordo_state_current_Bed,mordo_state_history_Bed,mordo_alarm_current,mordo_alarm_history
 											currentBed.setHavingbody("N");
 											currentBed.setAlarmupdatetime(time);
@@ -624,7 +1064,7 @@ public class DataService {
 											
 										}else if(temp==1){
 											//有人
-											logger.debug("数据类型:报警终端应用帧：床垫设备："+alarmType+":"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【床垫设备："+alarmType+"】:"+dev.getCode());
 											//取消报警mordo_state_current_Bed,mordo_state_history_Bed
 											currentBed.setHavingbody("Y");
 											currentBed.setAlarmupdatetime(time);
@@ -661,7 +1101,7 @@ public class DataService {
 										HistoryIrEntity historyIr = new HistoryIrEntity();
 										int temp = this.readBit(data[zhizhen+5], 0);
 										if(temp==0){
-											logger.debug("数据类型:报警终端应用帧：红外：无人报警："+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【红外：无人报警】："+dev.getCode());
 											//报警mordo_state_current_Ir,mordo_state_history_Ir,mordo_alarm_current,mordo_alarm_history
 											currentIr.setHavingbody("N");
 											currentIr.setLevel(1);
@@ -699,7 +1139,7 @@ public class DataService {
 											//----封装发射器应用帧结束 ----
 											
 										}else if(temp==1){
-											logger.debug("数据类型:报警终端应用帧：红外：有人消警:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【红外：有人消警】:"+dev.getCode());
 											//取消报警mordo_state_current_Ir,mordo_state_history_Ir
 											currentIr.setHavingbody("Y");
 											currentIr.setLevel(0);
@@ -736,7 +1176,7 @@ public class DataService {
 										HistoryUrineEntity historyUrine = new HistoryUrineEntity();
 										int temp = this.readBit(data[zhizhen+5], 0);
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧：尿湿感应设备：报警："+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【尿湿感应设备：报警】："+dev.getCode());
 											//报警mordo_state_current_Urine,mordo_state_history_Urine,mordo_alarm_current,mordo_alarm_history
 											currentUrine.setAlarm("Y");
 											currentUrine.setAlarmupdatetime(time);
@@ -772,7 +1212,7 @@ public class DataService {
 											//----封装发射器应用帧结束 ----
 											
 										}else if(temp==0){
-											logger.debug("数据类型:报警终端应用帧：尿湿感应设备：取消报警:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【尿湿感应设备：取消报警】:"+dev.getCode());
 											//取消报警mordo_state_current_Urine,mordo_state_history_Urine
 											currentUrine.setAlarm("N");
 											currentUrine.setAlarmupdatetime(time);
@@ -813,7 +1253,7 @@ public class DataService {
 										}
 										String devName="一键报警";
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备故障:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备故障】:"+dev.getCode());
 									    	//故障mordo_state_current_keyalarm,mordo_alarm_current,mordo_alarm_history
 											currentKeyalarm.setNormal("N");
 											currentKeyalarm.setDevupdatetime(time);
@@ -833,7 +1273,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备正常】:"+dev.getCode());
 									    	//正常mordo_state_current_keyalarm
 									    	currentKeyalarm.setNormal("Y");
 											currentKeyalarm.setDevupdatetime(time);
@@ -841,7 +1281,7 @@ public class DataService {
 											currentKeyalarmService.save(currentKeyalarm);
 									    }
 									    if(temp2==1){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：低电压:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：低电压】:"+dev.getCode());
 									    	//低电量mordo_state_current_keyalarm,mordo_alarm_current,mordo_alarm_history
 									    	currentKeyalarm.setPower("N");
 											currentKeyalarm.setDevupdatetime(time);
@@ -861,7 +1301,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp2==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：电压正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：电压正常】:"+dev.getCode());
 									    	//正常mordo_state_current_keyalarm
 									    	currentKeyalarm.setPower("Y");
 											currentKeyalarm.setDevupdatetime(time);
@@ -881,7 +1321,7 @@ public class DataService {
 										}
 										String devName ="腕带呼叫器";
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧："+"+devName+"+"：设备故障:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【"+devName+"：设备故障】:"+dev.getCode());
 									    	//故障mordo_state_current_Wandai,mordo_alarm_current,mordo_alarm_history
 											currentWandai.setNormal("N");
 											currentWandai.setDevupdatetime(time);
@@ -901,7 +1341,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Wandai
 									    	currentWandai.setNormal("Y");
 											currentWandai.setDevupdatetime(time);
@@ -909,7 +1349,7 @@ public class DataService {
 											currentWandaiService.save(currentWandai);
 									    }
 									    if(temp2==1){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：低电压:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：低电压】:"+dev.getCode());
 									    	//低电量mordo_state_current_Wandai,mordo_alarm_current,mordo_alarm_history
 									    	currentWandai.setPower("N");
 											currentWandai.setDevupdatetime(time);
@@ -929,7 +1369,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp2==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：电压正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：电压正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Wandai
 									    	currentWandai.setPower("Y");
 											currentWandai.setDevupdatetime(time);
@@ -949,7 +1389,7 @@ public class DataService {
 										}
 										String devName ="无线门磁终端";
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧："+devName+"：设备故障:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【"+devName+"：设备故障】:"+dev.getCode());
 									    	//故障mordo_state_current_Door,mordo_alarm_current,mordo_alarm_history
 											currentDoor.setNormal("N");
 											currentDoor.setDevupdatetime(time);
@@ -969,7 +1409,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Door
 									    	currentDoor.setNormal("Y");
 											currentDoor.setDevupdatetime(time);
@@ -977,7 +1417,7 @@ public class DataService {
 											currentDoorService.save(currentDoor);
 									    }
 									    if(temp2==1){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：低电压:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：低电压】:"+dev.getCode());
 									    	//低电量mordo_state_current_Door,mordo_alarm_current,mordo_alarm_history
 									    	currentDoor.setPower("N");
 											currentDoor.setDevupdatetime(time);
@@ -997,7 +1437,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp2==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：电压正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：电压正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Door
 									    	currentDoor.setPower("Y");
 											currentDoor.setDevupdatetime(time);
@@ -1017,7 +1457,7 @@ public class DataService {
 										}
 										String devName ="床垫";
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧："+devName+"：设备故障:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【"+devName+"：设备故障】:"+dev.getCode());
 									    	//故障mordo_state_current_Bed,mordo_alarm_current,mordo_alarm_history
 											currentBed.setNormal("N");
 											currentBed.setDevupdatetime(time);
@@ -1037,7 +1477,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Bed
 									    	currentBed.setNormal("Y");
 											currentBed.setDevupdatetime(time);
@@ -1045,7 +1485,7 @@ public class DataService {
 											currentBedService.save(currentBed);
 									    }
 									    if(temp2==1){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：低电压:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：低电压】:"+dev.getCode());
 									    	//低电量mordo_state_current_Bed,mordo_alarm_current,mordo_alarm_history
 									    	currentBed.setPower("N");
 											currentBed.setDevupdatetime(time);
@@ -1065,7 +1505,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp2==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：电压正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：电压正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Bed
 									    	currentBed.setPower("Y");
 											currentBed.setDevupdatetime(time);
@@ -1085,7 +1525,7 @@ public class DataService {
 										}
 										String devName ="红外";
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧："+devName+"：设备故障:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【"+devName+"：设备故障】:"+dev.getCode());
 									    	//故障mordo_state_current_Ir,mordo_alarm_current,mordo_alarm_history
 											currentIr.setNormal("N");
 											currentIr.setDevupdatetime(time);
@@ -1105,7 +1545,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Ir
 									    	currentIr.setNormal("Y");
 											currentIr.setDevupdatetime(time);
@@ -1113,7 +1553,7 @@ public class DataService {
 											currentIrService.save(currentIr);
 									    }
 									    if(temp2==1){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：低电压:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：低电压】:"+dev.getCode());
 									    	//低电量mordo_state_current_Ir,mordo_alarm_current,mordo_alarm_history
 									    	currentIr.setPower("N");
 											currentIr.setDevupdatetime(time);
@@ -1133,7 +1573,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp2==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：电压正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：电压正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Ir
 									    	currentIr.setPower("Y");
 											currentIr.setDevupdatetime(time);
@@ -1153,7 +1593,7 @@ public class DataService {
 										}
 										String devName ="尿湿感应设备";
 										if(temp==1){
-											logger.debug("数据类型:报警终端应用帧："+devName+"：设备故障:"+dev.getCode());
+											logger.debug("数据类型:报警终端应用帧：【"+devName+"：设备故障】:"+dev.getCode());
 									    	//故障mordo_state_current_Urine,mordo_alarm_current,mordo_alarm_history
 											currentUrine.setNormal("N");
 											currentUrine.setDevupdatetime(time);
@@ -1173,7 +1613,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：设备正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：设备正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Urine
 									    	currentUrine.setNormal("Y");
 											currentUrine.setDevupdatetime(time);
@@ -1181,7 +1621,7 @@ public class DataService {
 											currentUrineService.save(currentUrine);
 									    }
 									    if(temp2==1){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：低电压:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：低电压】:"+dev.getCode());
 									    	//低电量mordo_state_current_Urine,mordo_alarm_current,mordo_alarm_history
 									    	currentUrine.setPower("N");
 											currentUrine.setDevupdatetime(time);
@@ -1201,7 +1641,7 @@ public class DataService {
 											alarmCurrentService.save(alarmCurrent);
 											alarmHistoryService.save(alarmHistory);
 									    }else if(temp2==0){
-									    	logger.debug("数据类型:报警终端应用帧："+devName+"设备：电压正常:"+dev.getCode());
+									    	logger.debug("数据类型:报警终端应用帧：【"+devName+"设备：电压正常】:"+dev.getCode());
 									    	//正常mordo_state_current_Urine
 									    	currentUrine.setPower("Y");
 											currentUrine.setDevupdatetime(time);
@@ -1635,7 +2075,7 @@ public class DataService {
 
 	
 	public static void main(String[] sage){
-		String a="C00100000002010399EE3B0902030307110A080F050801021E014CC0";
+		String a="C0010000000500046908BF090151060003A99AB1C0";
 //		String a="C0010000000A00010D002905002BC0";
 //		String a="C00100000002010399132F07010201A1C0";
 			

@@ -23,7 +23,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器当前状态服务类
  * @author feng.gu
- * @date 2015-08-19 15:45:47
+ * @date 2015-08-19 16:47:55
  * @version V1.0
  * 
  */

@@ -425,19 +425,36 @@ public class CreateEntity {
 					entityInfo.setEntityPackage(temp);
 					entityInfo.setEntityName(StringUtil.firstUpperCase(temp));
 					entityInfo.setTableUpperName(temp.toUpperCase());
-					
 					List<RelationInfo> relationList = new ArrayList<RelationInfo>();
-					RelationInfo relation = new RelationInfo();
-					relation.setRelation(RelationInfo.ManyToOne);
-					String temp2 = "dev";
-					relation.setJoinColumn(temp2);
-					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-					relation.setJoinColumnUpper(temp2.toUpperCase());
+					if(true){
+						
+						RelationInfo relation = new RelationInfo();
+						relation.setRelation(RelationInfo.ManyToOne);
+						String temp2 = "dev";
+						relation.setJoinColumn(temp2);
+						relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+						relation.setJoinColumnUpper(temp2.toUpperCase());
 
-					relationList.add(relation);
-					
-					
+						relationList.add(relation);
+						
+						
+					}
+					if(true){
+						RelationInfo relation = new RelationInfo();
+						relation.setRelation(RelationInfo.ManyToOne);
+						String temp2 = "position";
+						relation.setJoinColumn(temp2);
+						relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+						relation.setJoinColumnUpper(temp2.toUpperCase());
+
+						relationList.add(relation);
+						
+						
+						
+					}
 					c.generatorCodeMessage(columntList, entityInfo,relationList);
+					
+					
 				}
 		        
 				if(true){
