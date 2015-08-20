@@ -14,6 +14,74 @@ import com.framework.system.util.StringUtil;
 
 public class CreateEntity {
 	public static void main(String[] sage) {
+		//--CurrentTizhengBedEntity
+		if(true){
+			ReadTable r = new ReadTable();
+	        String tableName = "mordo_state_current_tizheng_bed";
+			List<Columnt> columntList = r.readColumntByTableName(tableName,"hs_15_02");
+			
+			CodeGenerate c= new CodeGenerate();
+			
+			EntityInfo entityInfo = new EntityInfo();		
+			entityInfo.setBussiPackage("fly");
+			Date date = new Date();
+			SimpleDateFormat formater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			entityInfo.setCreateTime(formater1.format(date));
+			
+			entityInfo.setTableName(tableName);
+			entityInfo.setTableDescription("体征床垫当前信息表");
+			String temp="currentTizhengBed";
+			entityInfo.setEntityPackage(temp);
+			entityInfo.setEntityName(StringUtil.firstUpperCase(temp));
+			entityInfo.setTableUpperName(temp.toUpperCase());
+			
+			List<RelationInfo> relationList = new ArrayList<RelationInfo>();
+			RelationInfo relation = new RelationInfo();
+			relation.setRelation(RelationInfo.ManyToOne);
+			String temp2 = "dev";
+			relation.setJoinColumn(temp2);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+			relation.setJoinColumnUpper(temp2.toUpperCase());
+
+			relationList.add(relation);
+			
+			
+			c.generatorCodeMessage(columntList, entityInfo,relationList);
+		}
+		//--HistoryTizhengBedEntity
+				if(true){
+					ReadTable r = new ReadTable();
+			        String tableName = "mordo_state_history_tizheng_bed";
+					List<Columnt> columntList = r.readColumntByTableName(tableName,"hs_15_02");
+					
+					CodeGenerate c= new CodeGenerate();
+					
+					EntityInfo entityInfo = new EntityInfo();		
+					entityInfo.setBussiPackage("fly");
+					Date date = new Date();
+					SimpleDateFormat formater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					entityInfo.setCreateTime(formater1.format(date));
+					
+					entityInfo.setTableName(tableName);
+					entityInfo.setTableDescription("体征床垫历史信息表");
+					String temp="historyTizhengBed";
+					entityInfo.setEntityPackage(temp);
+					entityInfo.setEntityName(StringUtil.firstUpperCase(temp));
+					entityInfo.setTableUpperName(temp.toUpperCase());
+					
+					List<RelationInfo> relationList = new ArrayList<RelationInfo>();
+					RelationInfo relation = new RelationInfo();
+					relation.setRelation(RelationInfo.ManyToOne);
+					String temp2 = "dev";
+					relation.setJoinColumn(temp2);
+					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+					relation.setJoinColumnUpper(temp2.toUpperCase());
+
+					relationList.add(relation);
+					
+					
+					c.generatorCodeMessage(columntList, entityInfo,relationList);
+				}
 		if(true){
 			//--PositionEntity
 			ReadTable r = new ReadTable();

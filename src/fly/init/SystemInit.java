@@ -11,12 +11,16 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 
 import fly.entity.currentLocation.CurrentLocationEntity;
+import fly.entity.currentTizhengBed.CurrentTizhengBedEntity;
 import fly.entity.dev.DevEntity;
+import fly.handler.TZCDTCPMessageHandler;
 import fly.service.DataService;
 import fly.service.currentLocation.CurrentLocationService;
+import fly.service.currentTizhengBed.CurrentTizhengBedService;
 import fly.service.dev.DevService;
 import fly.socket.DataTcpListener;
 import fly.socket.SendHeartDataThread;
+import fly.socket.TZCDTCPSListener;
 import fly.socket.ZKJATCPSListener;
 import fly.util.FileUtil;
 
@@ -28,6 +32,7 @@ import fly.util.FileUtil;
 public class SystemInit implements ServletContextListener{	
 	private static Logger logger = Logger.getLogger(SystemInit.class);
 	private  CurrentLocationService currentLocationService=CurrentLocationService.getInstance();
+	private  CurrentTizhengBedService currentTizhengBedService=CurrentTizhengBedService.getInstance();
 	private DevService devService=DevService.getInstance();
 	public static String gpskey = "";
 	@Override
@@ -45,10 +50,44 @@ public class SystemInit implements ServletContextListener{
 		dataTcpListener.start();
 		ZKJATCPSListener zkjaTCPSListener= new ZKJATCPSListener();
 		zkjaTCPSListener.start();
+		TZCDTCPSListener tzcdTCPSListener= new TZCDTCPSListener();
+		tzcdTCPSListener.start();
 		SendHeartDataThread sendHeartDataThread = new SendHeartDataThread();
 		sendHeartDataThread.start();
 		readConfig();
 		readStatus();
+		readBedStatus();
+	}
+	
+	private void readBedStatus() {
+		try {
+		     //读取CurrentTizhengBedEntity为type为17 体征床垫
+			Map<String, Object> queryMap1 = new HashMap<String, Object>();
+			queryMap1.put("type", "17");			
+			List<Object> list = devService.getListByCondition(queryMap1);
+			if(list!=null&&list.size()>0){
+				for(int i=0;i<list.size();i++){
+					DevEntity dev = (DevEntity)list.get(i);
+					if(dev!=null&&dev.getCode()!=null){
+						Map<String, Object> queryMap2 = new HashMap<String, Object>();
+						queryMap2.put("devId", String.valueOf(dev.getId()));						
+						List<Object> list2 = currentTizhengBedService.getListByCondition(queryMap2);
+						if(list2!=null&&list2.size()>0){
+							CurrentTizhengBedEntity currentTizhengBed = (CurrentTizhengBedEntity)list2.get(0);
+							if("N".equals(currentTizhengBed.getHavingbody())){
+								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_1", 1);
+							}else{
+								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_1", 0);
+							}							
+						}
+					}
+				}
+			}
+
+		    }
+		    catch (Exception e) {
+		      logger.error(e.toString());
+		    }
 	}
 	
 	private void readStatus() {
@@ -67,24 +106,24 @@ public class SystemInit implements ServletContextListener{
 						if(list2!=null&&list2.size()>0){
 							CurrentLocationEntity currentLocation = (CurrentLocationEntity)list2.get(0);
 							if("N".equals(currentLocation.getBodystate())){
-								DataService.statusMap.put(dev.getCode()+"_1", 1);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_1", 1);
 							}else{
-								DataService.statusMap.put(dev.getCode()+"_1", 0);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_1", 0);
 							}
 							if("N".equals(currentLocation.getManualalarm())){
-								DataService.statusMap.put(dev.getCode()+"_2", 1);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_2", 1);
 							}else{
-								DataService.statusMap.put(dev.getCode()+"_2", 0);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_2", 0);
 							}
 							if("N".equals(currentLocation.getPower())){
-								DataService.statusMap.put(dev.getCode()+"_3", 1);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_3", 1);
 							}else{
-								DataService.statusMap.put(dev.getCode()+"_3", 0);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_3", 0);
 							}
 							if("N".equals(currentLocation.getMoving())){
-								DataService.statusMap.put(dev.getCode()+"_4", 1);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_4", 1);
 							}else{
-								DataService.statusMap.put(dev.getCode()+"_4", 0);
+								DataService.statusMap.put(dev.getCode().toLowerCase()+"_4", 0);
 							}
 						}
 					}

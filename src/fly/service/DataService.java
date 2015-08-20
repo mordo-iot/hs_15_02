@@ -179,7 +179,7 @@ public class DataService {
 						//状态应用帧:01000000 05000469 004D 0A 02 50 BE 52 8E
 						//定位应用帧:01000000 05000469 0327 09 01 51 060003A9 A6
 						//根据类型和编号查询设备是否存在
-						String devCode = printHexString(source);
+						String devCode = printHexString(source).toLowerCase();
 						DevEntity dev = null;
 						if(devCode!=null&&!"".equals(devCode)){
 							Map<String, Object> queryMap = new HashMap<String, Object>();
@@ -648,7 +648,7 @@ public class DataService {
 						if(list!=null&&list.size()>0){
 							for(int i=0;i<list.size();i++){
 								DevEntity dev = (DevEntity)list.get(i);
-								String devCode = dev.getCode();
+								String devCode = dev.getCode().toLowerCase();
 								byte[] devByte = HexString2Bytes(devCode);
 								result[a] = (byte)0x04;
 								result[a+1] = (byte)devByte[0];
@@ -699,7 +699,7 @@ public class DataService {
 						while(num>0){
 							int devType=0;						
 							byte[] devMac = {data[zhizhen+1],data[zhizhen+2],data[zhizhen+3],data[zhizhen+4]};
-							String devCode = this.printHexString(devMac);
+							String devCode = printHexString(devMac).toLowerCase();
 							if(data[zhizhen+1]==(byte)0x03){
 								//智能感应垫
 								devType=2;	
@@ -1763,7 +1763,7 @@ public class DataService {
 	 * @param index 76543210
 	 * @return
 	 */
-	public int readBit(byte content,int index){
+	public static int readBit(byte content,int index){
 		int result = 0;
 		content = (byte) (content >> index);
 		if((content&0x01)==0x01){
@@ -1893,7 +1893,7 @@ public class DataService {
 	 * @param bytes
 	 * @return
 	 */	
-	public String bytesToDecimal(byte[] bytes){
+	public static String bytesToDecimal(byte[] bytes){
 		byte[] a = new byte[bytes.length+1];
 		//正符号
 		a[0] = (byte)0x00;
