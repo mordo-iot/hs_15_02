@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 
 import fly.entity.position.PositionEntity;
 import fly.entity.devPosition.DevPositionEntity;
-import fly.entity.dev.DevEntity;
 import fly.entity.alarmCurrent.AlarmCurrentEntity;
 import fly.entity.alarmHistory.AlarmHistoryEntity;
 import fly.entity.currentBed.CurrentBedEntity;
@@ -41,7 +40,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 设备信息服务类
  * @author feng.gu
- * @date 2015-08-19 16:47:56
+ * @date 2015-08-24 14:43:12
  * @version V1.0
  * 
  */
@@ -102,8 +101,8 @@ public class DevService {
 					}
 				}
 				// 关联信息保存
-				if (dev.getDev() != null) {
-					dbManager.saveNoTransaction(dev.getDev());
+				if (dev.getParentDev() != null) {
+					dbManager.saveNoTransaction(dev.getParentDev());
 				}
 				if (dev.getAlarmCurrentList() != null
 						&& dev.getAlarmCurrentList().size() > 0) {
@@ -297,8 +296,8 @@ public class DevService {
 							}
 						}
 						// 关联信息保存
-						if (dev.getDev() != null) {
-							dbManager.saveNoTransaction(dev.getDev());
+						if (dev.getParentDev() != null) {
+							dbManager.saveNoTransaction(dev.getParentDev());
 						}
 						if (dev.getAlarmCurrentList() != null
 								&& dev.getAlarmCurrentList().size() > 0) {
@@ -464,7 +463,7 @@ public class DevService {
 	 *            主键
 	 * @param positionListShow
 	 *            是否查询关联信息
-	 * @param devShow
+	 * @param parentDevShow
 	 *            是否查询关联信息
 	 * @param alarmCurrentListShow
 	 *            是否查询关联信息
@@ -503,7 +502,7 @@ public class DevService {
 	 * @param obj
 	 */
 	public DevEntity getById(Integer id, Boolean positionListShow,
-			Boolean devShow, Boolean alarmCurrentListShow,
+			Boolean parentDevShow, Boolean alarmCurrentListShow,
 			Boolean alarmHistoryListShow, Boolean currentBedListShow,
 			Boolean currentDoorListShow, Boolean currentGatewayListShow,
 			Boolean currentKeyalarmListShow, Boolean currentLocationListShow,
@@ -543,11 +542,11 @@ public class DevService {
 				}
 			}
 			// 查询关联内容
-			if (devShow != null && devShow.booleanValue() && obj != null
-					&& obj.getParentId() > 0) {
+			if (parentDevShow != null && parentDevShow.booleanValue()
+					&& obj != null && obj.getParentId() > 0) {
 				DevEntity dev = (DevEntity) dbManager.getById(
 						obj.getParentId(), DevEntity.class);
-				obj.setDev(dev);
+				obj.setParentDev(dev);
 			}
 			// 查询关联内容
 			if (alarmCurrentListShow != null
@@ -1659,14 +1658,14 @@ public class DevService {
 	 *            主键
 	 * @param obj
 	 */
-	public boolean del(Integer id, Boolean delDevPositionList, Boolean delDev,
-			Boolean delAlarmCurrentList, Boolean delAlarmHistoryList,
-			Boolean delCurrentBedList, Boolean delCurrentDoorList,
-			Boolean delCurrentGatewayList, Boolean delCurrentKeyalarmList,
-			Boolean delCurrentLocationList, Boolean delCurrentUrineList,
-			Boolean delCurrentWandaiList, Boolean delHistoryBedList,
-			Boolean delHistoryDoorList, Boolean delHistoryKeyalarmList,
-			Boolean delHistoryLocationBodyList,
+	public boolean del(Integer id, Boolean delDevPositionList,
+			Boolean delParentDev, Boolean delAlarmCurrentList,
+			Boolean delAlarmHistoryList, Boolean delCurrentBedList,
+			Boolean delCurrentDoorList, Boolean delCurrentGatewayList,
+			Boolean delCurrentKeyalarmList, Boolean delCurrentLocationList,
+			Boolean delCurrentUrineList, Boolean delCurrentWandaiList,
+			Boolean delHistoryBedList, Boolean delHistoryDoorList,
+			Boolean delHistoryKeyalarmList, Boolean delHistoryLocationBodyList,
 			Boolean delHistoryLocationManualList,
 			Boolean delHistoryLocationMoveList,
 			Boolean delHistoryLocationPosList, Boolean delHistoryUrineList) {
@@ -1685,7 +1684,7 @@ public class DevService {
 							DevPositionEntity.class, qc);
 				}
 				// 删除关联信息
-				if (delDev != null && delDev.booleanValue()) {
+				if (delParentDev != null && delParentDev.booleanValue()) {
 					DevEntity dev = (DevEntity) dbManager.getById(id,
 							DevEntity.class);
 					if (dev.getParentId() != null) {
@@ -1856,7 +1855,7 @@ public class DevService {
 	 *            查询条件集合
 	 */
 	public boolean delList(Map<String, Object> queryMap,
-			Boolean delDevPositionList, Boolean delDevList,
+			Boolean delDevPositionList, Boolean delParentDevList,
 			Boolean delAlarmCurrentList, Boolean delAlarmHistoryList,
 			Boolean delCurrentBedList, Boolean delCurrentDoorList,
 			Boolean delCurrentGatewayList, Boolean delCurrentKeyalarmList,
@@ -1881,22 +1880,27 @@ public class DevService {
 		Object name_like = queryMap.get("name_like");
 		Object name_isNull = queryMap.get("name_isNull");
 		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object name_in = queryMap.get("name_in");
 		Object type = queryMap.get("type");
 		Object type_like = queryMap.get("type_like");
 		Object type_isNull = queryMap.get("type_isNull");
 		Object type_isNotNull = queryMap.get("type_isNotNull");
+		Object type_in = queryMap.get("type_in");
 		Object code = queryMap.get("code");
 		Object code_like = queryMap.get("code_like");
 		Object code_isNull = queryMap.get("code_isNull");
 		Object code_isNotNull = queryMap.get("code_isNotNull");
+		Object code_in = queryMap.get("code_in");
 		Object alarmcontent = queryMap.get("alarmcontent");
 		Object alarmcontent_like = queryMap.get("alarmcontent_like");
 		Object alarmcontent_isNull = queryMap.get("alarmcontent_isNull");
 		Object alarmcontent_isNotNull = queryMap.get("alarmcontent_isNotNull");
+		Object alarmcontent_in = queryMap.get("alarmcontent_in");
 		Object alarmdevid = queryMap.get("alarmdevid");
 		Object alarmdevid_like = queryMap.get("alarmdevid_like");
 		Object alarmdevid_isNull = queryMap.get("alarmdevid_isNull");
 		Object alarmdevid_isNotNull = queryMap.get("alarmdevid_isNotNull");
+		Object alarmdevid_in = queryMap.get("alarmdevid_in");
 		Object lightno = queryMap.get("lightno");
 		Object lightno_gt = queryMap.get("lightno_gt");
 		Object lightno_ge = queryMap.get("lightno_ge");
@@ -1907,10 +1911,12 @@ public class DevService {
 		Object lightdevid_like = queryMap.get("lightdevid_like");
 		Object lightdevid_isNull = queryMap.get("lightdevid_isNull");
 		Object lightdevid_isNotNull = queryMap.get("lightdevid_isNotNull");
+		Object lightdevid_in = queryMap.get("lightdevid_in");
 		Object alarmphone = queryMap.get("alarmphone");
 		Object alarmphone_like = queryMap.get("alarmphone_like");
 		Object alarmphone_isNull = queryMap.get("alarmphone_isNull");
 		Object alarmphone_isNotNull = queryMap.get("alarmphone_isNotNull");
+		Object alarmphone_in = queryMap.get("alarmphone_in");
 		Object emitid = queryMap.get("emitid");
 		Object emitid_gt = queryMap.get("emitid_gt");
 		Object emitid_ge = queryMap.get("emitid_ge");
@@ -1927,14 +1933,17 @@ public class DevService {
 		Object attribute_like = queryMap.get("attribute_like");
 		Object attribute_isNull = queryMap.get("attribute_isNull");
 		Object attribute_isNotNull = queryMap.get("attribute_isNotNull");
+		Object attribute_in = queryMap.get("attribute_in");
 		Object createdate = queryMap.get("createdate");
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 		Object updatedate = queryMap.get("updatedate");
 		Object updatedate_like = queryMap.get("updatedate_like");
 		Object updatedate_isNull = queryMap.get("updatedate_isNull");
 		Object updatedate_isNotNull = queryMap.get("updatedate_isNotNull");
+		Object updatedate_in = queryMap.get("updatedate_in");
 		Object positionId = queryMap.get("positionId");
 
 		QueryCondition qc = new QueryCondition(DevEntity.ID, QueryCondition.gt,
@@ -1979,6 +1988,10 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.NAME,
 					QueryCondition.isNotNull, name_isNotNull));
 		}
+		if (name_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.in, name_in));
+		}
 		if (type != null) {
 			qc.andCondition(new QueryCondition(DevEntity.TYPE,
 					QueryCondition.eq, type));
@@ -1994,6 +2007,10 @@ public class DevService {
 		if (type_isNotNull != null) {
 			qc.andCondition(new QueryCondition(DevEntity.TYPE,
 					QueryCondition.isNotNull, type_isNotNull));
+		}
+		if (type_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.in, type_in));
 		}
 		if (code != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CODE,
@@ -2011,6 +2028,10 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.CODE,
 					QueryCondition.isNotNull, code_isNotNull));
 		}
+		if (code_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.in, code_in));
+		}
 		if (alarmcontent != null) {
 			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
 					QueryCondition.eq, alarmcontent));
@@ -2027,6 +2048,10 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
 					QueryCondition.isNotNull, alarmcontent_isNotNull));
 		}
+		if (alarmcontent_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.in, alarmcontent_in));
+		}
 		if (alarmdevid != null) {
 			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
 					QueryCondition.eq, alarmdevid));
@@ -2042,6 +2067,10 @@ public class DevService {
 		if (alarmdevid_isNotNull != null) {
 			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
 					QueryCondition.isNotNull, alarmdevid_isNotNull));
+		}
+		if (alarmdevid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.in, alarmdevid_in));
 		}
 		if (lightno != null) {
 			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
@@ -2083,6 +2112,10 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
 					QueryCondition.isNotNull, lightdevid_isNotNull));
 		}
+		if (lightdevid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.in, lightdevid_in));
+		}
 		if (alarmphone != null) {
 			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
 					QueryCondition.eq, alarmphone));
@@ -2098,6 +2131,10 @@ public class DevService {
 		if (alarmphone_isNotNull != null) {
 			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
 					QueryCondition.isNotNull, alarmphone_isNotNull));
+		}
+		if (alarmphone_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.in, alarmphone_in));
 		}
 		if (emitid != null) {
 			qc.andCondition(new QueryCondition(DevEntity.EMITID,
@@ -2163,6 +2200,10 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
 					QueryCondition.isNotNull, attribute_isNotNull));
 		}
+		if (attribute_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.in, attribute_in));
+		}
 		if (createdate != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
 					QueryCondition.eq, createdate));
@@ -2179,6 +2220,10 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
 		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
+		}
 		if (updatedate != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
 					QueryCondition.eq, updatedate));
@@ -2194,6 +2239,10 @@ public class DevService {
 		if (updatedate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
 					QueryCondition.isNotNull, updatedate_isNotNull));
+		}
+		if (updatedate_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.in, updatedate_in));
 		}
 
 		if (positionId != null) {
@@ -2252,7 +2301,7 @@ public class DevService {
 
 				}
 				// 删除关联信息
-				if (delDevList != null && delDevList.booleanValue()) {
+				if (delParentDevList != null && delParentDevList.booleanValue()) {
 					List<Object> list = dbManager.queryByCondition(
 							DevEntity.class, qc);
 					String strIds = "";

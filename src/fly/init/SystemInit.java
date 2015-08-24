@@ -78,7 +78,17 @@ public class SystemInit implements ServletContextListener{
 								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_1", 1);
 							}else{
 								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_1", 0);
-							}							
+							}
+							if(currentTizhengBed.getHeart()!=null&&currentTizhengBed.getHeart()>0){
+								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_2", currentTizhengBed.getHeart());
+							}else{
+								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_2", 0);
+							}
+							if(currentTizhengBed.getBreath()!=null&&currentTizhengBed.getBreath()>0){
+								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_3", currentTizhengBed.getBreath());
+							}else{
+								TZCDTCPMessageHandler.statusMap.put(dev.getCode().toLowerCase()+"_3", 0);
+							}
 						}
 					}
 				}

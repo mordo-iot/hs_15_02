@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import fly.entity.dev.DevEntity;
-import fly.entity.position.PositionEntity;
 import com.framework.system.db.dao.annotation.ColumnDescription;
 import com.framework.system.db.dao.annotation.RelationlDescription;
 import com.framework.system.db.dao.annotation.TableDescription;
@@ -13,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 位置信息
  * @author feng.gu
- * @date 2015-08-14 10:49:20
+ * @date 2015-08-24 14:43:10
  * @version V1.0
  * 
  */
@@ -122,15 +121,15 @@ public class PositionEntity implements java.io.Serializable {
 	/**
 	 * 关系描述
 	 */
-	@RelationlDescription(relation = "OneToOne", joinEntity = "PositionEntity", joinColumn = "PARENT_ID")
-	private PositionEntity position;
+	@RelationlDescription(relation = "ManyToOne", joinEntity = "PositionEntity", joinColumn = "PARENT_ID")
+	private PositionEntity parentPosition;
 
-	public PositionEntity getPosition() {
-		return position;
+	public PositionEntity getParentPosition() {
+		return parentPosition;
 	}
 
-	public void setPosition(PositionEntity position) {
-		this.position = position;
+	public void setParentPosition(PositionEntity parentPosition) {
+		this.parentPosition = parentPosition;
 	}
 
 }

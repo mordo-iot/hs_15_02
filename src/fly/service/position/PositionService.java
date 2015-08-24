@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
 import fly.entity.dev.DevEntity;
 import fly.entity.devPosition.DevPositionEntity;
 import fly.entity.position.PositionEntity;
-
-import fly.entity.position.PositionEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
 import com.framework.system.db.query.PageList;
@@ -24,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 位置信息服务类
  * @author feng.gu
- * @date 2015-08-17 09:50:49
+ * @date 2015-08-24 14:43:10
  * @version V1.0
  * 
  */
@@ -85,8 +83,8 @@ public class PositionService {
 					}
 				}
 				// 关联信息保存
-				if (position.getPosition() != null) {
-					dbManager.saveNoTransaction(position.getPosition());
+				if (position.getParentPosition() != null) {
+					dbManager.saveNoTransaction(position.getParentPosition());
 				}
 				tx.commitAndClose();
 			} catch (Exception e) {
@@ -145,8 +143,9 @@ public class PositionService {
 							}
 						}
 						// 关联信息保存
-						if (position.getPosition() != null) {
-							dbManager.saveNoTransaction(position.getPosition());
+						if (position.getParentPosition() != null) {
+							dbManager.saveNoTransaction(position
+									.getParentPosition());
 						}
 					}
 				}
@@ -173,12 +172,12 @@ public class PositionService {
 	 *            主键
 	 * @param devListShow
 	 *            是否查询关联信息
-	 * @param positionShow
+	 * @param parentPositionShow
 	 *            是否查询关联信息
 	 * @param obj
 	 */
 	public PositionEntity getById(Integer id, Boolean devListShow,
-			Boolean positionShow) {
+			Boolean parentPositionShow) {
 		PositionEntity obj = null;
 		if (id != null) {
 			obj = (PositionEntity) dbManager.getById(id, PositionEntity.class);
@@ -206,11 +205,11 @@ public class PositionService {
 				}
 			}
 			// 查询关联内容
-			if (positionShow != null && positionShow.booleanValue()
+			if (parentPositionShow != null && parentPositionShow.booleanValue()
 					&& obj != null && obj.getParentId() > 0) {
 				PositionEntity position = (PositionEntity) dbManager.getById(
 						obj.getParentId(), PositionEntity.class);
-				obj.setPosition(position);
+				obj.setParentPosition(position);
 			}
 		}
 		return obj;
@@ -416,7 +415,7 @@ public class PositionService {
 					qc.andCondition(new QueryCondition(PositionEntity.ID,
 							QueryCondition.in, strIds));
 				}
-			}else{
+			} else {
 				return list;
 			}
 		}
@@ -627,6 +626,8 @@ public class PositionService {
 					qc.andCondition(new QueryCondition(PositionEntity.ID,
 							QueryCondition.in, strIds));
 				}
+			} else {
+				return pagelist;
 			}
 		}
 		pagelist = dbManager.queryByCondition(PositionEntity.class, qc, pageno,
@@ -642,7 +643,7 @@ public class PositionService {
 	 * @param obj
 	 */
 	public boolean del(Integer id, Boolean delDevPositionList,
-			Boolean delPosition) {
+			Boolean delParentPosition) {
 		boolean result = false;
 		if (id != null && id > 0) {
 			TransactionManager tx = DbUtils.getTranManager();
@@ -659,7 +660,8 @@ public class PositionService {
 							DevPositionEntity.class, qc);
 				}
 				// 删除关联信息
-				if (delPosition != null && delPosition.booleanValue()) {
+				if (delParentPosition != null
+						&& delParentPosition.booleanValue()) {
 					PositionEntity position = (PositionEntity) dbManager
 							.getById(id, PositionEntity.class);
 					if (position.getParentId() != null) {
@@ -690,7 +692,7 @@ public class PositionService {
 	 *            查询条件集合
 	 */
 	public boolean delList(Map<String, Object> queryMap,
-			Boolean delDevPositionList, Boolean delPositionList) {
+			Boolean delDevPositionList, Boolean delParentPositionList) {
 		boolean result = false;
 		if (queryMap == null) {
 			queryMap = new HashMap<String, Object>();
@@ -705,10 +707,12 @@ public class PositionService {
 		Object name_like = queryMap.get("name_like");
 		Object name_isNull = queryMap.get("name_isNull");
 		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object name_in = queryMap.get("name_in");
 		Object photo = queryMap.get("photo");
 		Object photo_like = queryMap.get("photo_like");
 		Object photo_isNull = queryMap.get("photo_isNull");
 		Object photo_isNotNull = queryMap.get("photo_isNotNull");
+		Object photo_in = queryMap.get("photo_in");
 		Object parentId = queryMap.get("parentId");
 		Object parentId_gt = queryMap.get("parentId_gt");
 		Object parentId_ge = queryMap.get("parentId_ge");
@@ -719,10 +723,12 @@ public class PositionService {
 		Object createdate_like = queryMap.get("createdate_like");
 		Object createdate_isNull = queryMap.get("createdate_isNull");
 		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
+		Object createdate_in = queryMap.get("createdate_in");
 		Object updatedate = queryMap.get("updatedate");
 		Object updatedate_like = queryMap.get("updatedate_like");
 		Object updatedate_isNull = queryMap.get("updatedate_isNull");
 		Object updatedate_isNotNull = queryMap.get("updatedate_isNotNull");
+		Object updatedate_in = queryMap.get("updatedate_in");
 		Object devId = queryMap.get("devId");
 
 		QueryCondition qc = new QueryCondition(PositionEntity.ID,
@@ -767,6 +773,10 @@ public class PositionService {
 			qc.andCondition(new QueryCondition(PositionEntity.NAME,
 					QueryCondition.isNotNull, name_isNotNull));
 		}
+		if (name_in != null) {
+			qc.andCondition(new QueryCondition(PositionEntity.NAME,
+					QueryCondition.in, name_in));
+		}
 		if (photo != null) {
 			qc.andCondition(new QueryCondition(PositionEntity.PHOTO,
 					QueryCondition.eq, photo));
@@ -782,6 +792,10 @@ public class PositionService {
 		if (photo_isNotNull != null) {
 			qc.andCondition(new QueryCondition(PositionEntity.PHOTO,
 					QueryCondition.isNotNull, photo_isNotNull));
+		}
+		if (photo_in != null) {
+			qc.andCondition(new QueryCondition(PositionEntity.PHOTO,
+					QueryCondition.in, photo_in));
 		}
 		if (parentId != null) {
 			qc.andCondition(new QueryCondition(PositionEntity.PARENT_ID,
@@ -823,6 +837,10 @@ public class PositionService {
 			qc.andCondition(new QueryCondition(PositionEntity.CREATEDATE,
 					QueryCondition.isNotNull, createdate_isNotNull));
 		}
+		if (createdate_in != null) {
+			qc.andCondition(new QueryCondition(PositionEntity.CREATEDATE,
+					QueryCondition.in, createdate_in));
+		}
 		if (updatedate != null) {
 			qc.andCondition(new QueryCondition(PositionEntity.UPDATEDATE,
 					QueryCondition.eq, updatedate));
@@ -838,6 +856,10 @@ public class PositionService {
 		if (updatedate_isNotNull != null) {
 			qc.andCondition(new QueryCondition(PositionEntity.UPDATEDATE,
 					QueryCondition.isNotNull, updatedate_isNotNull));
+		}
+		if (updatedate_in != null) {
+			qc.andCondition(new QueryCondition(PositionEntity.UPDATEDATE,
+					QueryCondition.in, updatedate_in));
 		}
 
 		if (devId != null) {
@@ -862,6 +884,8 @@ public class PositionService {
 					qc.andCondition(new QueryCondition(PositionEntity.ID,
 							QueryCondition.in, strIds));
 				}
+			} else {
+				return result;
 			}
 		}
 		if (qc.getQueryNextCondition() != null) {
@@ -893,7 +917,8 @@ public class PositionService {
 
 				}
 				// 删除关联信息
-				if (delPositionList != null && delPositionList.booleanValue()) {
+				if (delParentPositionList != null
+						&& delParentPositionList.booleanValue()) {
 					List<Object> list = dbManager.queryByCondition(
 							PositionEntity.class, qc);
 					String strIds = "";

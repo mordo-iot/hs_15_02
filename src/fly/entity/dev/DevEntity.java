@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import fly.entity.position.PositionEntity;
-import fly.entity.dev.DevEntity;
 import fly.entity.alarmCurrent.AlarmCurrentEntity;
 import fly.entity.alarmHistory.AlarmHistoryEntity;
 import fly.entity.currentBed.CurrentBedEntity;
@@ -30,7 +29,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 设备信息
  * @author feng.gu
- * @date 2015-08-10 15:00:21
+ * @date 2015-08-24 14:43:12
  * @version V1.0
  * 
  */
@@ -72,12 +71,12 @@ public class DevEntity implements java.io.Serializable {
 	@ColumnDescription(name = "CODE")
 	private String code;
 	/**
-	 * 报警内容
+	 * 报警内容(十进制，4位数)
 	 */
 	@ColumnDescription(name = "ALARMCONTENT")
 	private String alarmcontent;
 	/**
-	 * 报警设备编号，以,分割
+	 * 报警设备编号，以,分割(16进制设备code)
 	 */
 	@ColumnDescription(name = "ALARMDEVID")
 	private String alarmdevid;
@@ -97,7 +96,7 @@ public class DevEntity implements java.io.Serializable {
 	@ColumnDescription(name = "ALARMPHONE")
 	private String alarmphone;
 	/**
-	 * 信号发射器编号
+	 * 信号发射器id
 	 */
 	@ColumnDescription(name = "EMITID")
 	private Integer emitid;
@@ -251,15 +250,15 @@ public class DevEntity implements java.io.Serializable {
 	/**
 	 * 关系描述
 	 */
-	@RelationlDescription(relation = "OneToOne", joinEntity = "DevEntity", joinColumn = "PARENT_ID")
-	private DevEntity dev;
+	@RelationlDescription(relation = "ManyToOne", joinEntity = "DevEntity", joinColumn = "PARENT_ID")
+	private DevEntity parentDev;
 
-	public DevEntity getDev() {
-		return dev;
+	public DevEntity getParentDev() {
+		return parentDev;
 	}
 
-	public void setDev(DevEntity dev) {
-		this.dev = dev;
+	public void setParentDev(DevEntity parentDev) {
+		this.parentDev = parentDev;
 	}
 
 	/**

@@ -91,7 +91,8 @@ public class TZCDTCPMessageHandler {
 						}
 						HistoryTizhengBedEntity historyTizhengBed = new HistoryTizhengBedEntity();
 						String time = formater.format(date);
-                        boolean alarm = false;
+                        boolean currentTizhengBedSave = false;
+                        boolean historyTizhengBedSave = false;
 //						int niaoshibit = DataService.readBit(data[7], 7);					
 //						if (niaoshibit == 1) {
 //							logger.debug("数据类型:【体征床垫】应用帧：【尿湿报警】："+dev.getCode());	
@@ -126,13 +127,15 @@ public class TZCDTCPMessageHandler {
 								currentTizhengBed.setHavingbody("Y");
 								currentTizhengBed.setAlarmupdatetime(time);
 								currentTizhengBed.setDevId(dev.getId());
+								currentTizhengBed.setDevupdatetime(time);
 								
 								historyTizhengBed.setHavingbody("Y");
 								historyTizhengBed.setAlarmupdatetime(time);
 								historyTizhengBed.setDevId(dev.getId());
+								historyTizhengBed.setDevupdatetime(time);
 								
-								currentTizhengBedService.save(currentTizhengBed);
-								historyTizhengBedService.save(historyTizhengBed);
+								currentTizhengBedSave = true;
+								historyTizhengBedSave = true;
 								
 //								//----封装发射器应用帧开始 ----
 //								sendData = new byte[23];											
@@ -164,10 +167,12 @@ public class TZCDTCPMessageHandler {
 								currentTizhengBed.setHavingbody("N");
 								currentTizhengBed.setAlarmupdatetime(time);
 								currentTizhengBed.setDevId(dev.getId());
+								currentTizhengBed.setDevupdatetime(time);
 								
 								historyTizhengBed.setHavingbody("N");
 								historyTizhengBed.setAlarmupdatetime(time);
 								historyTizhengBed.setDevId(dev.getId());
+								historyTizhengBed.setDevupdatetime(time);
 								
 								
 								alarmCurrent.setCode("E081");
@@ -179,10 +184,10 @@ public class TZCDTCPMessageHandler {
 								alarmHistory.setContent("体征床垫离床报警");
 								alarmHistory.setCreatedate(time);
 								alarmHistory.setDevId(dev.getId());
-								alarm = true;
 								
-								currentTizhengBedService.save(currentTizhengBed);
-								historyTizhengBedService.save(historyTizhengBed);
+								currentTizhengBedSave = true;
+								historyTizhengBedSave = true;
+															
 								alarmCurrentService.save(alarmCurrent);
 								alarmHistoryService.save(alarmHistory);
 								
@@ -202,20 +207,73 @@ public class TZCDTCPMessageHandler {
 						byte[] heart = {data[8],data[9],data[10]};		
 						if(DataService.printHexString(heart)!=null&&DataService.printHexString(heart).length()==6){
 							String heartNumStr = DataService.printHexString(heart).substring(1, 2)+DataService.printHexString(heart).substring(3, 4)+DataService.printHexString(heart).substring(5, 6);
-							logger.debug("数据类型:【体征床垫】应用帧：【心跳数】："+heartNumStr);
+							if(heartNumStr!=null&&Integer.valueOf(heartNumStr)>0){
+								currentTizhengBed.setHeart(Integer.valueOf(heartNumStr));
+								currentTizhengBed.setDevupdatetime(time);
+								currentTizhengBed.setDevId(dev.getId());
+								int temp1=Integer.valueOf(heartNumStr);
+								Integer tempint1 = statusMap.get(devCode+"_2");
+								boolean tempboolean1=false;
+								if(tempint1!=null&&tempint1.intValue()==temp1){
+									//状态无变化
+									tempboolean1 = false;
+								}else{
+									//状态有变化
+									tempboolean1 = true;
+									statusMap.put(devCode+"_2", temp1);
+								}
+								if(tempboolean1){
+									logger.debug("数据类型:【体征床垫】应用帧：【心跳数】："+heartNumStr+"有变化！历史记录新增");
+									historyTizhengBed.setHeart(Integer.valueOf(heartNumStr));
+									historyTizhengBed.setDevupdatetime(time);
+									historyTizhengBed.setDevId(dev.getId());
+									
+									
+									historyTizhengBedSave = true;
+								}
+								currentTizhengBedSave = true;
+								
+							}
 						}
 						
 						//呼吸数
 						byte[] breath = {data[11],data[12]};
 						if(DataService.printHexString(breath)!=null&&DataService.printHexString(breath).length()==4){
-							String breathNumStr = DataService.printHexString(breath).substring(1, 2)+DataService.printHexString(breath).substring(3, 4);
-							logger.debug("数据类型:【体征床垫】应用帧：【呼吸数】："+breathNumStr);	
+							String breathNumStr = DataService.printHexString(breath).substring(1, 2)+DataService.printHexString(breath).substring(3, 4);	
+							if(breathNumStr!=null&&Integer.valueOf(breathNumStr)>0){								
+								currentTizhengBed.setBreath(Integer.valueOf(breathNumStr));
+								currentTizhengBed.setDevupdatetime(time);
+								currentTizhengBed.setDevId(dev.getId());
+								
+								int temp1=Integer.valueOf(breathNumStr);
+								Integer tempint1 = statusMap.get(devCode+"_3");
+								boolean tempboolean1=false;
+								if(tempint1!=null&&tempint1.intValue()==temp1){
+									//状态无变化
+									tempboolean1 = false;
+								}else{
+									//状态有变化
+									tempboolean1 = true;
+									statusMap.put(devCode+"_3", temp1);
+								}
+								if(tempboolean1){
+									logger.debug("数据类型:【体征床垫】应用帧：【呼吸数】："+breathNumStr+"有变化！历史记录新增");	
+									historyTizhengBed.setBreath(Integer.valueOf(breathNumStr));
+									historyTizhengBed.setDevupdatetime(time);
+									historyTizhengBed.setDevId(dev.getId());
+									
+									
+									historyTizhengBedSave = true;
+								}
+								currentTizhengBedSave = true;
+							}
 						}
-						
-						
-						
-						
-						
+						if(currentTizhengBedSave){
+							currentTizhengBedService.save(currentTizhengBed);
+						}
+						if(historyTizhengBedSave){
+							historyTizhengBedService.save(historyTizhengBed);
+						}			
 						
 						//向信号发射器发送数据
 						if(sendData!=null&&sendData.length>0&&dev.getAlarmdevid()!=null&&!"".equals(dev.getAlarmdevid())&&dev.getAlarmcontent()!=null&&!"".equals(dev.getAlarmcontent())){

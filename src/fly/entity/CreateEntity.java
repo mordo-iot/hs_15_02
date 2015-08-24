@@ -117,11 +117,11 @@ public class CreateEntity {
 			
 			if(true){
 				RelationInfo relation = new RelationInfo();
-				relation.setRelation(RelationInfo.OneToOne);
-				relation.setJoinColumn("position");
-				relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("position"));
-				relation.setJoinColumnUpper("position".toUpperCase());
-				relation.setJionFirst("Y");
+				relation.setRelation(RelationInfo.ParentToOne);
+//				relation.setJoinColumn("position");
+//				relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("position"));
+//				relation.setJoinColumnUpper("position".toUpperCase());
+//				relation.setJionFirst("Y");
 				relationList.add(relation);
 			}
 			
@@ -967,11 +967,11 @@ public class CreateEntity {
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
-			relation.setRelation(RelationInfo.OneToOne);
-			relation.setJoinColumn("dev");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("dev"));
-			relation.setJoinColumnUpper("dev".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setRelation(RelationInfo.ParentToOne);
+//			relation.setJoinColumn("dev");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("dev"));
+//			relation.setJoinColumnUpper("dev".toUpperCase());
+//			relation.setJionFirst("Y");
 			relationList.add(relation);
 		}
 		if(true){
