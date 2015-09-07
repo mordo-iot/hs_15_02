@@ -295,6 +295,18 @@ public class ZKJATCPMessageHandler {
 										logger.debug("基站定位成功:坐标(" + pos_Lat
 												+ "," + pos_Long + ")，误差："
 												+ deviation + "米,地址：" + address);
+					                    //GPS转化为百度地图坐标
+					                    String longlattemp2 =  this.getLongLatByBaiDu(pos_Long.doubleValue(), pos_Lat.doubleValue());
+					                    String[] result2 = longlattemp2.split("\\|\\,");
+					                    if ((result2 != null) && (result2.length == 2)) {
+					                      pos_Long = BigDecimal.valueOf(Double.valueOf(result2[1]).doubleValue());
+					                      pos_Lat = BigDecimal.valueOf(Double.valueOf(result2[0]).doubleValue());
+					                      flag = true;
+					                      logger.debug("百度坐标转换成功:坐标(" + pos_Lat + "," + pos_Long + ")");
+					                    } else {
+					                      logger.debug("百度坐标转换失败: 百度坐标转换失败，不更新坐标数据!");
+					                      return returnmessage;
+					                    }
 									} else {
 										logger.debug("基站定位失败: 远程获取经纬度失败，不更新坐标数据!");
 										return returnmessage;
@@ -470,7 +482,7 @@ public class ZKJATCPMessageHandler {
 
 	public static String getLongLatByBaiDu(double posLong, double posLat) {
 		String result = "";
-		String key = posLat + "," + posLong;
+		String key =  posLong + "," + posLat;
 		try {
 			String urlstr = "http://api.map.baidu.com/geoconv/v1/?ak=E6faddbe04652555f7f3e9a133f45f6a&coords="
 					+ key;
@@ -512,8 +524,8 @@ public class ZKJATCPMessageHandler {
 				JSONArray listjson = (JSONArray) reqParams.get("result");
 				if (listjson != null) {
 					JSONObject jsonObj = (JSONObject) listjson.opt(0);
-					Double lng = (Double) jsonObj.get("y");
-					Double lat = (Double) jsonObj.get("x");
+					Double lat = (Double) jsonObj.get("y");
+					Double lng = (Double) jsonObj.get("x");
 					result = lat + "|," + lng;
 				}
 			}
