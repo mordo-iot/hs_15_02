@@ -12,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 系统账号
  * @author feng.gu
- * @date 2015-08-07 14:48:35
+ * @date 2015-09-07 14:15:25
  * @version V1.0   
  *
  */
@@ -102,8 +102,8 @@ public class UserEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "OneToMany",
-		joinEntity="UserLogEntity"			,joinColumn="USERLOG_ID"
+	    @RelationlDescription(relation = "OneToMany",
+		joinEntity="UserLogEntity"			,joinColumn="USER_ID"
 			)
 			
 		private List<UserLogEntity> userLogList;
@@ -116,5 +116,5 @@ public class UserEntity implements java.io.Serializable {
 		this.userLogList = userLogList;
 	}
 			
-		
+			
 }

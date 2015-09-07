@@ -10,9 +10,9 @@ import com.framework.system.db.dao.annotation.TableDescription;
 
 /**   
  * @Title: Entity
- * @Description: 门磁当前信息
+ * @Description: 门当前信息
  * @author feng.gu
- * @date 2015-08-10 09:58:24
+ * @date 2015-09-07 14:15:31
  * @version V1.0   
  *
  */
@@ -44,7 +44,7 @@ public class CurrentDoorEntity implements java.io.Serializable {
 	@ColumnDescription(name = "OPENCLOSE")
 	private String openclose;
     /**
-	 * 报警等级
+	 * 报警等级 0-正常 1-预警 2报警
 	 */
 	@ColumnDescription(name = "LEVEL")
 	private Integer level;
@@ -141,7 +141,7 @@ public class CurrentDoorEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="DevEntity"	,joinColumn="ID"	)
 			
 			
@@ -154,5 +154,5 @@ public class CurrentDoorEntity implements java.io.Serializable {
 	public void setDev(DevEntity dev) {
 		this.dev = dev;
 	}
-		
+			
 }

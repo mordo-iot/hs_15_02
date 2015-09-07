@@ -12,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 定位器身体历史状态
  * @author feng.gu
- * @date 2015-08-10 10:17:23
+ * @date 2015-09-07 14:15:45
  * @version V1.0   
  *
  */
@@ -76,7 +76,7 @@ public class HistoryLocationBodyEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="DevEntity"	,joinColumn="ID"	)
 			
 			
@@ -89,5 +89,5 @@ public class HistoryLocationBodyEntity implements java.io.Serializable {
 	public void setDev(DevEntity dev) {
 		this.dev = dev;
 	}
-		
+			
 }

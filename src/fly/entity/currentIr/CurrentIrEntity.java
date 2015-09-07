@@ -12,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 红外当前信息
  * @author feng.gu
- * @date 2015-08-17 14:50:25
+ * @date 2015-09-07 14:15:35
  * @version V1.0   
  *
  */
@@ -141,7 +141,7 @@ public class CurrentIrEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="DevEntity"	,joinColumn="ID"	)
 			
 			
@@ -154,5 +154,5 @@ public class CurrentIrEntity implements java.io.Serializable {
 	public void setDev(DevEntity dev) {
 		this.dev = dev;
 	}
-		
+			
 }

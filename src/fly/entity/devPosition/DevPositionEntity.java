@@ -11,7 +11,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 设备安装位置映射
  * @author feng.gu
- * @date 2015-08-10 12:41:33
+ * @date 2015-09-07 14:15:19
  * @version V1.0   
  *
  */

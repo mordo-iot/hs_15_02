@@ -507,7 +507,7 @@ public class DataService {
 											currentLocation.setDevId(dev.getId());
 											currentLocation.setCurrlat(BigDecimal.valueOf(0));
 											currentLocation.setCurrlog(BigDecimal.valueOf(0));
-											currentLocation.setCurrpositionId(pos.getId());
+											currentLocation.setPositionId(pos.getId());
 											currentLocation.setLeavedupdatetime(time);
 											
 											

@@ -12,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 一键报警当前信息
  * @author feng.gu
- * @date 2015-08-10 10:07:15
+ * @date 2015-09-07 14:15:34
  * @version V1.0   
  *
  */
@@ -128,7 +128,7 @@ public class CurrentKeyalarmEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="DevEntity"	,joinColumn="ID"	)
 			
 			
@@ -141,5 +141,5 @@ public class CurrentKeyalarmEntity implements java.io.Serializable {
 	public void setDev(DevEntity dev) {
 		this.dev = dev;
 	}
-		
+			
 }

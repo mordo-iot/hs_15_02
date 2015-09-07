@@ -350,7 +350,7 @@ public class ZKJATCPMessageHandler {
 								currentLocation.setDevId(dev.getId());
 								currentLocation.setCurrlat(pos_Lat);
 								currentLocation.setCurrlog(pos_Long);
-								currentLocation.setCurrpositionId(0);
+								currentLocation.setPositionId(0);
 								currentLocation.setLeavedupdatetime(time);
 								
 								

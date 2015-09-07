@@ -10,13 +10,13 @@ import com.framework.system.db.dao.annotation.TableDescription;
 
 /**   
  * @Title: Entity
- * @Description: 腕带历史信息
+ * @Description: 尿湿历史信息
  * @author feng.gu
- * @date 2015-08-10 10:20:36
+ * @date 2015-09-07 14:15:49
  * @version V1.0   
  *
  */
-@TableDescription(name = "mordo_state_history_wandai")
+@TableDescription(name = "mordo_state_history_urine")
 public class HistoryUrineEntity implements java.io.Serializable {
     public final static String ID = "ID";
     public final static String DEV_ID = "DEV_ID";
@@ -76,7 +76,7 @@ public class HistoryUrineEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="DevEntity"	,joinColumn="ID"	)
 			
 			
@@ -89,5 +89,5 @@ public class HistoryUrineEntity implements java.io.Serializable {
 	public void setDev(DevEntity dev) {
 		this.dev = dev;
 	}
-		
+			
 }

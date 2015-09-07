@@ -12,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 系统日志
  * @author feng.gu
- * @date 2015-08-07 14:48:16
+ * @date 2015-09-07 14:15:26
  * @version V1.0   
  *
  */
@@ -89,7 +89,7 @@ public class UserLogEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="UserEntity"	,joinColumn="ID"	)
 			
 			
@@ -102,5 +102,5 @@ public class UserLogEntity implements java.io.Serializable {
 	public void setUser(UserEntity user) {
 		this.user = user;
 	}
-		
+			
 }

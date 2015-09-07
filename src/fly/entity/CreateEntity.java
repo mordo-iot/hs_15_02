@@ -14,6 +14,34 @@ import com.framework.system.util.StringUtil;
 
 public class CreateEntity {
 	public static void main(String[] sage) {
+		
+		//--DevPositionEntity
+				if(true){
+					ReadTable r = new ReadTable();
+			        String tableName = "mordo_map_dev_position";
+					List<Columnt> columntList = r.readColumntByTableName(tableName,"hs_15_02");
+					
+					CodeGenerate c= new CodeGenerate();
+					
+					EntityInfo entityInfo = new EntityInfo();		
+					entityInfo.setBussiPackage("fly");
+					Date date = new Date();
+					SimpleDateFormat formater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					entityInfo.setCreateTime(formater1.format(date));
+					
+					entityInfo.setTableName(tableName);
+					entityInfo.setTableDescription("设备安装位置映射");
+					String temp="devPosition";
+					entityInfo.setEntityPackage(temp);
+					entityInfo.setEntityName(StringUtil.firstUpperCase(temp));
+					entityInfo.setTableUpperName(temp.toUpperCase());
+					
+					List<RelationInfo> relationList = new ArrayList<RelationInfo>();
+				
+					
+					
+					c.generatorCodeMessage(columntList, entityInfo,relationList);
+				}
 		//--CurrentTizhengBedEntity
 		if(true){
 			ReadTable r = new ReadTable();
@@ -39,9 +67,9 @@ public class CreateEntity {
 			RelationInfo relation = new RelationInfo();
 			relation.setRelation(RelationInfo.ManyToOne);
 			String temp2 = "dev";
-			relation.setJoinColumn(temp2);
+			relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-			relation.setJoinColumnUpper(temp2.toUpperCase());
+			relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 			relationList.add(relation);
 			
@@ -71,12 +99,15 @@ public class CreateEntity {
 					
 					List<RelationInfo> relationList = new ArrayList<RelationInfo>();
 					RelationInfo relation = new RelationInfo();
-					relation.setRelation(RelationInfo.ManyToOne);
+					String tableName2="mordo_dev_info";
+					List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 					String temp2 = "dev";
-					relation.setJoinColumn(temp2);
+					relation.setRelation(RelationInfo.ManyToOne);					
+					relation.setJoinColumn(temp2);					
 					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
 					relation.setJoinColumnUpper(temp2.toUpperCase());
-
+					relation.setJoinTableName(tableName2);
+					relation.setJoinTableColumnts2(joinTableColumnts2);
 					relationList.add(relation);
 					
 					
@@ -105,13 +136,35 @@ public class CreateEntity {
 			
 			List<RelationInfo> relationList = new ArrayList<RelationInfo>();
 			if(true){
-			RelationInfo relation = new RelationInfo();
+			RelationInfo relation = new RelationInfo();			
+//			String temp2 = "dev";
+//			String tableName2="mordo_dev_info";
+//			List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
+//			relation.setRelation(RelationInfo.ManyToMany);
+//			relation.setJoinColumn(temp2);			
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+//			relation.setJoinColumnUpper(temp2.toUpperCase());
+//			relation.setJoinTableName(tableName2);
+//			relation.setJoinTableColumnts2(joinTableColumnts2);
+//			relation.setJionFirst("N");
+			
+			String tableName4="mordo_map_dev_position";
+			String tableName5="mordo_dev_info";
+			String temp4="dev";
+			String jionFirst="N";
+			List<Columnt> joinTableColumnts4 = r.readColumntByTableName(tableName4,"hs_15_02");
+			List<Columnt> joinTableColumnts5 = r.readColumntByTableName(tableName5,"hs_15_02");
 			relation.setRelation(RelationInfo.ManyToMany);
-			String temp2 = "dev";
-			relation.setJoinColumn(temp2);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-			relation.setJoinColumnUpper(temp2.toUpperCase());
-			relation.setJionFirst("N");
+			relation.setJoinColumn(temp4);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp4));
+			relation.setJoinColumnUpper(temp4.toUpperCase());
+			relation.setJoinTableName(tableName4);
+			relation.setJoinTableName2(tableName5);
+			relation.setJoinTableColumnts(joinTableColumnts4);
+			relation.setJoinTableColumnts2(joinTableColumnts5);
+			relation.setJionFirst(jionFirst);
+			
+			
 			relationList.add(relation);
 			}
 			
@@ -130,7 +183,8 @@ public class CreateEntity {
 			
 			
 			c.generatorCodeMessage(columntList, entityInfo,relationList);
-		}if(true){
+		}
+		if(true){
 			//--UserEntity
 			ReadTable r = new ReadTable();
 	        String tableName = "mordo_sys_user";
@@ -152,14 +206,29 @@ public class CreateEntity {
 			entityInfo.setTableUpperName(temp.toUpperCase());
 			
 			List<RelationInfo> relationList = new ArrayList<RelationInfo>();
-			RelationInfo relation = new RelationInfo();
-			relation.setRelation(RelationInfo.OneToMany);
-			String temp2 = "userLog";
-			relation.setJoinColumn(temp2);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-			relation.setJoinColumnUpper(temp2.toUpperCase());
+//			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String temp2 = "userLog";
+//			relation.setJoinColumn(temp2);
+//			String tableName2="mordo_dev_info";
+//			List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+//			relation.setJoinColumnUpper(temp2.toUpperCase());
+//			relation.setJoinTableName(tableName2);
+//			relation.setJoinTableColumnts2(joinTableColumnts2);
+			
+			RelationInfo relation3 = new RelationInfo();
+			String tableName3="mordo_user_log";
+			String temp3="userLog";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
+			relation3.setRelation(RelationInfo.OneToMany);
+			relation3.setJoinColumn(temp3);
+			relation3.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation3.setJoinColumnUpper(temp3.toUpperCase());
+			relation3.setJoinTableName(tableName3);
+			relation3.setJoinTableColumnts2(joinTableColumnts3);
 	
-			relationList.add(relation);
+			relationList.add(relation3);
 			
 			
 			c.generatorCodeMessage(columntList, entityInfo,relationList);
@@ -167,40 +236,7 @@ public class CreateEntity {
 		
 		
 	
-	if(true){
-		//--UserEntity
-		ReadTable r = new ReadTable();
-        String tableName = "mordo_sys_user";
-		List<Columnt> columntList = r.readColumntByTableName(tableName,"hs_15_02");
-		
-		CodeGenerate c= new CodeGenerate();
-		
-		EntityInfo entityInfo = new EntityInfo();		
-		entityInfo.setBussiPackage("fly");
-		Date date = new Date();
-		SimpleDateFormat formater1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		entityInfo.setCreateTime(formater1.format(date));
-		
-		entityInfo.setTableName(tableName);
-		entityInfo.setTableDescription("系统账号");
-		String temp="user";
-		entityInfo.setEntityPackage(temp);
-		entityInfo.setEntityName(StringUtil.firstUpperCase(temp));
-		entityInfo.setTableUpperName(temp.toUpperCase());
-		
-		List<RelationInfo> relationList = new ArrayList<RelationInfo>();
-		RelationInfo relation = new RelationInfo();
-		relation.setRelation(RelationInfo.OneToMany);
-		String temp2 = "userLog";
-		relation.setJoinColumn(temp2);
-		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
-
-		relationList.add(relation);
-		
-		
-		c.generatorCodeMessage(columntList, entityInfo,relationList);
-	}
+	
 	if(true){
 		//--UserLogEntity
 		ReadTable r = new ReadTable();
@@ -226,9 +262,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "user";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_sys_user";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -257,10 +293,15 @@ public class CreateEntity {
 		
 		List<RelationInfo> relationList = new ArrayList<RelationInfo>();
 		RelationInfo relation = new RelationInfo();
-		relation.setRelation(RelationInfo.ManyToOne);
-		relation.setJoinColumn("dev");
-		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("dev"));
-		relation.setJoinColumnUpper("dev".toUpperCase());
+		String tableName2="mordo_dev_info";
+		List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
+		String temp2 = "dev";
+		relation.setRelation(RelationInfo.ManyToOne);					
+		relation.setJoinColumn(temp2);					
+		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
+		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinTableName(tableName2);
+		relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -292,9 +333,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -327,9 +368,9 @@ public class CreateEntity {
 			RelationInfo relation = new RelationInfo();
 			relation.setRelation(RelationInfo.ManyToOne);
 			String temp2 = "dev";
-			relation.setJoinColumn(temp2);
+			relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-			relation.setJoinColumnUpper(temp2.toUpperCase());
+			relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 			relationList.add(relation);
 			
@@ -362,9 +403,9 @@ public class CreateEntity {
 					RelationInfo relation = new RelationInfo();
 					relation.setRelation(RelationInfo.ManyToOne);
 					String temp2 = "dev";
-					relation.setJoinColumn(temp2);
+					relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-					relation.setJoinColumnUpper(temp2.toUpperCase());
+					relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 					relationList.add(relation);
 					
@@ -396,9 +437,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -430,9 +471,9 @@ public class CreateEntity {
 			RelationInfo relation = new RelationInfo();
 			relation.setRelation(RelationInfo.ManyToOne);
 			String temp2 = "dev";
-			relation.setJoinColumn(temp2);
+			relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-			relation.setJoinColumnUpper(temp2.toUpperCase());
+			relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 			relationList.add(relation);
 			
@@ -464,9 +505,9 @@ public class CreateEntity {
 					RelationInfo relation = new RelationInfo();
 					relation.setRelation(RelationInfo.ManyToOne);
 					String temp2 = "dev";
-					relation.setJoinColumn(temp2);
+					relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-					relation.setJoinColumnUpper(temp2.toUpperCase());
+					relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 					relationList.add(relation);
 					
@@ -499,9 +540,9 @@ public class CreateEntity {
 						RelationInfo relation = new RelationInfo();
 						relation.setRelation(RelationInfo.ManyToOne);
 						String temp2 = "dev";
-						relation.setJoinColumn(temp2);
+						relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 						relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-						relation.setJoinColumnUpper(temp2.toUpperCase());
+						relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 						relationList.add(relation);
 						
@@ -511,9 +552,9 @@ public class CreateEntity {
 						RelationInfo relation = new RelationInfo();
 						relation.setRelation(RelationInfo.ManyToOne);
 						String temp2 = "position";
-						relation.setJoinColumn(temp2);
+						relation.setJoinColumn(temp2);String tableName2="mordo_position_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 						relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-						relation.setJoinColumnUpper(temp2.toUpperCase());
+						relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 						relationList.add(relation);
 						
@@ -550,9 +591,9 @@ public class CreateEntity {
 					RelationInfo relation = new RelationInfo();
 					relation.setRelation(RelationInfo.ManyToOne);
 					String temp2 = "dev";
-					relation.setJoinColumn(temp2);
+					relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-					relation.setJoinColumnUpper(temp2.toUpperCase());
+					relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 					relationList.add(relation);
 					
@@ -584,9 +625,9 @@ public class CreateEntity {
 					RelationInfo relation = new RelationInfo();
 					relation.setRelation(RelationInfo.ManyToOne);
 					String temp2 = "dev";
-					relation.setJoinColumn(temp2);
+					relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 					relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-					relation.setJoinColumnUpper(temp2.toUpperCase());
+					relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 					relationList.add(relation);
 					
@@ -618,9 +659,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -652,9 +693,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -686,9 +727,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -720,9 +761,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -754,9 +795,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -788,9 +829,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -822,9 +863,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -856,9 +897,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -890,9 +931,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -924,9 +965,9 @@ public class CreateEntity {
 		RelationInfo relation = new RelationInfo();
 		relation.setRelation(RelationInfo.ManyToOne);
 		String temp2 = "dev";
-		relation.setJoinColumn(temp2);
+		relation.setJoinColumn(temp2);String tableName2="mordo_dev_info";List<Columnt> joinTableColumnts2 = r.readColumntByTableName(tableName2,"hs_15_02");
 		relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp2));
-		relation.setJoinColumnUpper(temp2.toUpperCase());
+		relation.setJoinColumnUpper(temp2.toUpperCase());relation.setJoinTableName(tableName2);relation.setJoinTableColumnts2(joinTableColumnts2);
 
 		relationList.add(relation);
 		
@@ -958,11 +999,28 @@ public class CreateEntity {
 		List<RelationInfo> relationList = new ArrayList<RelationInfo>();
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.ManyToMany);
+//			relation.setJoinColumn("position");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("position"));
+//			relation.setJoinColumnUpper("position".toUpperCase());
+//			relation.setJionFirst("Y");
+			
+			String tableName4="mordo_map_dev_position";
+			String tableName5="mordo_position_info";
+			String temp4="position";
+			String jionFirst="Y";
+			List<Columnt> joinTableColumnts4 = r.readColumntByTableName(tableName4,"hs_15_02");
+			List<Columnt> joinTableColumnts5 = r.readColumntByTableName(tableName5,"hs_15_02");
 			relation.setRelation(RelationInfo.ManyToMany);
-			relation.setJoinColumn("position");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("position"));
-			relation.setJoinColumnUpper("position".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp4);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp4));
+			relation.setJoinColumnUpper(temp4.toUpperCase());
+			relation.setJoinTableName(tableName4);
+			relation.setJoinTableName2(tableName5);
+			relation.setJoinTableColumnts(joinTableColumnts4);
+			relation.setJoinTableColumnts2(joinTableColumnts5);
+			relation.setJionFirst(jionFirst);
+			
 			relationList.add(relation);
 		}
 		if(true){
@@ -976,160 +1034,371 @@ public class CreateEntity {
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("alarmCurrent");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("alarmCurrent"));
+//			relation.setJoinColumnUpper("alarmCurrent".toUpperCase());
+//			relation.setJionFirst("Y");
+
+			String tableName3="mordo_alarm_current";
+			String temp3="alarmCurrent";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("alarmCurrent");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("alarmCurrent"));
-			relation.setJoinColumnUpper("alarmCurrent".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("alarmHistory");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("alarmHistory"));
+//			relation.setJoinColumnUpper("alarmHistory".toUpperCase());
+//			relation.setJionFirst("Y");
+			
+			String tableName3="mordo_alarm_history";
+			String temp3="alarmHistory";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("alarmHistory");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("alarmHistory"));
-			relation.setJoinColumnUpper("alarmHistory".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
+			
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentBed");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentBed"));
+//			relation.setJoinColumnUpper("currentBed".toUpperCase());
+//			relation.setJionFirst("Y");
+			
+			String tableName3="mordo_state_current_bed";
+			String temp3="currentBed";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentBed");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentBed"));
-			relation.setJoinColumnUpper("currentBed".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
+			
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentDoor");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentDoor"));
+//			relation.setJoinColumnUpper("currentDoor".toUpperCase());
+//			relation.setJionFirst("Y");
+			
+			String tableName3="mordo_state_current_door";
+			String temp3="currentDoor";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentDoor");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentDoor"));
-			relation.setJoinColumnUpper("currentDoor".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentGateway");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentGateway"));
+//			relation.setJoinColumnUpper("currentGateway".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_current_gateway";
+			String temp3="currentGateway";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentGateway");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentGateway"));
-			relation.setJoinColumnUpper("currentGateway".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentKeyalarm");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentKeyalarm"));
+//			relation.setJoinColumnUpper("currentKeyalarm".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_current_keyalarm";
+			String temp3="currentKeyalarm";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentKeyalarm");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentKeyalarm"));
-			relation.setJoinColumnUpper("currentKeyalarm".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentLocation");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentLocation"));
+//			relation.setJoinColumnUpper("currentLocation".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_current_location";
+			String temp3="currentLocation";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentLocation");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentLocation"));
-			relation.setJoinColumnUpper("currentLocation".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentUrine");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentUrine"));
+//			relation.setJoinColumnUpper("currentUrine".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_current_urine";
+			String temp3="currentUrine";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentUrine");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentUrine"));
-			relation.setJoinColumnUpper("currentUrine".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("currentWandai");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentWandai"));
+//			relation.setJoinColumnUpper("currentWandai".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_current_wandai";
+			String temp3="currentWandai";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("currentWandai");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("currentWandai"));
-			relation.setJoinColumnUpper("currentWandai".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("historyBed");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("historyBed"));
+//			relation.setJoinColumnUpper("historyBed".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_bed";
+			String temp3="historyBed";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("historyBed");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("historyBed"));
-			relation.setJoinColumnUpper("historyBed".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			relation.setJoinColumn("historyDoor");
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("historyDoor"));
+//			relation.setJoinColumnUpper("historyDoor".toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_door";
+			String temp3="historyDoor";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			relation.setJoinColumn("historyDoor");
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase("historyDoor"));
-			relation.setJoinColumnUpper("historyDoor".toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String rname="historyKeyalarm";
+//			relation.setJoinColumn(rname);
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
+//			relation.setJoinColumnUpper(rname.toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_keyalarm";
+			String temp3="historyKeyalarm";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			String rname="historyKeyalarm";
-			relation.setJoinColumn(rname);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
-			relation.setJoinColumnUpper(rname.toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String rname="historyLocationBody";
+//			relation.setJoinColumn(rname);
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
+//			relation.setJoinColumnUpper(rname.toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_location_body";
+			String temp3="historyLocationBody";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			String rname="historyLocationBody";
-			relation.setJoinColumn(rname);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
-			relation.setJoinColumnUpper(rname.toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String rname="historyLocationManual";
+//			relation.setJoinColumn(rname);
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
+//			relation.setJoinColumnUpper(rname.toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_location_manual";
+			String temp3="historyLocationManual";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			String rname="historyLocationManual";
-			relation.setJoinColumn(rname);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
-			relation.setJoinColumnUpper(rname.toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String rname="historyLocationMove";
+//			relation.setJoinColumn(rname);
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
+//			relation.setJoinColumnUpper(rname.toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_location_move";
+			String temp3="historyLocationMove";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			String rname="historyLocationMove";
-			relation.setJoinColumn(rname);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
-			relation.setJoinColumnUpper(rname.toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String rname="historyLocationPos";
+//			relation.setJoinColumn(rname);
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
+//			relation.setJoinColumnUpper(rname.toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_location_pos";
+			String temp3="historyLocationPos";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			String rname="historyLocationPos";
-			relation.setJoinColumn(rname);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
-			relation.setJoinColumnUpper(rname.toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		if(true){
 			RelationInfo relation = new RelationInfo();
+//			relation.setRelation(RelationInfo.OneToMany);
+//			String rname="historyUrine";
+//			relation.setJoinColumn(rname);
+//			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
+//			relation.setJoinColumnUpper(rname.toUpperCase());
+//			relation.setJionFirst("Y");
+			String tableName3="mordo_state_history_urine";
+			String temp3="historyUrine";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
 			relation.setRelation(RelationInfo.OneToMany);
-			String rname="historyUrine";
-			relation.setJoinColumn(rname);
-			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(rname));
-			relation.setJoinColumnUpper(rname.toUpperCase());
-			relation.setJionFirst("Y");
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
+			relationList.add(relation);
+		}
+		if(true){
+			RelationInfo relation = new RelationInfo();
+			String tableName3="mordo_state_current_ir";
+			String temp3="currentIr";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
+			relation.setRelation(RelationInfo.OneToMany);
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
+			relationList.add(relation);
+		}
+		if(true){
+			RelationInfo relation = new RelationInfo();
+			String tableName3="mordo_state_history_ir";
+			String temp3="historyIr";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
+			relation.setRelation(RelationInfo.OneToMany);
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
+			relationList.add(relation);
+		}
+		if(true){
+			RelationInfo relation = new RelationInfo();
+			String tableName3="mordo_state_current_tizheng_bed";
+			String temp3="currentTizhengBed";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
+			relation.setRelation(RelationInfo.OneToMany);
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
+			relationList.add(relation);
+		}
+		if(true){
+			RelationInfo relation = new RelationInfo();
+			String tableName3="mordo_state_history_tizheng_bed";
+			String temp3="historyTizhengBed";
+			List<Columnt> joinTableColumnts3 = r.readColumntByTableName(tableName3,"hs_15_02");		
+			relation.setRelation(RelationInfo.OneToMany);
+			relation.setJoinColumn(temp3);
+			relation.setJoinColumnFirstUpper(StringUtil.firstUpperCase(temp3));
+			relation.setJoinColumnUpper(temp3.toUpperCase());
+			relation.setJoinTableName(tableName3);
+			relation.setJoinTableColumnts2(joinTableColumnts3);
 			relationList.add(relation);
 		}
 		

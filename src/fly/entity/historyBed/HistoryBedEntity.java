@@ -12,7 +12,7 @@ import com.framework.system.db.dao.annotation.TableDescription;
  * @Title: Entity
  * @Description: 床垫历史信息
  * @author feng.gu
- * @date 2015-08-10 10:13:22
+ * @date 2015-09-07 14:15:41
  * @version V1.0   
  *
  */
@@ -89,7 +89,7 @@ public class HistoryBedEntity implements java.io.Serializable {
     /**
      * 关系描述
 	 */
-    @RelationlDescription(relation = "ManyToOne",
+	    @RelationlDescription(relation = "ManyToOne",
 		joinEntity="DevEntity"	,joinColumn="ID"	)
 			
 			
@@ -102,5 +102,5 @@ public class HistoryBedEntity implements java.io.Serializable {
 	public void setDev(DevEntity dev) {
 		this.dev = dev;
 	}
-		
+			
 }
