@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器人卡分离历史状态服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:47
+ * @date 2015-09-07 16:19:55
  * @version V1.0
  * 
  */
@@ -174,13 +174,10 @@ public class HistoryLocationMoveService {
 		Object moving_isNull = queryMap.get("moving_isNull");
 		Object moving_isNotNull = queryMap.get("moving_isNotNull");
 		Object moving_in = queryMap.get("moving_in");
-		Object movingupdatetime = queryMap.get("movingupdatetime");
-		Object movingupdatetime_like = queryMap.get("movingupdatetime_like");
-		Object movingupdatetime_isNull = queryMap
-				.get("movingupdatetime_isNull");
-		Object movingupdatetime_isNotNull = queryMap
-				.get("movingupdatetime_isNotNull");
-		Object movingupdatetime_in = queryMap.get("movingupdatetime_in");
+		Object movingupdatetime_gt = queryMap.get("movingupdatetime_gt");
+		Object movingupdatetime_ge = queryMap.get("movingupdatetime_ge");
+		Object movingupdatetime_lt = queryMap.get("movingupdatetime_lt");
+		Object movingupdatetime_le = queryMap.get("movingupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationMoveEntity.ID,
 				QueryCondition.gt, "0");
@@ -261,30 +258,25 @@ public class HistoryLocationMoveService {
 					HistoryLocationMoveEntity.MOVING, QueryCondition.in,
 					moving_in));
 		}
-		if (movingupdatetime != null) {
+		if (movingupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.eq, movingupdatetime));
+					QueryCondition.gt, movingupdatetime_gt));
 		}
-		if (movingupdatetime_like != null) {
+		if (movingupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.like, movingupdatetime_like));
+					QueryCondition.ge, movingupdatetime_ge));
 		}
-		if (movingupdatetime_isNull != null) {
+		if (movingupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.isNull, movingupdatetime_isNull));
+					QueryCondition.lt, movingupdatetime_lt));
 		}
-		if (movingupdatetime_isNotNull != null) {
+		if (movingupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.isNotNull, movingupdatetime_isNotNull));
-		}
-		if (movingupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.in, movingupdatetime_in));
+					QueryCondition.le, movingupdatetime_le));
 		}
 
 		list = dbManager.queryByCondition(HistoryLocationMoveEntity.class, qc);
@@ -323,13 +315,10 @@ public class HistoryLocationMoveService {
 		Object moving_isNull = queryMap.get("moving_isNull");
 		Object moving_isNotNull = queryMap.get("moving_isNotNull");
 		Object moving_in = queryMap.get("moving_in");
-		Object movingupdatetime = queryMap.get("movingupdatetime");
-		Object movingupdatetime_like = queryMap.get("movingupdatetime_like");
-		Object movingupdatetime_isNull = queryMap
-				.get("movingupdatetime_isNull");
-		Object movingupdatetime_isNotNull = queryMap
-				.get("movingupdatetime_isNotNull");
-		Object movingupdatetime_in = queryMap.get("movingupdatetime_in");
+		Object movingupdatetime_gt = queryMap.get("movingupdatetime_gt");
+		Object movingupdatetime_ge = queryMap.get("movingupdatetime_ge");
+		Object movingupdatetime_lt = queryMap.get("movingupdatetime_lt");
+		Object movingupdatetime_le = queryMap.get("movingupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationMoveEntity.ID,
 				QueryCondition.gt, "0");
@@ -410,30 +399,25 @@ public class HistoryLocationMoveService {
 					HistoryLocationMoveEntity.MOVING, QueryCondition.in,
 					moving_in));
 		}
-		if (movingupdatetime != null) {
+		if (movingupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.eq, movingupdatetime));
+					QueryCondition.gt, movingupdatetime_gt));
 		}
-		if (movingupdatetime_like != null) {
+		if (movingupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.like, movingupdatetime_like));
+					QueryCondition.ge, movingupdatetime_ge));
 		}
-		if (movingupdatetime_isNull != null) {
+		if (movingupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.isNull, movingupdatetime_isNull));
+					QueryCondition.lt, movingupdatetime_lt));
 		}
-		if (movingupdatetime_isNotNull != null) {
+		if (movingupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.isNotNull, movingupdatetime_isNotNull));
-		}
-		if (movingupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.in, movingupdatetime_in));
+					QueryCondition.le, movingupdatetime_le));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryLocationMoveEntity.class,
@@ -512,13 +496,10 @@ public class HistoryLocationMoveService {
 		Object moving_isNull = queryMap.get("moving_isNull");
 		Object moving_isNotNull = queryMap.get("moving_isNotNull");
 		Object moving_in = queryMap.get("moving_in");
-		Object movingupdatetime = queryMap.get("movingupdatetime");
-		Object movingupdatetime_like = queryMap.get("movingupdatetime_like");
-		Object movingupdatetime_isNull = queryMap
-				.get("movingupdatetime_isNull");
-		Object movingupdatetime_isNotNull = queryMap
-				.get("movingupdatetime_isNotNull");
-		Object movingupdatetime_in = queryMap.get("movingupdatetime_in");
+		Object movingupdatetime_gt = queryMap.get("movingupdatetime_gt");
+		Object movingupdatetime_ge = queryMap.get("movingupdatetime_ge");
+		Object movingupdatetime_lt = queryMap.get("movingupdatetime_lt");
+		Object movingupdatetime_le = queryMap.get("movingupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryLocationMoveEntity.ID,
 				QueryCondition.gt, "0");
@@ -599,30 +580,25 @@ public class HistoryLocationMoveService {
 					HistoryLocationMoveEntity.MOVING, QueryCondition.in,
 					moving_in));
 		}
-		if (movingupdatetime != null) {
+		if (movingupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.eq, movingupdatetime));
+					QueryCondition.gt, movingupdatetime_gt));
 		}
-		if (movingupdatetime_like != null) {
+		if (movingupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.like, movingupdatetime_like));
+					QueryCondition.ge, movingupdatetime_ge));
 		}
-		if (movingupdatetime_isNull != null) {
+		if (movingupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.isNull, movingupdatetime_isNull));
+					QueryCondition.lt, movingupdatetime_lt));
 		}
-		if (movingupdatetime_isNotNull != null) {
+		if (movingupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
 					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.isNotNull, movingupdatetime_isNotNull));
-		}
-		if (movingupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryLocationMoveEntity.MOVINGUPDATETIME,
-					QueryCondition.in, movingupdatetime_in));
+					QueryCondition.le, movingupdatetime_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

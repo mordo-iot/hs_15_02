@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 体征床垫历史信息表服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:22
+ * @date 2015-09-07 16:19:29
  * @version V1.0
  * 
  */
@@ -171,12 +171,10 @@ public class HistoryTizhengBedService {
 		Object havingbody_isNull = queryMap.get("havingbody_isNull");
 		Object havingbody_isNotNull = queryMap.get("havingbody_isNotNull");
 		Object havingbody_in = queryMap.get("havingbody_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 		Object heart = queryMap.get("heart");
 		Object heart_gt = queryMap.get("heart_gt");
 		Object heart_ge = queryMap.get("heart_ge");
@@ -189,12 +187,10 @@ public class HistoryTizhengBedService {
 		Object breath_lt = queryMap.get("breath_lt");
 		Object breath_le = queryMap.get("breath_le");
 		Object breath_in = queryMap.get("breath_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryTizhengBedEntity.ID,
 				QueryCondition.gt, "0");
@@ -271,30 +267,25 @@ public class HistoryTizhengBedService {
 					HistoryTizhengBedEntity.HAVINGBODY, QueryCondition.in,
 					havingbody_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.eq,
-					alarmupdatetime));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.gt,
+					alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.ge,
+					alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.lt,
+					alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.in,
-					alarmupdatetime_in));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.le,
+					alarmupdatetime_le));
 		}
 		if (heart != null) {
 			qc.andCondition(new QueryCondition(HistoryTizhengBedEntity.HEART,
@@ -344,30 +335,25 @@ public class HistoryTizhengBedService {
 			qc.andCondition(new QueryCondition(HistoryTizhengBedEntity.BREATH,
 					QueryCondition.in, breath_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.eq,
-					devupdatetime));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.gt,
+					devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.like,
-					devupdatetime_like));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.ge,
+					devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME,
-					QueryCondition.isNull, devupdatetime_isNull));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.lt,
+					devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.in,
-					devupdatetime_in));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.le,
+					devupdatetime_le));
 		}
 
 		list = dbManager.queryByCondition(HistoryTizhengBedEntity.class, qc);
@@ -406,12 +392,10 @@ public class HistoryTizhengBedService {
 		Object havingbody_isNull = queryMap.get("havingbody_isNull");
 		Object havingbody_isNotNull = queryMap.get("havingbody_isNotNull");
 		Object havingbody_in = queryMap.get("havingbody_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 		Object heart = queryMap.get("heart");
 		Object heart_gt = queryMap.get("heart_gt");
 		Object heart_ge = queryMap.get("heart_ge");
@@ -424,12 +408,10 @@ public class HistoryTizhengBedService {
 		Object breath_lt = queryMap.get("breath_lt");
 		Object breath_le = queryMap.get("breath_le");
 		Object breath_in = queryMap.get("breath_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryTizhengBedEntity.ID,
 				QueryCondition.gt, "0");
@@ -506,30 +488,25 @@ public class HistoryTizhengBedService {
 					HistoryTizhengBedEntity.HAVINGBODY, QueryCondition.in,
 					havingbody_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.eq,
-					alarmupdatetime));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.gt,
+					alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.ge,
+					alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.lt,
+					alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.in,
-					alarmupdatetime_in));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.le,
+					alarmupdatetime_le));
 		}
 		if (heart != null) {
 			qc.andCondition(new QueryCondition(HistoryTizhengBedEntity.HEART,
@@ -579,30 +556,25 @@ public class HistoryTizhengBedService {
 			qc.andCondition(new QueryCondition(HistoryTizhengBedEntity.BREATH,
 					QueryCondition.in, breath_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.eq,
-					devupdatetime));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.gt,
+					devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.like,
-					devupdatetime_like));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.ge,
+					devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME,
-					QueryCondition.isNull, devupdatetime_isNull));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.lt,
+					devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.in,
-					devupdatetime_in));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.le,
+					devupdatetime_le));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryTizhengBedEntity.class,
@@ -679,12 +651,10 @@ public class HistoryTizhengBedService {
 		Object havingbody_isNull = queryMap.get("havingbody_isNull");
 		Object havingbody_isNotNull = queryMap.get("havingbody_isNotNull");
 		Object havingbody_in = queryMap.get("havingbody_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 		Object heart = queryMap.get("heart");
 		Object heart_gt = queryMap.get("heart_gt");
 		Object heart_ge = queryMap.get("heart_ge");
@@ -697,12 +667,10 @@ public class HistoryTizhengBedService {
 		Object breath_lt = queryMap.get("breath_lt");
 		Object breath_le = queryMap.get("breath_le");
 		Object breath_in = queryMap.get("breath_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryTizhengBedEntity.ID,
 				QueryCondition.gt, "0");
@@ -779,30 +747,25 @@ public class HistoryTizhengBedService {
 					HistoryTizhengBedEntity.HAVINGBODY, QueryCondition.in,
 					havingbody_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.eq,
-					alarmupdatetime));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.gt,
+					alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.ge,
+					alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.lt,
+					alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.in,
-					alarmupdatetime_in));
+					HistoryTizhengBedEntity.ALARMUPDATETIME, QueryCondition.le,
+					alarmupdatetime_le));
 		}
 		if (heart != null) {
 			qc.andCondition(new QueryCondition(HistoryTizhengBedEntity.HEART,
@@ -852,30 +815,25 @@ public class HistoryTizhengBedService {
 			qc.andCondition(new QueryCondition(HistoryTizhengBedEntity.BREATH,
 					QueryCondition.in, breath_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.eq,
-					devupdatetime));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.gt,
+					devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.like,
-					devupdatetime_like));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.ge,
+					devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME,
-					QueryCondition.isNull, devupdatetime_isNull));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.lt,
+					devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.in,
-					devupdatetime_in));
+					HistoryTizhengBedEntity.DEVUPDATETIME, QueryCondition.le,
+					devupdatetime_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

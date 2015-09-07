@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 红外历史信息服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:42
+ * @date 2015-09-07 16:19:50
  * @version V1.0
  * 
  */
@@ -176,12 +176,10 @@ public class HistoryIrService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryIrEntity.ID,
 				QueryCondition.gt, "0");
@@ -277,25 +275,21 @@ public class HistoryIrService {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.eq, alarmupdatetime));
+					QueryCondition.gt, alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					QueryCondition.ge, alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					QueryCondition.lt, alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.in, alarmupdatetime_in));
+					QueryCondition.le, alarmupdatetime_le));
 		}
 
 		list = dbManager.queryByCondition(HistoryIrEntity.class, qc);
@@ -340,12 +334,10 @@ public class HistoryIrService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryIrEntity.ID,
 				QueryCondition.gt, "0");
@@ -441,25 +433,21 @@ public class HistoryIrService {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.eq, alarmupdatetime));
+					QueryCondition.gt, alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					QueryCondition.ge, alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					QueryCondition.lt, alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.in, alarmupdatetime_in));
+					QueryCondition.le, alarmupdatetime_le));
 		}
 
 		pagelist = dbManager.queryByCondition(HistoryIrEntity.class, qc,
@@ -540,12 +528,10 @@ public class HistoryIrService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(HistoryIrEntity.ID,
 				QueryCondition.gt, "0");
@@ -641,25 +627,21 @@ public class HistoryIrService {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.eq, alarmupdatetime));
+					QueryCondition.gt, alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					QueryCondition.ge, alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					QueryCondition.lt, alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(HistoryIrEntity.ALARMUPDATETIME,
-					QueryCondition.in, alarmupdatetime_in));
+					QueryCondition.le, alarmupdatetime_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

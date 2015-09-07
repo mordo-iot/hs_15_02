@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 系统日志服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:26
+ * @date 2015-09-07 16:19:33
  * @version V1.0
  * 
  */
@@ -175,11 +175,10 @@ public class UserLogService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
 
 		QueryCondition qc = new QueryCondition(UserLogEntity.ID,
 				QueryCondition.gt, "0");
@@ -275,25 +274,21 @@ public class UserLogService {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
-		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
+					QueryCondition.le, createdate_le));
 		}
 
 		list = dbManager.queryByCondition(UserLogEntity.class, qc);
@@ -338,11 +333,10 @@ public class UserLogService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
 
 		QueryCondition qc = new QueryCondition(UserLogEntity.ID,
 				QueryCondition.gt, "0");
@@ -438,25 +432,21 @@ public class UserLogService {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
-		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
+					QueryCondition.le, createdate_le));
 		}
 
 		pagelist = dbManager.queryByCondition(UserLogEntity.class, qc, pageno,
@@ -537,11 +527,10 @@ public class UserLogService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
 
 		QueryCondition qc = new QueryCondition(UserLogEntity.ID,
 				QueryCondition.gt, "0");
@@ -637,25 +626,21 @@ public class UserLogService {
 			qc.andCondition(new QueryCondition(UserLogEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
-		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(UserLogEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
+					QueryCondition.le, createdate_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

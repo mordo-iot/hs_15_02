@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 历史报警信息服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:28
+ * @date 2015-09-07 16:19:36
  * @version V1.0
  * 
  */
@@ -175,11 +175,10 @@ public class AlarmHistoryService {
 		Object content_isNull = queryMap.get("content_isNull");
 		Object content_isNotNull = queryMap.get("content_isNotNull");
 		Object content_in = queryMap.get("content_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
 		Object handlestate = queryMap.get("handlestate");
 		Object handlestate_gt = queryMap.get("handlestate_gt");
 		Object handlestate_ge = queryMap.get("handlestate_ge");
@@ -191,11 +190,10 @@ public class AlarmHistoryService {
 		Object handledesc_isNull = queryMap.get("handledesc_isNull");
 		Object handledesc_isNotNull = queryMap.get("handledesc_isNotNull");
 		Object handledesc_in = queryMap.get("handledesc_in");
-		Object handledate = queryMap.get("handledate");
-		Object handledate_like = queryMap.get("handledate_like");
-		Object handledate_isNull = queryMap.get("handledate_isNull");
-		Object handledate_isNotNull = queryMap.get("handledate_isNotNull");
-		Object handledate_in = queryMap.get("handledate_in");
+		Object handledate_gt = queryMap.get("handledate_gt");
+		Object handledate_ge = queryMap.get("handledate_ge");
+		Object handledate_lt = queryMap.get("handledate_lt");
+		Object handledate_le = queryMap.get("handledate_le");
 
 		QueryCondition qc = new QueryCondition(AlarmHistoryEntity.ID,
 				QueryCondition.gt, "0");
@@ -287,25 +285,21 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
 					QueryCondition.in, content_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
-		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
+					QueryCondition.le, createdate_le));
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
@@ -351,25 +345,21 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
 					QueryCondition.in, handledesc_in));
 		}
-		if (handledate != null) {
+		if (handledate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.eq, handledate));
+					QueryCondition.gt, handledate_gt));
 		}
-		if (handledate_like != null) {
+		if (handledate_ge != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.like, handledate_like));
+					QueryCondition.ge, handledate_ge));
 		}
-		if (handledate_isNull != null) {
+		if (handledate_lt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.isNull, handledate_isNull));
+					QueryCondition.lt, handledate_lt));
 		}
-		if (handledate_isNotNull != null) {
+		if (handledate_le != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.isNotNull, handledate_isNotNull));
-		}
-		if (handledate_in != null) {
-			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.in, handledate_in));
+					QueryCondition.le, handledate_le));
 		}
 
 		list = dbManager.queryByCondition(AlarmHistoryEntity.class, qc);
@@ -413,11 +403,10 @@ public class AlarmHistoryService {
 		Object content_isNull = queryMap.get("content_isNull");
 		Object content_isNotNull = queryMap.get("content_isNotNull");
 		Object content_in = queryMap.get("content_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
 		Object handlestate = queryMap.get("handlestate");
 		Object handlestate_gt = queryMap.get("handlestate_gt");
 		Object handlestate_ge = queryMap.get("handlestate_ge");
@@ -429,11 +418,10 @@ public class AlarmHistoryService {
 		Object handledesc_isNull = queryMap.get("handledesc_isNull");
 		Object handledesc_isNotNull = queryMap.get("handledesc_isNotNull");
 		Object handledesc_in = queryMap.get("handledesc_in");
-		Object handledate = queryMap.get("handledate");
-		Object handledate_like = queryMap.get("handledate_like");
-		Object handledate_isNull = queryMap.get("handledate_isNull");
-		Object handledate_isNotNull = queryMap.get("handledate_isNotNull");
-		Object handledate_in = queryMap.get("handledate_in");
+		Object handledate_gt = queryMap.get("handledate_gt");
+		Object handledate_ge = queryMap.get("handledate_ge");
+		Object handledate_lt = queryMap.get("handledate_lt");
+		Object handledate_le = queryMap.get("handledate_le");
 
 		QueryCondition qc = new QueryCondition(AlarmHistoryEntity.ID,
 				QueryCondition.gt, "0");
@@ -525,25 +513,21 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
 					QueryCondition.in, content_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
-		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
+					QueryCondition.le, createdate_le));
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
@@ -589,25 +573,21 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
 					QueryCondition.in, handledesc_in));
 		}
-		if (handledate != null) {
+		if (handledate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.eq, handledate));
+					QueryCondition.gt, handledate_gt));
 		}
-		if (handledate_like != null) {
+		if (handledate_ge != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.like, handledate_like));
+					QueryCondition.ge, handledate_ge));
 		}
-		if (handledate_isNull != null) {
+		if (handledate_lt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.isNull, handledate_isNull));
+					QueryCondition.lt, handledate_lt));
 		}
-		if (handledate_isNotNull != null) {
+		if (handledate_le != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.isNotNull, handledate_isNotNull));
-		}
-		if (handledate_in != null) {
-			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.in, handledate_in));
+					QueryCondition.le, handledate_le));
 		}
 
 		pagelist = dbManager.queryByCondition(AlarmHistoryEntity.class, qc,
@@ -688,11 +668,10 @@ public class AlarmHistoryService {
 		Object content_isNull = queryMap.get("content_isNull");
 		Object content_isNotNull = queryMap.get("content_isNotNull");
 		Object content_in = queryMap.get("content_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
 		Object handlestate = queryMap.get("handlestate");
 		Object handlestate_gt = queryMap.get("handlestate_gt");
 		Object handlestate_ge = queryMap.get("handlestate_ge");
@@ -704,11 +683,10 @@ public class AlarmHistoryService {
 		Object handledesc_isNull = queryMap.get("handledesc_isNull");
 		Object handledesc_isNotNull = queryMap.get("handledesc_isNotNull");
 		Object handledesc_in = queryMap.get("handledesc_in");
-		Object handledate = queryMap.get("handledate");
-		Object handledate_like = queryMap.get("handledate_like");
-		Object handledate_isNull = queryMap.get("handledate_isNull");
-		Object handledate_isNotNull = queryMap.get("handledate_isNotNull");
-		Object handledate_in = queryMap.get("handledate_in");
+		Object handledate_gt = queryMap.get("handledate_gt");
+		Object handledate_ge = queryMap.get("handledate_ge");
+		Object handledate_lt = queryMap.get("handledate_lt");
+		Object handledate_le = queryMap.get("handledate_le");
 
 		QueryCondition qc = new QueryCondition(AlarmHistoryEntity.ID,
 				QueryCondition.gt, "0");
@@ -800,25 +778,21 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CONTENT,
 					QueryCondition.in, content_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
-		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(AlarmHistoryEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
+					QueryCondition.le, createdate_le));
 		}
 		if (handlestate != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLESTATE,
@@ -864,25 +838,21 @@ public class AlarmHistoryService {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDESC,
 					QueryCondition.in, handledesc_in));
 		}
-		if (handledate != null) {
+		if (handledate_gt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.eq, handledate));
+					QueryCondition.gt, handledate_gt));
 		}
-		if (handledate_like != null) {
+		if (handledate_ge != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.like, handledate_like));
+					QueryCondition.ge, handledate_ge));
 		}
-		if (handledate_isNull != null) {
+		if (handledate_lt != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.isNull, handledate_isNull));
+					QueryCondition.lt, handledate_lt));
 		}
-		if (handledate_isNotNull != null) {
+		if (handledate_le != null) {
 			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.isNotNull, handledate_isNotNull));
-		}
-		if (handledate_in != null) {
-			qc.andCondition(new QueryCondition(AlarmHistoryEntity.HANDLEDATE,
-					QueryCondition.in, handledate_in));
+					QueryCondition.le, handledate_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

@@ -44,7 +44,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 设备信息服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:51
+ * @date 2015-09-07 16:19:59
  * @version V1.0
  * 
  */
@@ -1058,16 +1058,14 @@ public class DevService {
 		Object attribute_isNull = queryMap.get("attribute_isNull");
 		Object attribute_isNotNull = queryMap.get("attribute_isNotNull");
 		Object attribute_in = queryMap.get("attribute_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
-		Object updatedate = queryMap.get("updatedate");
-		Object updatedate_like = queryMap.get("updatedate_like");
-		Object updatedate_isNull = queryMap.get("updatedate_isNull");
-		Object updatedate_isNotNull = queryMap.get("updatedate_isNotNull");
-		Object updatedate_in = queryMap.get("updatedate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object updatedate_gt = queryMap.get("updatedate_gt");
+		Object updatedate_ge = queryMap.get("updatedate_ge");
+		Object updatedate_lt = queryMap.get("updatedate_lt");
+		Object updatedate_le = queryMap.get("updatedate_le");
 
 		Object positionId = queryMap.get("positionId");
 
@@ -1329,45 +1327,37 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
 					QueryCondition.in, attribute_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
+					QueryCondition.le, createdate_le));
 		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
-		}
-		if (updatedate != null) {
+		if (updatedate_gt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.eq, updatedate));
+					QueryCondition.gt, updatedate_gt));
 		}
-		if (updatedate_like != null) {
+		if (updatedate_ge != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.like, updatedate_like));
+					QueryCondition.ge, updatedate_ge));
 		}
-		if (updatedate_isNull != null) {
+		if (updatedate_lt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.isNull, updatedate_isNull));
+					QueryCondition.lt, updatedate_lt));
 		}
-		if (updatedate_isNotNull != null) {
+		if (updatedate_le != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.isNotNull, updatedate_isNotNull));
-		}
-		if (updatedate_in != null) {
-			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.in, updatedate_in));
+					QueryCondition.le, updatedate_le));
 		}
 
 		if (positionId != null) {
@@ -1480,16 +1470,14 @@ public class DevService {
 		Object attribute_isNull = queryMap.get("attribute_isNull");
 		Object attribute_isNotNull = queryMap.get("attribute_isNotNull");
 		Object attribute_in = queryMap.get("attribute_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
-		Object updatedate = queryMap.get("updatedate");
-		Object updatedate_like = queryMap.get("updatedate_like");
-		Object updatedate_isNull = queryMap.get("updatedate_isNull");
-		Object updatedate_isNotNull = queryMap.get("updatedate_isNotNull");
-		Object updatedate_in = queryMap.get("updatedate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object updatedate_gt = queryMap.get("updatedate_gt");
+		Object updatedate_ge = queryMap.get("updatedate_ge");
+		Object updatedate_lt = queryMap.get("updatedate_lt");
+		Object updatedate_le = queryMap.get("updatedate_le");
 
 		Object positionId = queryMap.get("positionId");
 
@@ -1751,45 +1739,37 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
 					QueryCondition.in, attribute_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
+					QueryCondition.le, createdate_le));
 		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
-		}
-		if (updatedate != null) {
+		if (updatedate_gt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.eq, updatedate));
+					QueryCondition.gt, updatedate_gt));
 		}
-		if (updatedate_like != null) {
+		if (updatedate_ge != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.like, updatedate_like));
+					QueryCondition.ge, updatedate_ge));
 		}
-		if (updatedate_isNull != null) {
+		if (updatedate_lt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.isNull, updatedate_isNull));
+					QueryCondition.lt, updatedate_lt));
 		}
-		if (updatedate_isNotNull != null) {
+		if (updatedate_le != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.isNotNull, updatedate_isNotNull));
-		}
-		if (updatedate_in != null) {
-			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.in, updatedate_in));
+					QueryCondition.le, updatedate_le));
 		}
 
 		if (positionId != null) {
@@ -2143,16 +2123,14 @@ public class DevService {
 		Object attribute_isNull = queryMap.get("attribute_isNull");
 		Object attribute_isNotNull = queryMap.get("attribute_isNotNull");
 		Object attribute_in = queryMap.get("attribute_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
-		Object updatedate = queryMap.get("updatedate");
-		Object updatedate_like = queryMap.get("updatedate_like");
-		Object updatedate_isNull = queryMap.get("updatedate_isNull");
-		Object updatedate_isNotNull = queryMap.get("updatedate_isNotNull");
-		Object updatedate_in = queryMap.get("updatedate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object updatedate_gt = queryMap.get("updatedate_gt");
+		Object updatedate_ge = queryMap.get("updatedate_ge");
+		Object updatedate_lt = queryMap.get("updatedate_lt");
+		Object updatedate_le = queryMap.get("updatedate_le");
 		Object positionId = queryMap.get("positionId");
 
 		QueryCondition qc = new QueryCondition(DevEntity.ID, QueryCondition.gt,
@@ -2413,45 +2391,37 @@ public class DevService {
 			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
 					QueryCondition.in, attribute_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
+					QueryCondition.le, createdate_le));
 		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
-		}
-		if (updatedate != null) {
+		if (updatedate_gt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.eq, updatedate));
+					QueryCondition.gt, updatedate_gt));
 		}
-		if (updatedate_like != null) {
+		if (updatedate_ge != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.like, updatedate_like));
+					QueryCondition.ge, updatedate_ge));
 		}
-		if (updatedate_isNull != null) {
+		if (updatedate_lt != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.isNull, updatedate_isNull));
+					QueryCondition.lt, updatedate_lt));
 		}
-		if (updatedate_isNotNull != null) {
+		if (updatedate_le != null) {
 			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.isNotNull, updatedate_isNotNull));
-		}
-		if (updatedate_in != null) {
-			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
-					QueryCondition.in, updatedate_in));
+					QueryCondition.le, updatedate_le));
 		}
 
 		if (positionId != null) {

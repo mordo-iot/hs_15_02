@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 红外当前信息服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:35
+ * @date 2015-09-07 16:19:43
  * @version V1.0
  * 
  */
@@ -176,12 +176,10 @@ public class CurrentIrService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
@@ -197,12 +195,10 @@ public class CurrentIrService {
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
 		Object power_in = queryMap.get("power_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(CurrentIrEntity.ID,
 				QueryCondition.gt, "0");
@@ -298,25 +294,21 @@ public class CurrentIrService {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.eq, alarmupdatetime));
+					QueryCondition.gt, alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					QueryCondition.ge, alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					QueryCondition.lt, alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.in, alarmupdatetime_in));
+					QueryCondition.le, alarmupdatetime_le));
 		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.NORMAL,
@@ -378,25 +370,21 @@ public class CurrentIrService {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.POWER,
 					QueryCondition.in, power_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.eq, devupdatetime));
+					QueryCondition.gt, devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.like, devupdatetime_like));
+					QueryCondition.ge, devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.isNull, devupdatetime_isNull));
+					QueryCondition.lt, devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.in, devupdatetime_in));
+					QueryCondition.le, devupdatetime_le));
 		}
 
 		list = dbManager.queryByCondition(CurrentIrEntity.class, qc);
@@ -441,12 +429,10 @@ public class CurrentIrService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
@@ -462,12 +448,10 @@ public class CurrentIrService {
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
 		Object power_in = queryMap.get("power_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(CurrentIrEntity.ID,
 				QueryCondition.gt, "0");
@@ -563,25 +547,21 @@ public class CurrentIrService {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.eq, alarmupdatetime));
+					QueryCondition.gt, alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					QueryCondition.ge, alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					QueryCondition.lt, alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.in, alarmupdatetime_in));
+					QueryCondition.le, alarmupdatetime_le));
 		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.NORMAL,
@@ -643,25 +623,21 @@ public class CurrentIrService {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.POWER,
 					QueryCondition.in, power_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.eq, devupdatetime));
+					QueryCondition.gt, devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.like, devupdatetime_like));
+					QueryCondition.ge, devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.isNull, devupdatetime_isNull));
+					QueryCondition.lt, devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.in, devupdatetime_in));
+					QueryCondition.le, devupdatetime_le));
 		}
 
 		pagelist = dbManager.queryByCondition(CurrentIrEntity.class, qc,
@@ -742,12 +718,10 @@ public class CurrentIrService {
 		Object level_lt = queryMap.get("level_lt");
 		Object level_le = queryMap.get("level_le");
 		Object level_in = queryMap.get("level_in");
-		Object alarmupdatetime = queryMap.get("alarmupdatetime");
-		Object alarmupdatetime_like = queryMap.get("alarmupdatetime_like");
-		Object alarmupdatetime_isNull = queryMap.get("alarmupdatetime_isNull");
-		Object alarmupdatetime_isNotNull = queryMap
-				.get("alarmupdatetime_isNotNull");
-		Object alarmupdatetime_in = queryMap.get("alarmupdatetime_in");
+		Object alarmupdatetime_gt = queryMap.get("alarmupdatetime_gt");
+		Object alarmupdatetime_ge = queryMap.get("alarmupdatetime_ge");
+		Object alarmupdatetime_lt = queryMap.get("alarmupdatetime_lt");
+		Object alarmupdatetime_le = queryMap.get("alarmupdatetime_le");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
@@ -763,12 +737,10 @@ public class CurrentIrService {
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
 		Object power_in = queryMap.get("power_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(CurrentIrEntity.ID,
 				QueryCondition.gt, "0");
@@ -864,25 +836,21 @@ public class CurrentIrService {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.LEVEL,
 					QueryCondition.in, level_in));
 		}
-		if (alarmupdatetime != null) {
+		if (alarmupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.eq, alarmupdatetime));
+					QueryCondition.gt, alarmupdatetime_gt));
 		}
-		if (alarmupdatetime_like != null) {
+		if (alarmupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.like, alarmupdatetime_like));
+					QueryCondition.ge, alarmupdatetime_ge));
 		}
-		if (alarmupdatetime_isNull != null) {
+		if (alarmupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNull, alarmupdatetime_isNull));
+					QueryCondition.lt, alarmupdatetime_lt));
 		}
-		if (alarmupdatetime_isNotNull != null) {
+		if (alarmupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.isNotNull, alarmupdatetime_isNotNull));
-		}
-		if (alarmupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(CurrentIrEntity.ALARMUPDATETIME,
-					QueryCondition.in, alarmupdatetime_in));
+					QueryCondition.le, alarmupdatetime_le));
 		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.NORMAL,
@@ -944,25 +912,21 @@ public class CurrentIrService {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.POWER,
 					QueryCondition.in, power_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.eq, devupdatetime));
+					QueryCondition.gt, devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.like, devupdatetime_like));
+					QueryCondition.ge, devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.isNull, devupdatetime_isNull));
+					QueryCondition.lt, devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(CurrentIrEntity.DEVUPDATETIME,
-					QueryCondition.in, devupdatetime_in));
+					QueryCondition.le, devupdatetime_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

@@ -23,7 +23,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 定位器当前状态服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:36
+ * @date 2015-09-07 16:19:44
  * @version V1.0
  * 
  */
@@ -212,13 +212,10 @@ public class CurrentLocationService {
 		Object leaved_isNull = queryMap.get("leaved_isNull");
 		Object leaved_isNotNull = queryMap.get("leaved_isNotNull");
 		Object leaved_in = queryMap.get("leaved_in");
-		Object leavedupdatetime = queryMap.get("leavedupdatetime");
-		Object leavedupdatetime_like = queryMap.get("leavedupdatetime_like");
-		Object leavedupdatetime_isNull = queryMap
-				.get("leavedupdatetime_isNull");
-		Object leavedupdatetime_isNotNull = queryMap
-				.get("leavedupdatetime_isNotNull");
-		Object leavedupdatetime_in = queryMap.get("leavedupdatetime_in");
+		Object leavedupdatetime_gt = queryMap.get("leavedupdatetime_gt");
+		Object leavedupdatetime_ge = queryMap.get("leavedupdatetime_ge");
+		Object leavedupdatetime_lt = queryMap.get("leavedupdatetime_lt");
+		Object leavedupdatetime_le = queryMap.get("leavedupdatetime_le");
 		Object bodystate = queryMap.get("bodystate");
 		Object bodystate_like = queryMap.get("bodystate_like");
 		Object bodystate_isNull = queryMap.get("bodystate_isNull");
@@ -229,24 +226,19 @@ public class CurrentLocationService {
 		Object manualalarm_isNull = queryMap.get("manualalarm_isNull");
 		Object manualalarm_isNotNull = queryMap.get("manualalarm_isNotNull");
 		Object manualalarm_in = queryMap.get("manualalarm_in");
-		Object bodyupdatetime = queryMap.get("bodyupdatetime");
-		Object bodyupdatetime_like = queryMap.get("bodyupdatetime_like");
-		Object bodyupdatetime_isNull = queryMap.get("bodyupdatetime_isNull");
-		Object bodyupdatetime_isNotNull = queryMap
-				.get("bodyupdatetime_isNotNull");
-		Object bodyupdatetime_in = queryMap.get("bodyupdatetime_in");
+		Object bodyupdatetime_gt = queryMap.get("bodyupdatetime_gt");
+		Object bodyupdatetime_ge = queryMap.get("bodyupdatetime_ge");
+		Object bodyupdatetime_lt = queryMap.get("bodyupdatetime_lt");
+		Object bodyupdatetime_le = queryMap.get("bodyupdatetime_le");
 		Object moving = queryMap.get("moving");
 		Object moving_like = queryMap.get("moving_like");
 		Object moving_isNull = queryMap.get("moving_isNull");
 		Object moving_isNotNull = queryMap.get("moving_isNotNull");
 		Object moving_in = queryMap.get("moving_in");
-		Object movingupdatetime = queryMap.get("movingupdatetime");
-		Object movingupdatetime_like = queryMap.get("movingupdatetime_like");
-		Object movingupdatetime_isNull = queryMap
-				.get("movingupdatetime_isNull");
-		Object movingupdatetime_isNotNull = queryMap
-				.get("movingupdatetime_isNotNull");
-		Object movingupdatetime_in = queryMap.get("movingupdatetime_in");
+		Object movingupdatetime_gt = queryMap.get("movingupdatetime_gt");
+		Object movingupdatetime_ge = queryMap.get("movingupdatetime_ge");
+		Object movingupdatetime_lt = queryMap.get("movingupdatetime_lt");
+		Object movingupdatetime_le = queryMap.get("movingupdatetime_le");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
@@ -262,12 +254,10 @@ public class CurrentLocationService {
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
 		Object power_in = queryMap.get("power_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(CurrentLocationEntity.ID,
 				QueryCondition.gt, "0");
@@ -417,30 +407,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.LEAVED,
 					QueryCondition.in, leaved_in));
 		}
-		if (leavedupdatetime != null) {
+		if (leavedupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.eq,
-					leavedupdatetime));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.gt,
+					leavedupdatetime_gt));
 		}
-		if (leavedupdatetime_like != null) {
+		if (leavedupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.like, leavedupdatetime_like));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.ge,
+					leavedupdatetime_ge));
 		}
-		if (leavedupdatetime_isNull != null) {
+		if (leavedupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.isNull, leavedupdatetime_isNull));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.lt,
+					leavedupdatetime_lt));
 		}
-		if (leavedupdatetime_isNotNull != null) {
+		if (leavedupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.isNotNull, leavedupdatetime_isNotNull));
-		}
-		if (leavedupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.in,
-					leavedupdatetime_in));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.le,
+					leavedupdatetime_le));
 		}
 		if (bodystate != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.BODYSTATE,
@@ -487,30 +472,25 @@ public class CurrentLocationService {
 					CurrentLocationEntity.MANUALALARM, QueryCondition.in,
 					manualalarm_in));
 		}
-		if (bodyupdatetime != null) {
+		if (bodyupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.eq,
-					bodyupdatetime));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.gt,
+					bodyupdatetime_gt));
 		}
-		if (bodyupdatetime_like != null) {
+		if (bodyupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.like,
-					bodyupdatetime_like));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.ge,
+					bodyupdatetime_ge));
 		}
-		if (bodyupdatetime_isNull != null) {
+		if (bodyupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME,
-					QueryCondition.isNull, bodyupdatetime_isNull));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.lt,
+					bodyupdatetime_lt));
 		}
-		if (bodyupdatetime_isNotNull != null) {
+		if (bodyupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME,
-					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
-		}
-		if (bodyupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.in,
-					bodyupdatetime_in));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.le,
+					bodyupdatetime_le));
 		}
 		if (moving != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.MOVING,
@@ -532,30 +512,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.MOVING,
 					QueryCondition.in, moving_in));
 		}
-		if (movingupdatetime != null) {
+		if (movingupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.eq,
-					movingupdatetime));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.gt,
+					movingupdatetime_gt));
 		}
-		if (movingupdatetime_like != null) {
+		if (movingupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.like, movingupdatetime_like));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.ge,
+					movingupdatetime_ge));
 		}
-		if (movingupdatetime_isNull != null) {
+		if (movingupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.isNull, movingupdatetime_isNull));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.lt,
+					movingupdatetime_lt));
 		}
-		if (movingupdatetime_isNotNull != null) {
+		if (movingupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.isNotNull, movingupdatetime_isNotNull));
-		}
-		if (movingupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.in,
-					movingupdatetime_in));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.le,
+					movingupdatetime_le));
 		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.NORMAL,
@@ -617,30 +592,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.POWER,
 					QueryCondition.in, power_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.eq,
-					devupdatetime));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.gt,
+					devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.like,
-					devupdatetime_like));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.ge,
+					devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.isNull,
-					devupdatetime_isNull));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.lt,
+					devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.in,
-					devupdatetime_in));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.le,
+					devupdatetime_le));
 		}
 
 		list = dbManager.queryByCondition(CurrentLocationEntity.class, qc);
@@ -697,13 +667,10 @@ public class CurrentLocationService {
 		Object leaved_isNull = queryMap.get("leaved_isNull");
 		Object leaved_isNotNull = queryMap.get("leaved_isNotNull");
 		Object leaved_in = queryMap.get("leaved_in");
-		Object leavedupdatetime = queryMap.get("leavedupdatetime");
-		Object leavedupdatetime_like = queryMap.get("leavedupdatetime_like");
-		Object leavedupdatetime_isNull = queryMap
-				.get("leavedupdatetime_isNull");
-		Object leavedupdatetime_isNotNull = queryMap
-				.get("leavedupdatetime_isNotNull");
-		Object leavedupdatetime_in = queryMap.get("leavedupdatetime_in");
+		Object leavedupdatetime_gt = queryMap.get("leavedupdatetime_gt");
+		Object leavedupdatetime_ge = queryMap.get("leavedupdatetime_ge");
+		Object leavedupdatetime_lt = queryMap.get("leavedupdatetime_lt");
+		Object leavedupdatetime_le = queryMap.get("leavedupdatetime_le");
 		Object bodystate = queryMap.get("bodystate");
 		Object bodystate_like = queryMap.get("bodystate_like");
 		Object bodystate_isNull = queryMap.get("bodystate_isNull");
@@ -714,24 +681,19 @@ public class CurrentLocationService {
 		Object manualalarm_isNull = queryMap.get("manualalarm_isNull");
 		Object manualalarm_isNotNull = queryMap.get("manualalarm_isNotNull");
 		Object manualalarm_in = queryMap.get("manualalarm_in");
-		Object bodyupdatetime = queryMap.get("bodyupdatetime");
-		Object bodyupdatetime_like = queryMap.get("bodyupdatetime_like");
-		Object bodyupdatetime_isNull = queryMap.get("bodyupdatetime_isNull");
-		Object bodyupdatetime_isNotNull = queryMap
-				.get("bodyupdatetime_isNotNull");
-		Object bodyupdatetime_in = queryMap.get("bodyupdatetime_in");
+		Object bodyupdatetime_gt = queryMap.get("bodyupdatetime_gt");
+		Object bodyupdatetime_ge = queryMap.get("bodyupdatetime_ge");
+		Object bodyupdatetime_lt = queryMap.get("bodyupdatetime_lt");
+		Object bodyupdatetime_le = queryMap.get("bodyupdatetime_le");
 		Object moving = queryMap.get("moving");
 		Object moving_like = queryMap.get("moving_like");
 		Object moving_isNull = queryMap.get("moving_isNull");
 		Object moving_isNotNull = queryMap.get("moving_isNotNull");
 		Object moving_in = queryMap.get("moving_in");
-		Object movingupdatetime = queryMap.get("movingupdatetime");
-		Object movingupdatetime_like = queryMap.get("movingupdatetime_like");
-		Object movingupdatetime_isNull = queryMap
-				.get("movingupdatetime_isNull");
-		Object movingupdatetime_isNotNull = queryMap
-				.get("movingupdatetime_isNotNull");
-		Object movingupdatetime_in = queryMap.get("movingupdatetime_in");
+		Object movingupdatetime_gt = queryMap.get("movingupdatetime_gt");
+		Object movingupdatetime_ge = queryMap.get("movingupdatetime_ge");
+		Object movingupdatetime_lt = queryMap.get("movingupdatetime_lt");
+		Object movingupdatetime_le = queryMap.get("movingupdatetime_le");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
@@ -747,12 +709,10 @@ public class CurrentLocationService {
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
 		Object power_in = queryMap.get("power_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(CurrentLocationEntity.ID,
 				QueryCondition.gt, "0");
@@ -902,30 +862,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.LEAVED,
 					QueryCondition.in, leaved_in));
 		}
-		if (leavedupdatetime != null) {
+		if (leavedupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.eq,
-					leavedupdatetime));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.gt,
+					leavedupdatetime_gt));
 		}
-		if (leavedupdatetime_like != null) {
+		if (leavedupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.like, leavedupdatetime_like));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.ge,
+					leavedupdatetime_ge));
 		}
-		if (leavedupdatetime_isNull != null) {
+		if (leavedupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.isNull, leavedupdatetime_isNull));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.lt,
+					leavedupdatetime_lt));
 		}
-		if (leavedupdatetime_isNotNull != null) {
+		if (leavedupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.isNotNull, leavedupdatetime_isNotNull));
-		}
-		if (leavedupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.in,
-					leavedupdatetime_in));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.le,
+					leavedupdatetime_le));
 		}
 		if (bodystate != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.BODYSTATE,
@@ -972,30 +927,25 @@ public class CurrentLocationService {
 					CurrentLocationEntity.MANUALALARM, QueryCondition.in,
 					manualalarm_in));
 		}
-		if (bodyupdatetime != null) {
+		if (bodyupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.eq,
-					bodyupdatetime));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.gt,
+					bodyupdatetime_gt));
 		}
-		if (bodyupdatetime_like != null) {
+		if (bodyupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.like,
-					bodyupdatetime_like));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.ge,
+					bodyupdatetime_ge));
 		}
-		if (bodyupdatetime_isNull != null) {
+		if (bodyupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME,
-					QueryCondition.isNull, bodyupdatetime_isNull));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.lt,
+					bodyupdatetime_lt));
 		}
-		if (bodyupdatetime_isNotNull != null) {
+		if (bodyupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME,
-					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
-		}
-		if (bodyupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.in,
-					bodyupdatetime_in));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.le,
+					bodyupdatetime_le));
 		}
 		if (moving != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.MOVING,
@@ -1017,30 +967,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.MOVING,
 					QueryCondition.in, moving_in));
 		}
-		if (movingupdatetime != null) {
+		if (movingupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.eq,
-					movingupdatetime));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.gt,
+					movingupdatetime_gt));
 		}
-		if (movingupdatetime_like != null) {
+		if (movingupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.like, movingupdatetime_like));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.ge,
+					movingupdatetime_ge));
 		}
-		if (movingupdatetime_isNull != null) {
+		if (movingupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.isNull, movingupdatetime_isNull));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.lt,
+					movingupdatetime_lt));
 		}
-		if (movingupdatetime_isNotNull != null) {
+		if (movingupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.isNotNull, movingupdatetime_isNotNull));
-		}
-		if (movingupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.in,
-					movingupdatetime_in));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.le,
+					movingupdatetime_le));
 		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.NORMAL,
@@ -1102,30 +1047,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.POWER,
 					QueryCondition.in, power_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.eq,
-					devupdatetime));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.gt,
+					devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.like,
-					devupdatetime_like));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.ge,
+					devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.isNull,
-					devupdatetime_isNull));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.lt,
+					devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.in,
-					devupdatetime_in));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.le,
+					devupdatetime_le));
 		}
 
 		pagelist = dbManager.queryByCondition(CurrentLocationEntity.class, qc,
@@ -1232,13 +1172,10 @@ public class CurrentLocationService {
 		Object leaved_isNull = queryMap.get("leaved_isNull");
 		Object leaved_isNotNull = queryMap.get("leaved_isNotNull");
 		Object leaved_in = queryMap.get("leaved_in");
-		Object leavedupdatetime = queryMap.get("leavedupdatetime");
-		Object leavedupdatetime_like = queryMap.get("leavedupdatetime_like");
-		Object leavedupdatetime_isNull = queryMap
-				.get("leavedupdatetime_isNull");
-		Object leavedupdatetime_isNotNull = queryMap
-				.get("leavedupdatetime_isNotNull");
-		Object leavedupdatetime_in = queryMap.get("leavedupdatetime_in");
+		Object leavedupdatetime_gt = queryMap.get("leavedupdatetime_gt");
+		Object leavedupdatetime_ge = queryMap.get("leavedupdatetime_ge");
+		Object leavedupdatetime_lt = queryMap.get("leavedupdatetime_lt");
+		Object leavedupdatetime_le = queryMap.get("leavedupdatetime_le");
 		Object bodystate = queryMap.get("bodystate");
 		Object bodystate_like = queryMap.get("bodystate_like");
 		Object bodystate_isNull = queryMap.get("bodystate_isNull");
@@ -1249,24 +1186,19 @@ public class CurrentLocationService {
 		Object manualalarm_isNull = queryMap.get("manualalarm_isNull");
 		Object manualalarm_isNotNull = queryMap.get("manualalarm_isNotNull");
 		Object manualalarm_in = queryMap.get("manualalarm_in");
-		Object bodyupdatetime = queryMap.get("bodyupdatetime");
-		Object bodyupdatetime_like = queryMap.get("bodyupdatetime_like");
-		Object bodyupdatetime_isNull = queryMap.get("bodyupdatetime_isNull");
-		Object bodyupdatetime_isNotNull = queryMap
-				.get("bodyupdatetime_isNotNull");
-		Object bodyupdatetime_in = queryMap.get("bodyupdatetime_in");
+		Object bodyupdatetime_gt = queryMap.get("bodyupdatetime_gt");
+		Object bodyupdatetime_ge = queryMap.get("bodyupdatetime_ge");
+		Object bodyupdatetime_lt = queryMap.get("bodyupdatetime_lt");
+		Object bodyupdatetime_le = queryMap.get("bodyupdatetime_le");
 		Object moving = queryMap.get("moving");
 		Object moving_like = queryMap.get("moving_like");
 		Object moving_isNull = queryMap.get("moving_isNull");
 		Object moving_isNotNull = queryMap.get("moving_isNotNull");
 		Object moving_in = queryMap.get("moving_in");
-		Object movingupdatetime = queryMap.get("movingupdatetime");
-		Object movingupdatetime_like = queryMap.get("movingupdatetime_like");
-		Object movingupdatetime_isNull = queryMap
-				.get("movingupdatetime_isNull");
-		Object movingupdatetime_isNotNull = queryMap
-				.get("movingupdatetime_isNotNull");
-		Object movingupdatetime_in = queryMap.get("movingupdatetime_in");
+		Object movingupdatetime_gt = queryMap.get("movingupdatetime_gt");
+		Object movingupdatetime_ge = queryMap.get("movingupdatetime_ge");
+		Object movingupdatetime_lt = queryMap.get("movingupdatetime_lt");
+		Object movingupdatetime_le = queryMap.get("movingupdatetime_le");
 		Object normal = queryMap.get("normal");
 		Object normal_like = queryMap.get("normal_like");
 		Object normal_isNull = queryMap.get("normal_isNull");
@@ -1282,12 +1214,10 @@ public class CurrentLocationService {
 		Object power_isNull = queryMap.get("power_isNull");
 		Object power_isNotNull = queryMap.get("power_isNotNull");
 		Object power_in = queryMap.get("power_in");
-		Object devupdatetime = queryMap.get("devupdatetime");
-		Object devupdatetime_like = queryMap.get("devupdatetime_like");
-		Object devupdatetime_isNull = queryMap.get("devupdatetime_isNull");
-		Object devupdatetime_isNotNull = queryMap
-				.get("devupdatetime_isNotNull");
-		Object devupdatetime_in = queryMap.get("devupdatetime_in");
+		Object devupdatetime_gt = queryMap.get("devupdatetime_gt");
+		Object devupdatetime_ge = queryMap.get("devupdatetime_ge");
+		Object devupdatetime_lt = queryMap.get("devupdatetime_lt");
+		Object devupdatetime_le = queryMap.get("devupdatetime_le");
 
 		QueryCondition qc = new QueryCondition(CurrentLocationEntity.ID,
 				QueryCondition.gt, "0");
@@ -1437,30 +1367,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.LEAVED,
 					QueryCondition.in, leaved_in));
 		}
-		if (leavedupdatetime != null) {
+		if (leavedupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.eq,
-					leavedupdatetime));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.gt,
+					leavedupdatetime_gt));
 		}
-		if (leavedupdatetime_like != null) {
+		if (leavedupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.like, leavedupdatetime_like));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.ge,
+					leavedupdatetime_ge));
 		}
-		if (leavedupdatetime_isNull != null) {
+		if (leavedupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.isNull, leavedupdatetime_isNull));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.lt,
+					leavedupdatetime_lt));
 		}
-		if (leavedupdatetime_isNotNull != null) {
+		if (leavedupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME,
-					QueryCondition.isNotNull, leavedupdatetime_isNotNull));
-		}
-		if (leavedupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.in,
-					leavedupdatetime_in));
+					CurrentLocationEntity.LEAVEDUPDATETIME, QueryCondition.le,
+					leavedupdatetime_le));
 		}
 		if (bodystate != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.BODYSTATE,
@@ -1507,30 +1432,25 @@ public class CurrentLocationService {
 					CurrentLocationEntity.MANUALALARM, QueryCondition.in,
 					manualalarm_in));
 		}
-		if (bodyupdatetime != null) {
+		if (bodyupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.eq,
-					bodyupdatetime));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.gt,
+					bodyupdatetime_gt));
 		}
-		if (bodyupdatetime_like != null) {
+		if (bodyupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.like,
-					bodyupdatetime_like));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.ge,
+					bodyupdatetime_ge));
 		}
-		if (bodyupdatetime_isNull != null) {
+		if (bodyupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME,
-					QueryCondition.isNull, bodyupdatetime_isNull));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.lt,
+					bodyupdatetime_lt));
 		}
-		if (bodyupdatetime_isNotNull != null) {
+		if (bodyupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME,
-					QueryCondition.isNotNull, bodyupdatetime_isNotNull));
-		}
-		if (bodyupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.in,
-					bodyupdatetime_in));
+					CurrentLocationEntity.BODYUPDATETIME, QueryCondition.le,
+					bodyupdatetime_le));
 		}
 		if (moving != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.MOVING,
@@ -1552,30 +1472,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.MOVING,
 					QueryCondition.in, moving_in));
 		}
-		if (movingupdatetime != null) {
+		if (movingupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.eq,
-					movingupdatetime));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.gt,
+					movingupdatetime_gt));
 		}
-		if (movingupdatetime_like != null) {
+		if (movingupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.like, movingupdatetime_like));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.ge,
+					movingupdatetime_ge));
 		}
-		if (movingupdatetime_isNull != null) {
+		if (movingupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.isNull, movingupdatetime_isNull));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.lt,
+					movingupdatetime_lt));
 		}
-		if (movingupdatetime_isNotNull != null) {
+		if (movingupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME,
-					QueryCondition.isNotNull, movingupdatetime_isNotNull));
-		}
-		if (movingupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.in,
-					movingupdatetime_in));
+					CurrentLocationEntity.MOVINGUPDATETIME, QueryCondition.le,
+					movingupdatetime_le));
 		}
 		if (normal != null) {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.NORMAL,
@@ -1637,30 +1552,25 @@ public class CurrentLocationService {
 			qc.andCondition(new QueryCondition(CurrentLocationEntity.POWER,
 					QueryCondition.in, power_in));
 		}
-		if (devupdatetime != null) {
+		if (devupdatetime_gt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.eq,
-					devupdatetime));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.gt,
+					devupdatetime_gt));
 		}
-		if (devupdatetime_like != null) {
+		if (devupdatetime_ge != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.like,
-					devupdatetime_like));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.ge,
+					devupdatetime_ge));
 		}
-		if (devupdatetime_isNull != null) {
+		if (devupdatetime_lt != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.isNull,
-					devupdatetime_isNull));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.lt,
+					devupdatetime_lt));
 		}
-		if (devupdatetime_isNotNull != null) {
+		if (devupdatetime_le != null) {
 			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME,
-					QueryCondition.isNotNull, devupdatetime_isNotNull));
-		}
-		if (devupdatetime_in != null) {
-			qc.andCondition(new QueryCondition(
-					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.in,
-					devupdatetime_in));
+					CurrentLocationEntity.DEVUPDATETIME, QueryCondition.le,
+					devupdatetime_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {

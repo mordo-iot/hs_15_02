@@ -22,7 +22,7 @@ import com.framework.system.db.transaction.TransactionManager;
  * @Title: Service
  * @Description: 系统账号服务类
  * @author feng.gu
- * @date 2015-09-07 14:15:25
+ * @date 2015-09-07 16:19:31
  * @version V1.0
  * 
  */
@@ -185,16 +185,14 @@ public class UserService {
 		Object permissions_lt = queryMap.get("permissions_lt");
 		Object permissions_le = queryMap.get("permissions_le");
 		Object permissions_in = queryMap.get("permissions_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
-		Object lstlogindate = queryMap.get("lstlogindate");
-		Object lstlogindate_like = queryMap.get("lstlogindate_like");
-		Object lstlogindate_isNull = queryMap.get("lstlogindate_isNull");
-		Object lstlogindate_isNotNull = queryMap.get("lstlogindate_isNotNull");
-		Object lstlogindate_in = queryMap.get("lstlogindate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object lstlogindate_gt = queryMap.get("lstlogindate_gt");
+		Object lstlogindate_ge = queryMap.get("lstlogindate_ge");
+		Object lstlogindate_lt = queryMap.get("lstlogindate_lt");
+		Object lstlogindate_le = queryMap.get("lstlogindate_le");
 
 		QueryCondition qc = new QueryCondition(UserEntity.ID,
 				QueryCondition.gt, "0");
@@ -286,45 +284,37 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
 					QueryCondition.in, permissions_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
+					QueryCondition.le, createdate_le));
 		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
-		}
-		if (lstlogindate != null) {
+		if (lstlogindate_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.eq, lstlogindate));
+					QueryCondition.gt, lstlogindate_gt));
 		}
-		if (lstlogindate_like != null) {
+		if (lstlogindate_ge != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.like, lstlogindate_like));
+					QueryCondition.ge, lstlogindate_ge));
 		}
-		if (lstlogindate_isNull != null) {
+		if (lstlogindate_lt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.isNull, lstlogindate_isNull));
+					QueryCondition.lt, lstlogindate_lt));
 		}
-		if (lstlogindate_isNotNull != null) {
+		if (lstlogindate_le != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.isNotNull, lstlogindate_isNotNull));
-		}
-		if (lstlogindate_in != null) {
-			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.in, lstlogindate_in));
+					QueryCondition.le, lstlogindate_le));
 		}
 
 		list = dbManager.queryByCondition(UserEntity.class, qc);
@@ -368,16 +358,14 @@ public class UserService {
 		Object permissions_lt = queryMap.get("permissions_lt");
 		Object permissions_le = queryMap.get("permissions_le");
 		Object permissions_in = queryMap.get("permissions_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
-		Object lstlogindate = queryMap.get("lstlogindate");
-		Object lstlogindate_like = queryMap.get("lstlogindate_like");
-		Object lstlogindate_isNull = queryMap.get("lstlogindate_isNull");
-		Object lstlogindate_isNotNull = queryMap.get("lstlogindate_isNotNull");
-		Object lstlogindate_in = queryMap.get("lstlogindate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object lstlogindate_gt = queryMap.get("lstlogindate_gt");
+		Object lstlogindate_ge = queryMap.get("lstlogindate_ge");
+		Object lstlogindate_lt = queryMap.get("lstlogindate_lt");
+		Object lstlogindate_le = queryMap.get("lstlogindate_le");
 
 		QueryCondition qc = new QueryCondition(UserEntity.ID,
 				QueryCondition.gt, "0");
@@ -469,45 +457,37 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
 					QueryCondition.in, permissions_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
+					QueryCondition.le, createdate_le));
 		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
-		}
-		if (lstlogindate != null) {
+		if (lstlogindate_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.eq, lstlogindate));
+					QueryCondition.gt, lstlogindate_gt));
 		}
-		if (lstlogindate_like != null) {
+		if (lstlogindate_ge != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.like, lstlogindate_like));
+					QueryCondition.ge, lstlogindate_ge));
 		}
-		if (lstlogindate_isNull != null) {
+		if (lstlogindate_lt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.isNull, lstlogindate_isNull));
+					QueryCondition.lt, lstlogindate_lt));
 		}
-		if (lstlogindate_isNotNull != null) {
+		if (lstlogindate_le != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.isNotNull, lstlogindate_isNotNull));
-		}
-		if (lstlogindate_in != null) {
-			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.in, lstlogindate_in));
+					QueryCondition.le, lstlogindate_le));
 		}
 
 		pagelist = dbManager.queryByCondition(UserEntity.class, qc, pageno,
@@ -585,16 +565,14 @@ public class UserService {
 		Object permissions_lt = queryMap.get("permissions_lt");
 		Object permissions_le = queryMap.get("permissions_le");
 		Object permissions_in = queryMap.get("permissions_in");
-		Object createdate = queryMap.get("createdate");
-		Object createdate_like = queryMap.get("createdate_like");
-		Object createdate_isNull = queryMap.get("createdate_isNull");
-		Object createdate_isNotNull = queryMap.get("createdate_isNotNull");
-		Object createdate_in = queryMap.get("createdate_in");
-		Object lstlogindate = queryMap.get("lstlogindate");
-		Object lstlogindate_like = queryMap.get("lstlogindate_like");
-		Object lstlogindate_isNull = queryMap.get("lstlogindate_isNull");
-		Object lstlogindate_isNotNull = queryMap.get("lstlogindate_isNotNull");
-		Object lstlogindate_in = queryMap.get("lstlogindate_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object lstlogindate_gt = queryMap.get("lstlogindate_gt");
+		Object lstlogindate_ge = queryMap.get("lstlogindate_ge");
+		Object lstlogindate_lt = queryMap.get("lstlogindate_lt");
+		Object lstlogindate_le = queryMap.get("lstlogindate_le");
 
 		QueryCondition qc = new QueryCondition(UserEntity.ID,
 				QueryCondition.gt, "0");
@@ -686,45 +664,37 @@ public class UserService {
 			qc.andCondition(new QueryCondition(UserEntity.PERMISSIONS,
 					QueryCondition.in, permissions_in));
 		}
-		if (createdate != null) {
+		if (createdate_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.eq, createdate));
+					QueryCondition.gt, createdate_gt));
 		}
-		if (createdate_like != null) {
+		if (createdate_ge != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.like, createdate_like));
+					QueryCondition.ge, createdate_ge));
 		}
-		if (createdate_isNull != null) {
+		if (createdate_lt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.isNull, createdate_isNull));
+					QueryCondition.lt, createdate_lt));
 		}
-		if (createdate_isNotNull != null) {
+		if (createdate_le != null) {
 			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.isNotNull, createdate_isNotNull));
+					QueryCondition.le, createdate_le));
 		}
-		if (createdate_in != null) {
-			qc.andCondition(new QueryCondition(UserEntity.CREATEDATE,
-					QueryCondition.in, createdate_in));
-		}
-		if (lstlogindate != null) {
+		if (lstlogindate_gt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.eq, lstlogindate));
+					QueryCondition.gt, lstlogindate_gt));
 		}
-		if (lstlogindate_like != null) {
+		if (lstlogindate_ge != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.like, lstlogindate_like));
+					QueryCondition.ge, lstlogindate_ge));
 		}
-		if (lstlogindate_isNull != null) {
+		if (lstlogindate_lt != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.isNull, lstlogindate_isNull));
+					QueryCondition.lt, lstlogindate_lt));
 		}
-		if (lstlogindate_isNotNull != null) {
+		if (lstlogindate_le != null) {
 			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.isNotNull, lstlogindate_isNotNull));
-		}
-		if (lstlogindate_in != null) {
-			qc.andCondition(new QueryCondition(UserEntity.LSTLOGINDATE,
-					QueryCondition.in, lstlogindate_in));
+					QueryCondition.le, lstlogindate_le));
 		}
 
 		if (qc.getQueryNextCondition() != null) {
