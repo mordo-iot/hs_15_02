@@ -77,7 +77,7 @@ public class AlarmCurrentService {
 	}
 
 	/**
-	 * 批量保存记录
+	 * 批量保存
 	 * 
 	 * @param list
 	 */
