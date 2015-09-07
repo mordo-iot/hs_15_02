@@ -1,22 +1,20 @@
 package fly.service.alarmCurrent;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
-import fly.entity.dev.DevEntity;
-
-import fly.entity.alarmCurrent.AlarmCurrentEntity;
 import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
+import com.framework.system.db.query.OrderByCondition;
 import com.framework.system.db.query.PageList;
 import com.framework.system.db.query.QueryCondition;
 import com.framework.system.db.transaction.TransactionManager;
+
+import fly.entity.alarmCurrent.AlarmCurrentEntity;
+import fly.entity.dev.DevEntity;
 
 /**
  * @Title: Service
@@ -361,8 +359,8 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.le, handledate_le));
 		}
-
-		list = dbManager.queryByCondition(AlarmCurrentEntity.class, qc);
+		OrderByCondition oc = new OrderByCondition(AlarmCurrentEntity.CREATEDATE,OrderByCondition.desc);
+		list = dbManager.queryByConditions(AlarmCurrentEntity.class, qc, oc);
 		return list;
 	}
 
@@ -589,9 +587,8 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.le, handledate_le));
 		}
-
-		pagelist = dbManager.queryByCondition(AlarmCurrentEntity.class, qc,
-				pageno, pagesize);
+		OrderByCondition oc = new OrderByCondition(AlarmCurrentEntity.CREATEDATE,OrderByCondition.desc);
+		pagelist = dbManager.queryByConditions(AlarmCurrentEntity.class, qc, oc, pageno, pagesize);
 		return pagelist;
 	}
 
