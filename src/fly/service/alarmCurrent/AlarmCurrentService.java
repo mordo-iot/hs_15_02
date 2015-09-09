@@ -364,8 +364,8 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.le, handledate_le));
 		}
-
-		list = dbManager.queryByCondition(AlarmCurrentEntity.class, qc);
+		OrderByCondition oc = new OrderByCondition(AlarmCurrentEntity.CREATEDATE,OrderByCondition.desc);
+		list = dbManager.queryByConditions(AlarmCurrentEntity.class, qc, oc);
 		return list;
 	}
 
@@ -866,9 +866,8 @@ public class AlarmCurrentService {
 			qc.andCondition(new QueryCondition(AlarmCurrentEntity.HANDLEDATE,
 					QueryCondition.le, handledate_le));
 		}
-
-		pagelist = dbManager.queryByCondition(AlarmCurrentEntity.class, qc,
-				pageno, pagesize);
+		OrderByCondition oc = new OrderByCondition(AlarmCurrentEntity.CREATEDATE,OrderByCondition.desc);
+		pagelist = dbManager.queryByConditions(AlarmCurrentEntity.class, qc, oc, pageno, pagesize);
 		return pagelist;
 	}
 
