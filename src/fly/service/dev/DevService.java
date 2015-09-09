@@ -38,13 +38,16 @@ import com.framework.system.db.connect.DbUtils;
 import com.framework.system.db.manager.DBManager;
 import com.framework.system.db.query.PageList;
 import com.framework.system.db.query.QueryCondition;
+import com.framework.system.db.query.OrderByCondition;
+import com.framework.system.db.query.OrderVO;
 import com.framework.system.db.transaction.TransactionManager;
+import com.framework.system.util.StringUtil;
 
 /**
  * @Title: Service
  * @Description: 设备信息服务类
  * @author feng.gu
- * @date 2015-09-07 16:19:59
+ * @date 2015-09-09 13:53:53
  * @version V1.0
  * 
  */
@@ -983,7 +986,7 @@ public class DevService {
 	}
 
 	/**
-	 * 根据条件查询记录集合（不分页）
+	 * 根据条件查询记录集合（不分页 不带排序 不级联查询）
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
@@ -1392,12 +1395,951 @@ public class DevService {
 	}
 
 	/**
-	 * 根据条件查询记录集合
+	 * 根据条件查询记录集合（不分页 带排序 带级联查询）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @param orderList
+	 *            排序条件集合
+	 * @param positionListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param parentDevShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param alarmCurrentListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param alarmHistoryListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentDoorListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentGatewayListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentKeyalarmListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentLocationListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentUrineListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentWandaiListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyDoorListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyKeyalarmListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationBodyListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationManualListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationMoveListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationPosListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyUrineListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentIrListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyIrListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentTizhengBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyTizhengBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @return
+	 */
+	public List<Object> getListByCondition(Map<String, Object> queryMap,
+			List<OrderVO> orderList, Boolean positionListShow,
+			Boolean parentDevShow, Boolean alarmCurrentListShow,
+			Boolean alarmHistoryListShow, Boolean currentBedListShow,
+			Boolean currentDoorListShow, Boolean currentGatewayListShow,
+			Boolean currentKeyalarmListShow, Boolean currentLocationListShow,
+			Boolean currentUrineListShow, Boolean currentWandaiListShow,
+			Boolean historyBedListShow, Boolean historyDoorListShow,
+			Boolean historyKeyalarmListShow,
+			Boolean historyLocationBodyListShow,
+			Boolean historyLocationManualListShow,
+			Boolean historyLocationMoveListShow,
+			Boolean historyLocationPosListShow, Boolean historyUrineListShow,
+			Boolean currentIrListShow, Boolean historyIrListShow,
+			Boolean currentTizhengBedListShow, Boolean historyTizhengBedListShow) {
+		List<Object> list = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object name = queryMap.get("name");
+		Object name_like = queryMap.get("name_like");
+		Object name_isNull = queryMap.get("name_isNull");
+		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object name_in = queryMap.get("name_in");
+		Object type = queryMap.get("type");
+		Object type_like = queryMap.get("type_like");
+		Object type_isNull = queryMap.get("type_isNull");
+		Object type_isNotNull = queryMap.get("type_isNotNull");
+		Object type_in = queryMap.get("type_in");
+		Object code = queryMap.get("code");
+		Object code_like = queryMap.get("code_like");
+		Object code_isNull = queryMap.get("code_isNull");
+		Object code_isNotNull = queryMap.get("code_isNotNull");
+		Object code_in = queryMap.get("code_in");
+		Object alarmcontent = queryMap.get("alarmcontent");
+		Object alarmcontent_like = queryMap.get("alarmcontent_like");
+		Object alarmcontent_isNull = queryMap.get("alarmcontent_isNull");
+		Object alarmcontent_isNotNull = queryMap.get("alarmcontent_isNotNull");
+		Object alarmcontent_in = queryMap.get("alarmcontent_in");
+		Object alarmdevid = queryMap.get("alarmdevid");
+		Object alarmdevid_like = queryMap.get("alarmdevid_like");
+		Object alarmdevid_isNull = queryMap.get("alarmdevid_isNull");
+		Object alarmdevid_isNotNull = queryMap.get("alarmdevid_isNotNull");
+		Object alarmdevid_in = queryMap.get("alarmdevid_in");
+		Object lightno = queryMap.get("lightno");
+		Object lightno_gt = queryMap.get("lightno_gt");
+		Object lightno_ge = queryMap.get("lightno_ge");
+		Object lightno_lt = queryMap.get("lightno_lt");
+		Object lightno_le = queryMap.get("lightno_le");
+		Object lightno_in = queryMap.get("lightno_in");
+		Object lightdevid = queryMap.get("lightdevid");
+		Object lightdevid_like = queryMap.get("lightdevid_like");
+		Object lightdevid_isNull = queryMap.get("lightdevid_isNull");
+		Object lightdevid_isNotNull = queryMap.get("lightdevid_isNotNull");
+		Object lightdevid_in = queryMap.get("lightdevid_in");
+		Object alarmphone = queryMap.get("alarmphone");
+		Object alarmphone_like = queryMap.get("alarmphone_like");
+		Object alarmphone_isNull = queryMap.get("alarmphone_isNull");
+		Object alarmphone_isNotNull = queryMap.get("alarmphone_isNotNull");
+		Object alarmphone_in = queryMap.get("alarmphone_in");
+		Object emitid = queryMap.get("emitid");
+		Object emitid_gt = queryMap.get("emitid_gt");
+		Object emitid_ge = queryMap.get("emitid_ge");
+		Object emitid_lt = queryMap.get("emitid_lt");
+		Object emitid_le = queryMap.get("emitid_le");
+		Object emitid_in = queryMap.get("emitid_in");
+		Object parentId = queryMap.get("parentId");
+		Object parentId_gt = queryMap.get("parentId_gt");
+		Object parentId_ge = queryMap.get("parentId_ge");
+		Object parentId_lt = queryMap.get("parentId_lt");
+		Object parentId_le = queryMap.get("parentId_le");
+		Object parentId_in = queryMap.get("parentId_in");
+		Object attribute = queryMap.get("attribute");
+		Object attribute_like = queryMap.get("attribute_like");
+		Object attribute_isNull = queryMap.get("attribute_isNull");
+		Object attribute_isNotNull = queryMap.get("attribute_isNotNull");
+		Object attribute_in = queryMap.get("attribute_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object updatedate_gt = queryMap.get("updatedate_gt");
+		Object updatedate_ge = queryMap.get("updatedate_ge");
+		Object updatedate_lt = queryMap.get("updatedate_lt");
+		Object updatedate_le = queryMap.get("updatedate_le");
+
+		Object positionId = queryMap.get("positionId");
+
+		QueryCondition qc = new QueryCondition(DevEntity.ID, QueryCondition.gt,
+				"0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.eq,
+					id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.gt,
+					id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.ge,
+					id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.lt,
+					id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.le,
+					id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.in,
+					id_in));
+		}
+		if (name != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.eq, name));
+		}
+		if (name_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.like, name_like));
+		}
+		if (name_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.isNull, name_isNull));
+		}
+		if (name_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.isNotNull, name_isNotNull));
+		}
+		if (name_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.in, name_in));
+		}
+		if (type != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.eq, type));
+		}
+		if (type_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.like, type_like));
+		}
+		if (type_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.isNull, type_isNull));
+		}
+		if (type_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.isNotNull, type_isNotNull));
+		}
+		if (type_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.in, type_in));
+		}
+		if (code != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.eq, code));
+		}
+		if (code_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.like, code_like));
+		}
+		if (code_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.isNull, code_isNull));
+		}
+		if (code_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.isNotNull, code_isNotNull));
+		}
+		if (code_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.in, code_in));
+		}
+		if (alarmcontent != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.eq, alarmcontent));
+		}
+		if (alarmcontent_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.like, alarmcontent_like));
+		}
+		if (alarmcontent_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.isNull, alarmcontent_isNull));
+		}
+		if (alarmcontent_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.isNotNull, alarmcontent_isNotNull));
+		}
+		if (alarmcontent_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.in, alarmcontent_in));
+		}
+		if (alarmdevid != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.eq, alarmdevid));
+		}
+		if (alarmdevid_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.like, alarmdevid_like));
+		}
+		if (alarmdevid_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.isNull, alarmdevid_isNull));
+		}
+		if (alarmdevid_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.isNotNull, alarmdevid_isNotNull));
+		}
+		if (alarmdevid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.in, alarmdevid_in));
+		}
+		if (lightno != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.eq, lightno));
+		}
+		if (lightno_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.gt, lightno_gt));
+		}
+		if (lightno_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.ge, lightno_ge));
+		}
+		if (lightno_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.lt, lightno_lt));
+		}
+		if (lightno_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.le, lightno_le));
+		}
+		if (lightno_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.in, lightno_in));
+		}
+		if (lightdevid != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.eq, lightdevid));
+		}
+		if (lightdevid_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.like, lightdevid_like));
+		}
+		if (lightdevid_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.isNull, lightdevid_isNull));
+		}
+		if (lightdevid_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.isNotNull, lightdevid_isNotNull));
+		}
+		if (lightdevid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.in, lightdevid_in));
+		}
+		if (alarmphone != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.eq, alarmphone));
+		}
+		if (alarmphone_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.like, alarmphone_like));
+		}
+		if (alarmphone_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.isNull, alarmphone_isNull));
+		}
+		if (alarmphone_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.isNotNull, alarmphone_isNotNull));
+		}
+		if (alarmphone_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.in, alarmphone_in));
+		}
+		if (emitid != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.eq, emitid));
+		}
+		if (emitid_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.gt, emitid_gt));
+		}
+		if (emitid_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.ge, emitid_ge));
+		}
+		if (emitid_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.lt, emitid_lt));
+		}
+		if (emitid_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.le, emitid_le));
+		}
+		if (emitid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.in, emitid_in));
+		}
+		if (parentId != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.eq, parentId));
+		}
+		if (parentId_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.gt, parentId_gt));
+		}
+		if (parentId_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.ge, parentId_ge));
+		}
+		if (parentId_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.lt, parentId_lt));
+		}
+		if (parentId_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.le, parentId_le));
+		}
+		if (parentId_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.in, parentId_in));
+		}
+		if (attribute != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.eq, attribute));
+		}
+		if (attribute_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.like, attribute_like));
+		}
+		if (attribute_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.isNull, attribute_isNull));
+		}
+		if (attribute_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.isNotNull, attribute_isNotNull));
+		}
+		if (attribute_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.in, attribute_in));
+		}
+		if (createdate_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.gt, createdate_gt));
+		}
+		if (createdate_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.ge, createdate_ge));
+		}
+		if (createdate_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.lt, createdate_lt));
+		}
+		if (createdate_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.le, createdate_le));
+		}
+		if (updatedate_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.gt, updatedate_gt));
+		}
+		if (updatedate_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.ge, updatedate_ge));
+		}
+		if (updatedate_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.lt, updatedate_lt));
+		}
+		if (updatedate_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.le, updatedate_le));
+		}
+
+		if (positionId != null) {
+			QueryCondition qc1 = new QueryCondition(
+					DevPositionEntity.POSITION_ID, QueryCondition.eq,
+					positionId);
+			List<Object> rlist = dbManager.queryByCondition(
+					DevPositionEntity.class, qc1);
+			if (rlist != null && rlist.size() > 0) {
+				String strIds = "";
+				for (int i = 0; i < rlist.size(); i++) {
+					DevPositionEntity entity = (DevPositionEntity) rlist.get(i);
+					Integer temp = entity.getDevId();
+					if (temp != null) {
+						if (i == rlist.size() - 1)
+							strIds = strIds + temp;
+						else {
+							strIds = strIds + temp + ",";
+						}
+					}
+				}
+				if (strIds != null && !"".equals(strIds)) {
+					qc.andCondition(new QueryCondition(DevEntity.ID,
+							QueryCondition.in, strIds));
+				}
+			} else {
+				return list;
+			}
+		}
+		OrderByCondition oc = null;
+		if (orderList != null && orderList.size() > 0) {
+			for (int i = 0; i < orderList.size(); i++) {
+				OrderVO order = orderList.get(i);
+				String orderColumnt = null;
+				String orderType = null;
+				if (order.getName() != null && !"".equals(order.getName())) {
+					orderColumnt = StringUtil.formatFieldToColumnt(order
+							.getName());
+					orderType = order.getOrderType();
+					if (orderType == null || "".equals(orderType.trim())) {
+						orderType = OrderByCondition.desc;
+					}
+					if (i == 0) {
+						oc = new OrderByCondition(orderColumnt, orderType);
+					} else {
+						oc.orderByCondition(new OrderByCondition(orderColumnt,
+								orderType));
+					}
+				}
+
+			}
+		}
+		list = dbManager.queryByConditions(DevEntity.class, qc, oc);
+		int a = 0;
+		if (positionListShow) {
+			a++;
+		}
+		if (alarmCurrentListShow) {
+			a++;
+		}
+		if (alarmHistoryListShow) {
+			a++;
+		}
+		if (currentBedListShow) {
+			a++;
+		}
+		if (currentDoorListShow) {
+			a++;
+		}
+		if (currentGatewayListShow) {
+			a++;
+		}
+		if (currentKeyalarmListShow) {
+			a++;
+		}
+		if (currentLocationListShow) {
+			a++;
+		}
+		if (currentUrineListShow) {
+			a++;
+		}
+		if (currentWandaiListShow) {
+			a++;
+		}
+		if (historyBedListShow) {
+			a++;
+		}
+		if (historyDoorListShow) {
+			a++;
+		}
+		if (historyKeyalarmListShow) {
+			a++;
+		}
+		if (historyLocationBodyListShow) {
+			a++;
+		}
+		if (historyLocationManualListShow) {
+			a++;
+		}
+		if (historyLocationMoveListShow) {
+			a++;
+		}
+		if (historyLocationPosListShow) {
+			a++;
+		}
+		if (historyUrineListShow) {
+			a++;
+		}
+		if (currentIrListShow) {
+			a++;
+		}
+		if (historyIrListShow) {
+			a++;
+		}
+		if (currentTizhengBedListShow) {
+			a++;
+		}
+		if (historyTizhengBedListShow) {
+			a++;
+		}
+		if (a > 0 && list != null && list.size() > 0) {
+			List<Object> result = new ArrayList<Object>();
+			for (int i = 0; i < list.size(); i++) {
+				DevEntity obj = (DevEntity) list.get(i);
+				// 查询关联内容
+				if (positionListShow != null && positionListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> rlist = dbManager.searchListByColumn(
+							DevPositionEntity.class, DevPositionEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (rlist != null && rlist.size() > 0) {
+						for (Object robj : rlist) {
+							DevPositionEntity robject = (DevPositionEntity) robj;
+							Integer objId = robject.getPositionId();
+							if (objId != null) {
+								PositionEntity position = (PositionEntity) dbManager
+										.getById(objId, PositionEntity.class);
+								List<PositionEntity> positionList = obj
+										.getPositionList();
+								if (positionList == null
+										|| positionList.size() == 0) {
+									positionList = new ArrayList<PositionEntity>();
+								}
+								positionList.add(position);
+								obj.setPositionList(positionList);
+							}
+						}
+					}
+				}
+				// 查询关联内容
+				if (parentDevShow != null && parentDevShow.booleanValue()
+						&& obj != null && obj.getParentId() > 0) {
+					DevEntity dev = (DevEntity) dbManager.getById(
+							obj.getParentId(), DevEntity.class);
+					obj.setParentDev(dev);
+				}
+				// 查询关联内容
+				if (alarmCurrentListShow != null
+						&& alarmCurrentListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							AlarmCurrentEntity.class,
+							AlarmCurrentEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<AlarmCurrentEntity> alarmCurrentList = new ArrayList<AlarmCurrentEntity>();
+						for (Object o : objList) {
+							alarmCurrentList.add((AlarmCurrentEntity) o);
+						}
+						obj.setAlarmCurrentList(alarmCurrentList);
+					}
+				}
+				// 查询关联内容
+				if (alarmHistoryListShow != null
+						&& alarmHistoryListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							AlarmHistoryEntity.class,
+							AlarmHistoryEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<AlarmHistoryEntity> alarmHistoryList = new ArrayList<AlarmHistoryEntity>();
+						for (Object o : objList) {
+							alarmHistoryList.add((AlarmHistoryEntity) o);
+						}
+						obj.setAlarmHistoryList(alarmHistoryList);
+					}
+				}
+				// 查询关联内容
+				if (currentBedListShow != null
+						&& currentBedListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentBedEntity.class, CurrentBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentBedEntity> currentBedList = new ArrayList<CurrentBedEntity>();
+						for (Object o : objList) {
+							currentBedList.add((CurrentBedEntity) o);
+						}
+						obj.setCurrentBedList(currentBedList);
+					}
+				}
+				// 查询关联内容
+				if (currentDoorListShow != null
+						&& currentDoorListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentDoorEntity.class, CurrentDoorEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentDoorEntity> currentDoorList = new ArrayList<CurrentDoorEntity>();
+						for (Object o : objList) {
+							currentDoorList.add((CurrentDoorEntity) o);
+						}
+						obj.setCurrentDoorList(currentDoorList);
+					}
+				}
+				// 查询关联内容
+				if (currentGatewayListShow != null
+						&& currentGatewayListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentGatewayEntity.class,
+							CurrentGatewayEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentGatewayEntity> currentGatewayList = new ArrayList<CurrentGatewayEntity>();
+						for (Object o : objList) {
+							currentGatewayList.add((CurrentGatewayEntity) o);
+						}
+						obj.setCurrentGatewayList(currentGatewayList);
+					}
+				}
+				// 查询关联内容
+				if (currentKeyalarmListShow != null
+						&& currentKeyalarmListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentKeyalarmEntity.class,
+							CurrentKeyalarmEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentKeyalarmEntity> currentKeyalarmList = new ArrayList<CurrentKeyalarmEntity>();
+						for (Object o : objList) {
+							currentKeyalarmList.add((CurrentKeyalarmEntity) o);
+						}
+						obj.setCurrentKeyalarmList(currentKeyalarmList);
+					}
+				}
+				// 查询关联内容
+				if (currentLocationListShow != null
+						&& currentLocationListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentLocationEntity.class,
+							CurrentLocationEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentLocationEntity> currentLocationList = new ArrayList<CurrentLocationEntity>();
+						for (Object o : objList) {
+							currentLocationList.add((CurrentLocationEntity) o);
+						}
+						obj.setCurrentLocationList(currentLocationList);
+					}
+				}
+				// 查询关联内容
+				if (currentUrineListShow != null
+						&& currentUrineListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentUrineEntity.class,
+							CurrentUrineEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentUrineEntity> currentUrineList = new ArrayList<CurrentUrineEntity>();
+						for (Object o : objList) {
+							currentUrineList.add((CurrentUrineEntity) o);
+						}
+						obj.setCurrentUrineList(currentUrineList);
+					}
+				}
+				// 查询关联内容
+				if (currentWandaiListShow != null
+						&& currentWandaiListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentWandaiEntity.class,
+							CurrentWandaiEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentWandaiEntity> currentWandaiList = new ArrayList<CurrentWandaiEntity>();
+						for (Object o : objList) {
+							currentWandaiList.add((CurrentWandaiEntity) o);
+						}
+						obj.setCurrentWandaiList(currentWandaiList);
+					}
+				}
+				// 查询关联内容
+				if (historyBedListShow != null
+						&& historyBedListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryBedEntity.class, HistoryBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryBedEntity> historyBedList = new ArrayList<HistoryBedEntity>();
+						for (Object o : objList) {
+							historyBedList.add((HistoryBedEntity) o);
+						}
+						obj.setHistoryBedList(historyBedList);
+					}
+				}
+				// 查询关联内容
+				if (historyDoorListShow != null
+						&& historyDoorListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryDoorEntity.class, HistoryDoorEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryDoorEntity> historyDoorList = new ArrayList<HistoryDoorEntity>();
+						for (Object o : objList) {
+							historyDoorList.add((HistoryDoorEntity) o);
+						}
+						obj.setHistoryDoorList(historyDoorList);
+					}
+				}
+				// 查询关联内容
+				if (historyKeyalarmListShow != null
+						&& historyKeyalarmListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryKeyalarmEntity.class,
+							HistoryKeyalarmEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryKeyalarmEntity> historyKeyalarmList = new ArrayList<HistoryKeyalarmEntity>();
+						for (Object o : objList) {
+							historyKeyalarmList.add((HistoryKeyalarmEntity) o);
+						}
+						obj.setHistoryKeyalarmList(historyKeyalarmList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationBodyListShow != null
+						&& historyLocationBodyListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationBodyEntity.class,
+							HistoryLocationBodyEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationBodyEntity> historyLocationBodyList = new ArrayList<HistoryLocationBodyEntity>();
+						for (Object o : objList) {
+							historyLocationBodyList
+									.add((HistoryLocationBodyEntity) o);
+						}
+						obj.setHistoryLocationBodyList(historyLocationBodyList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationManualListShow != null
+						&& historyLocationManualListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationManualEntity.class,
+							HistoryLocationManualEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationManualEntity> historyLocationManualList = new ArrayList<HistoryLocationManualEntity>();
+						for (Object o : objList) {
+							historyLocationManualList
+									.add((HistoryLocationManualEntity) o);
+						}
+						obj.setHistoryLocationManualList(historyLocationManualList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationMoveListShow != null
+						&& historyLocationMoveListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationMoveEntity.class,
+							HistoryLocationMoveEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationMoveEntity> historyLocationMoveList = new ArrayList<HistoryLocationMoveEntity>();
+						for (Object o : objList) {
+							historyLocationMoveList
+									.add((HistoryLocationMoveEntity) o);
+						}
+						obj.setHistoryLocationMoveList(historyLocationMoveList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationPosListShow != null
+						&& historyLocationPosListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationPosEntity.class,
+							HistoryLocationPosEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationPosEntity> historyLocationPosList = new ArrayList<HistoryLocationPosEntity>();
+						for (Object o : objList) {
+							historyLocationPosList
+									.add((HistoryLocationPosEntity) o);
+						}
+						obj.setHistoryLocationPosList(historyLocationPosList);
+					}
+				}
+				// 查询关联内容
+				if (historyUrineListShow != null
+						&& historyUrineListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryUrineEntity.class,
+							HistoryUrineEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryUrineEntity> historyUrineList = new ArrayList<HistoryUrineEntity>();
+						for (Object o : objList) {
+							historyUrineList.add((HistoryUrineEntity) o);
+						}
+						obj.setHistoryUrineList(historyUrineList);
+					}
+				}
+				// 查询关联内容
+				if (currentIrListShow != null
+						&& currentIrListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentIrEntity.class, CurrentIrEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentIrEntity> currentIrList = new ArrayList<CurrentIrEntity>();
+						for (Object o : objList) {
+							currentIrList.add((CurrentIrEntity) o);
+						}
+						obj.setCurrentIrList(currentIrList);
+					}
+				}
+				// 查询关联内容
+				if (historyIrListShow != null
+						&& historyIrListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryIrEntity.class, HistoryIrEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryIrEntity> historyIrList = new ArrayList<HistoryIrEntity>();
+						for (Object o : objList) {
+							historyIrList.add((HistoryIrEntity) o);
+						}
+						obj.setHistoryIrList(historyIrList);
+					}
+				}
+				// 查询关联内容
+				if (currentTizhengBedListShow != null
+						&& currentTizhengBedListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentTizhengBedEntity.class,
+							CurrentTizhengBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentTizhengBedEntity> currentTizhengBedList = new ArrayList<CurrentTizhengBedEntity>();
+						for (Object o : objList) {
+							currentTizhengBedList
+									.add((CurrentTizhengBedEntity) o);
+						}
+						obj.setCurrentTizhengBedList(currentTizhengBedList);
+					}
+				}
+				// 查询关联内容
+				if (historyTizhengBedListShow != null
+						&& historyTizhengBedListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryTizhengBedEntity.class,
+							HistoryTizhengBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryTizhengBedEntity> historyTizhengBedList = new ArrayList<HistoryTizhengBedEntity>();
+						for (Object o : objList) {
+							historyTizhengBedList
+									.add((HistoryTizhengBedEntity) o);
+						}
+						obj.setHistoryTizhengBedList(historyTizhengBedList);
+					}
+				}
+				result.add(obj);
+			}
+			list = result;
+		}
+		return list;
+	}
+
+	/**
+	 * 根据条件查询记录集合（带分页 不带排序 不级联查询）
 	 * 
 	 * @param queryMap
 	 *            查询条件集合
 	 * @param pageno
+	 *            查询页码
 	 * @param pagesize
+	 *            查询每页记录条数
 	 * @return
 	 */
 	public PageList getListByCondition(Map<String, Object> queryMap,
@@ -1801,6 +2743,949 @@ public class DevService {
 		}
 		pagelist = dbManager.queryByCondition(DevEntity.class, qc, pageno,
 				pagesize);
+		return pagelist;
+	}
+
+	/**
+	 * 根据条件查询记录集合（带分页 带排序 带级联查询）
+	 * 
+	 * @param queryMap
+	 *            查询条件集合
+	 * @param orderList
+	 *            排序条件集合
+	 * @param pageno
+	 *            查询页码
+	 * @param pagesize
+	 *            查询每页记录条数
+	 * @param positionListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param parentDevShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param alarmCurrentListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param alarmHistoryListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentDoorListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentGatewayListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentKeyalarmListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentLocationListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentUrineListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentWandaiListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyDoorListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyKeyalarmListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationBodyListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationManualListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationMoveListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyLocationPosListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyUrineListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentIrListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyIrListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param currentTizhengBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @param historyTizhengBedListShow
+	 *            是否查询关联信息,默认false(当为true时注意效率)
+	 * @return
+	 */
+	public PageList getListByCondition(Map<String, Object> queryMap,
+			List<OrderVO> orderList, int pageno, int pagesize,
+			Boolean positionListShow, Boolean parentDevShow,
+			Boolean alarmCurrentListShow, Boolean alarmHistoryListShow,
+			Boolean currentBedListShow, Boolean currentDoorListShow,
+			Boolean currentGatewayListShow, Boolean currentKeyalarmListShow,
+			Boolean currentLocationListShow, Boolean currentUrineListShow,
+			Boolean currentWandaiListShow, Boolean historyBedListShow,
+			Boolean historyDoorListShow, Boolean historyKeyalarmListShow,
+			Boolean historyLocationBodyListShow,
+			Boolean historyLocationManualListShow,
+			Boolean historyLocationMoveListShow,
+			Boolean historyLocationPosListShow, Boolean historyUrineListShow,
+			Boolean currentIrListShow, Boolean historyIrListShow,
+			Boolean currentTizhengBedListShow, Boolean historyTizhengBedListShow) {
+		PageList pagelist = null;
+		if (queryMap == null) {
+			queryMap = new HashMap<String, Object>();
+		}
+		Object id = queryMap.get("id");
+		Object id_gt = queryMap.get("id_gt");
+		Object id_ge = queryMap.get("id_ge");
+		Object id_lt = queryMap.get("id_lt");
+		Object id_le = queryMap.get("id_le");
+		Object id_in = queryMap.get("id_in");
+		Object name = queryMap.get("name");
+		Object name_like = queryMap.get("name_like");
+		Object name_isNull = queryMap.get("name_isNull");
+		Object name_isNotNull = queryMap.get("name_isNotNull");
+		Object name_in = queryMap.get("name_in");
+		Object type = queryMap.get("type");
+		Object type_like = queryMap.get("type_like");
+		Object type_isNull = queryMap.get("type_isNull");
+		Object type_isNotNull = queryMap.get("type_isNotNull");
+		Object type_in = queryMap.get("type_in");
+		Object code = queryMap.get("code");
+		Object code_like = queryMap.get("code_like");
+		Object code_isNull = queryMap.get("code_isNull");
+		Object code_isNotNull = queryMap.get("code_isNotNull");
+		Object code_in = queryMap.get("code_in");
+		Object alarmcontent = queryMap.get("alarmcontent");
+		Object alarmcontent_like = queryMap.get("alarmcontent_like");
+		Object alarmcontent_isNull = queryMap.get("alarmcontent_isNull");
+		Object alarmcontent_isNotNull = queryMap.get("alarmcontent_isNotNull");
+		Object alarmcontent_in = queryMap.get("alarmcontent_in");
+		Object alarmdevid = queryMap.get("alarmdevid");
+		Object alarmdevid_like = queryMap.get("alarmdevid_like");
+		Object alarmdevid_isNull = queryMap.get("alarmdevid_isNull");
+		Object alarmdevid_isNotNull = queryMap.get("alarmdevid_isNotNull");
+		Object alarmdevid_in = queryMap.get("alarmdevid_in");
+		Object lightno = queryMap.get("lightno");
+		Object lightno_gt = queryMap.get("lightno_gt");
+		Object lightno_ge = queryMap.get("lightno_ge");
+		Object lightno_lt = queryMap.get("lightno_lt");
+		Object lightno_le = queryMap.get("lightno_le");
+		Object lightno_in = queryMap.get("lightno_in");
+		Object lightdevid = queryMap.get("lightdevid");
+		Object lightdevid_like = queryMap.get("lightdevid_like");
+		Object lightdevid_isNull = queryMap.get("lightdevid_isNull");
+		Object lightdevid_isNotNull = queryMap.get("lightdevid_isNotNull");
+		Object lightdevid_in = queryMap.get("lightdevid_in");
+		Object alarmphone = queryMap.get("alarmphone");
+		Object alarmphone_like = queryMap.get("alarmphone_like");
+		Object alarmphone_isNull = queryMap.get("alarmphone_isNull");
+		Object alarmphone_isNotNull = queryMap.get("alarmphone_isNotNull");
+		Object alarmphone_in = queryMap.get("alarmphone_in");
+		Object emitid = queryMap.get("emitid");
+		Object emitid_gt = queryMap.get("emitid_gt");
+		Object emitid_ge = queryMap.get("emitid_ge");
+		Object emitid_lt = queryMap.get("emitid_lt");
+		Object emitid_le = queryMap.get("emitid_le");
+		Object emitid_in = queryMap.get("emitid_in");
+		Object parentId = queryMap.get("parentId");
+		Object parentId_gt = queryMap.get("parentId_gt");
+		Object parentId_ge = queryMap.get("parentId_ge");
+		Object parentId_lt = queryMap.get("parentId_lt");
+		Object parentId_le = queryMap.get("parentId_le");
+		Object parentId_in = queryMap.get("parentId_in");
+		Object attribute = queryMap.get("attribute");
+		Object attribute_like = queryMap.get("attribute_like");
+		Object attribute_isNull = queryMap.get("attribute_isNull");
+		Object attribute_isNotNull = queryMap.get("attribute_isNotNull");
+		Object attribute_in = queryMap.get("attribute_in");
+		Object createdate_gt = queryMap.get("createdate_gt");
+		Object createdate_ge = queryMap.get("createdate_ge");
+		Object createdate_lt = queryMap.get("createdate_lt");
+		Object createdate_le = queryMap.get("createdate_le");
+		Object updatedate_gt = queryMap.get("updatedate_gt");
+		Object updatedate_ge = queryMap.get("updatedate_ge");
+		Object updatedate_lt = queryMap.get("updatedate_lt");
+		Object updatedate_le = queryMap.get("updatedate_le");
+
+		Object positionId = queryMap.get("positionId");
+
+		QueryCondition qc = new QueryCondition(DevEntity.ID, QueryCondition.gt,
+				"0");
+		if (id != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.eq,
+					id));
+		}
+		if (id_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.gt,
+					id_gt));
+		}
+		if (id_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.ge,
+					id_ge));
+		}
+		if (id_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.lt,
+					id_lt));
+		}
+		if (id_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.le,
+					id_le));
+		}
+		if (id_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ID, QueryCondition.in,
+					id_in));
+		}
+		if (name != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.eq, name));
+		}
+		if (name_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.like, name_like));
+		}
+		if (name_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.isNull, name_isNull));
+		}
+		if (name_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.isNotNull, name_isNotNull));
+		}
+		if (name_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.NAME,
+					QueryCondition.in, name_in));
+		}
+		if (type != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.eq, type));
+		}
+		if (type_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.like, type_like));
+		}
+		if (type_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.isNull, type_isNull));
+		}
+		if (type_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.isNotNull, type_isNotNull));
+		}
+		if (type_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.TYPE,
+					QueryCondition.in, type_in));
+		}
+		if (code != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.eq, code));
+		}
+		if (code_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.like, code_like));
+		}
+		if (code_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.isNull, code_isNull));
+		}
+		if (code_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.isNotNull, code_isNotNull));
+		}
+		if (code_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CODE,
+					QueryCondition.in, code_in));
+		}
+		if (alarmcontent != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.eq, alarmcontent));
+		}
+		if (alarmcontent_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.like, alarmcontent_like));
+		}
+		if (alarmcontent_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.isNull, alarmcontent_isNull));
+		}
+		if (alarmcontent_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.isNotNull, alarmcontent_isNotNull));
+		}
+		if (alarmcontent_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMCONTENT,
+					QueryCondition.in, alarmcontent_in));
+		}
+		if (alarmdevid != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.eq, alarmdevid));
+		}
+		if (alarmdevid_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.like, alarmdevid_like));
+		}
+		if (alarmdevid_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.isNull, alarmdevid_isNull));
+		}
+		if (alarmdevid_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.isNotNull, alarmdevid_isNotNull));
+		}
+		if (alarmdevid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMDEVID,
+					QueryCondition.in, alarmdevid_in));
+		}
+		if (lightno != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.eq, lightno));
+		}
+		if (lightno_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.gt, lightno_gt));
+		}
+		if (lightno_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.ge, lightno_ge));
+		}
+		if (lightno_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.lt, lightno_lt));
+		}
+		if (lightno_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.le, lightno_le));
+		}
+		if (lightno_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTNO,
+					QueryCondition.in, lightno_in));
+		}
+		if (lightdevid != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.eq, lightdevid));
+		}
+		if (lightdevid_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.like, lightdevid_like));
+		}
+		if (lightdevid_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.isNull, lightdevid_isNull));
+		}
+		if (lightdevid_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.isNotNull, lightdevid_isNotNull));
+		}
+		if (lightdevid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.LIGHTDEVID,
+					QueryCondition.in, lightdevid_in));
+		}
+		if (alarmphone != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.eq, alarmphone));
+		}
+		if (alarmphone_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.like, alarmphone_like));
+		}
+		if (alarmphone_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.isNull, alarmphone_isNull));
+		}
+		if (alarmphone_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.isNotNull, alarmphone_isNotNull));
+		}
+		if (alarmphone_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ALARMPHONE,
+					QueryCondition.in, alarmphone_in));
+		}
+		if (emitid != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.eq, emitid));
+		}
+		if (emitid_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.gt, emitid_gt));
+		}
+		if (emitid_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.ge, emitid_ge));
+		}
+		if (emitid_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.lt, emitid_lt));
+		}
+		if (emitid_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.le, emitid_le));
+		}
+		if (emitid_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.EMITID,
+					QueryCondition.in, emitid_in));
+		}
+		if (parentId != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.eq, parentId));
+		}
+		if (parentId_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.gt, parentId_gt));
+		}
+		if (parentId_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.ge, parentId_ge));
+		}
+		if (parentId_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.lt, parentId_lt));
+		}
+		if (parentId_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.le, parentId_le));
+		}
+		if (parentId_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.PARENT_ID,
+					QueryCondition.in, parentId_in));
+		}
+		if (attribute != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.eq, attribute));
+		}
+		if (attribute_like != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.like, attribute_like));
+		}
+		if (attribute_isNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.isNull, attribute_isNull));
+		}
+		if (attribute_isNotNull != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.isNotNull, attribute_isNotNull));
+		}
+		if (attribute_in != null) {
+			qc.andCondition(new QueryCondition(DevEntity.ATTRIBUTE,
+					QueryCondition.in, attribute_in));
+		}
+		if (createdate_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.gt, createdate_gt));
+		}
+		if (createdate_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.ge, createdate_ge));
+		}
+		if (createdate_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.lt, createdate_lt));
+		}
+		if (createdate_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.CREATEDATE,
+					QueryCondition.le, createdate_le));
+		}
+		if (updatedate_gt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.gt, updatedate_gt));
+		}
+		if (updatedate_ge != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.ge, updatedate_ge));
+		}
+		if (updatedate_lt != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.lt, updatedate_lt));
+		}
+		if (updatedate_le != null) {
+			qc.andCondition(new QueryCondition(DevEntity.UPDATEDATE,
+					QueryCondition.le, updatedate_le));
+		}
+
+		if (positionId != null) {
+			QueryCondition qc1 = new QueryCondition(
+					DevPositionEntity.POSITION_ID, QueryCondition.eq,
+					positionId);
+			List<Object> rlist = dbManager.queryByCondition(
+					DevPositionEntity.class, qc1);
+			if (rlist != null && rlist.size() > 0) {
+				String strIds = "";
+				for (int i = 0; i < rlist.size(); i++) {
+					DevPositionEntity entity = (DevPositionEntity) rlist.get(i);
+					Integer temp = entity.getDevId();
+					if (temp != null) {
+						if (i == rlist.size() - 1)
+							strIds = strIds + temp;
+						else {
+							strIds = strIds + temp + ",";
+						}
+					}
+				}
+				if (strIds != null && !"".equals(strIds)) {
+					qc.andCondition(new QueryCondition(DevEntity.ID,
+							QueryCondition.in, strIds));
+				}
+			} else {
+				return pagelist;
+			}
+		}
+		OrderByCondition oc = null;
+		if (orderList != null && orderList.size() > 0) {
+			for (int i = 0; i < orderList.size(); i++) {
+				OrderVO order = orderList.get(i);
+				String orderColumnt = null;
+				String orderType = null;
+				if (order.getName() != null && !"".equals(order.getName())) {
+					orderColumnt = StringUtil.formatFieldToColumnt(order
+							.getName());
+					orderType = order.getOrderType();
+					if (orderType == null || "".equals(orderType.trim())) {
+						orderType = OrderByCondition.desc;
+					}
+					if (i == 0) {
+						oc = new OrderByCondition(orderColumnt, orderType);
+					} else {
+						oc.orderByCondition(new OrderByCondition(orderColumnt,
+								orderType));
+					}
+				}
+
+			}
+		}
+		pagelist = dbManager.queryByConditions(DevEntity.class, qc, oc, pageno,
+				pagesize);
+		int a = 0;
+		if (positionListShow) {
+			a++;
+		}
+		if (alarmCurrentListShow) {
+			a++;
+		}
+		if (alarmHistoryListShow) {
+			a++;
+		}
+		if (currentBedListShow) {
+			a++;
+		}
+		if (currentDoorListShow) {
+			a++;
+		}
+		if (currentGatewayListShow) {
+			a++;
+		}
+		if (currentKeyalarmListShow) {
+			a++;
+		}
+		if (currentLocationListShow) {
+			a++;
+		}
+		if (currentUrineListShow) {
+			a++;
+		}
+		if (currentWandaiListShow) {
+			a++;
+		}
+		if (historyBedListShow) {
+			a++;
+		}
+		if (historyDoorListShow) {
+			a++;
+		}
+		if (historyKeyalarmListShow) {
+			a++;
+		}
+		if (historyLocationBodyListShow) {
+			a++;
+		}
+		if (historyLocationManualListShow) {
+			a++;
+		}
+		if (historyLocationMoveListShow) {
+			a++;
+		}
+		if (historyLocationPosListShow) {
+			a++;
+		}
+		if (historyUrineListShow) {
+			a++;
+		}
+		if (currentIrListShow) {
+			a++;
+		}
+		if (historyIrListShow) {
+			a++;
+		}
+		if (currentTizhengBedListShow) {
+			a++;
+		}
+		if (historyTizhengBedListShow) {
+			a++;
+		}
+		if (a > 0 && pagelist != null && pagelist.getResultList() != null
+				&& pagelist.getResultList().size() > 0) {
+			List<Object> result = new ArrayList<Object>();
+			for (int i = 0; i < pagelist.getResultList().size(); i++) {
+				DevEntity obj = (DevEntity) pagelist.getResultList().get(i);
+				// 查询关联内容
+				if (positionListShow != null && positionListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> rlist = dbManager.searchListByColumn(
+							DevPositionEntity.class, DevPositionEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (rlist != null && rlist.size() > 0) {
+						for (Object robj : rlist) {
+							DevPositionEntity robject = (DevPositionEntity) robj;
+							Integer objId = robject.getPositionId();
+							if (objId != null) {
+								PositionEntity position = (PositionEntity) dbManager
+										.getById(objId, PositionEntity.class);
+								List<PositionEntity> positionList = obj
+										.getPositionList();
+								if (positionList == null
+										|| positionList.size() == 0) {
+									positionList = new ArrayList<PositionEntity>();
+								}
+								positionList.add(position);
+								obj.setPositionList(positionList);
+							}
+						}
+					}
+				}
+				// 查询关联内容
+				if (parentDevShow != null && parentDevShow.booleanValue()
+						&& obj != null && obj.getParentId() > 0) {
+					DevEntity dev = (DevEntity) dbManager.getById(
+							obj.getParentId(), DevEntity.class);
+					obj.setParentDev(dev);
+				}
+				// 查询关联内容
+				if (alarmCurrentListShow != null
+						&& alarmCurrentListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							AlarmCurrentEntity.class,
+							AlarmCurrentEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<AlarmCurrentEntity> alarmCurrentList = new ArrayList<AlarmCurrentEntity>();
+						for (Object o : objList) {
+							alarmCurrentList.add((AlarmCurrentEntity) o);
+						}
+						obj.setAlarmCurrentList(alarmCurrentList);
+					}
+				}
+				// 查询关联内容
+				if (alarmHistoryListShow != null
+						&& alarmHistoryListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							AlarmHistoryEntity.class,
+							AlarmHistoryEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<AlarmHistoryEntity> alarmHistoryList = new ArrayList<AlarmHistoryEntity>();
+						for (Object o : objList) {
+							alarmHistoryList.add((AlarmHistoryEntity) o);
+						}
+						obj.setAlarmHistoryList(alarmHistoryList);
+					}
+				}
+				// 查询关联内容
+				if (currentBedListShow != null
+						&& currentBedListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentBedEntity.class, CurrentBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentBedEntity> currentBedList = new ArrayList<CurrentBedEntity>();
+						for (Object o : objList) {
+							currentBedList.add((CurrentBedEntity) o);
+						}
+						obj.setCurrentBedList(currentBedList);
+					}
+				}
+				// 查询关联内容
+				if (currentDoorListShow != null
+						&& currentDoorListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentDoorEntity.class, CurrentDoorEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentDoorEntity> currentDoorList = new ArrayList<CurrentDoorEntity>();
+						for (Object o : objList) {
+							currentDoorList.add((CurrentDoorEntity) o);
+						}
+						obj.setCurrentDoorList(currentDoorList);
+					}
+				}
+				// 查询关联内容
+				if (currentGatewayListShow != null
+						&& currentGatewayListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentGatewayEntity.class,
+							CurrentGatewayEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentGatewayEntity> currentGatewayList = new ArrayList<CurrentGatewayEntity>();
+						for (Object o : objList) {
+							currentGatewayList.add((CurrentGatewayEntity) o);
+						}
+						obj.setCurrentGatewayList(currentGatewayList);
+					}
+				}
+				// 查询关联内容
+				if (currentKeyalarmListShow != null
+						&& currentKeyalarmListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentKeyalarmEntity.class,
+							CurrentKeyalarmEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentKeyalarmEntity> currentKeyalarmList = new ArrayList<CurrentKeyalarmEntity>();
+						for (Object o : objList) {
+							currentKeyalarmList.add((CurrentKeyalarmEntity) o);
+						}
+						obj.setCurrentKeyalarmList(currentKeyalarmList);
+					}
+				}
+				// 查询关联内容
+				if (currentLocationListShow != null
+						&& currentLocationListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentLocationEntity.class,
+							CurrentLocationEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentLocationEntity> currentLocationList = new ArrayList<CurrentLocationEntity>();
+						for (Object o : objList) {
+							currentLocationList.add((CurrentLocationEntity) o);
+						}
+						obj.setCurrentLocationList(currentLocationList);
+					}
+				}
+				// 查询关联内容
+				if (currentUrineListShow != null
+						&& currentUrineListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentUrineEntity.class,
+							CurrentUrineEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentUrineEntity> currentUrineList = new ArrayList<CurrentUrineEntity>();
+						for (Object o : objList) {
+							currentUrineList.add((CurrentUrineEntity) o);
+						}
+						obj.setCurrentUrineList(currentUrineList);
+					}
+				}
+				// 查询关联内容
+				if (currentWandaiListShow != null
+						&& currentWandaiListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentWandaiEntity.class,
+							CurrentWandaiEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentWandaiEntity> currentWandaiList = new ArrayList<CurrentWandaiEntity>();
+						for (Object o : objList) {
+							currentWandaiList.add((CurrentWandaiEntity) o);
+						}
+						obj.setCurrentWandaiList(currentWandaiList);
+					}
+				}
+				// 查询关联内容
+				if (historyBedListShow != null
+						&& historyBedListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryBedEntity.class, HistoryBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryBedEntity> historyBedList = new ArrayList<HistoryBedEntity>();
+						for (Object o : objList) {
+							historyBedList.add((HistoryBedEntity) o);
+						}
+						obj.setHistoryBedList(historyBedList);
+					}
+				}
+				// 查询关联内容
+				if (historyDoorListShow != null
+						&& historyDoorListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryDoorEntity.class, HistoryDoorEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryDoorEntity> historyDoorList = new ArrayList<HistoryDoorEntity>();
+						for (Object o : objList) {
+							historyDoorList.add((HistoryDoorEntity) o);
+						}
+						obj.setHistoryDoorList(historyDoorList);
+					}
+				}
+				// 查询关联内容
+				if (historyKeyalarmListShow != null
+						&& historyKeyalarmListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryKeyalarmEntity.class,
+							HistoryKeyalarmEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryKeyalarmEntity> historyKeyalarmList = new ArrayList<HistoryKeyalarmEntity>();
+						for (Object o : objList) {
+							historyKeyalarmList.add((HistoryKeyalarmEntity) o);
+						}
+						obj.setHistoryKeyalarmList(historyKeyalarmList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationBodyListShow != null
+						&& historyLocationBodyListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationBodyEntity.class,
+							HistoryLocationBodyEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationBodyEntity> historyLocationBodyList = new ArrayList<HistoryLocationBodyEntity>();
+						for (Object o : objList) {
+							historyLocationBodyList
+									.add((HistoryLocationBodyEntity) o);
+						}
+						obj.setHistoryLocationBodyList(historyLocationBodyList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationManualListShow != null
+						&& historyLocationManualListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationManualEntity.class,
+							HistoryLocationManualEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationManualEntity> historyLocationManualList = new ArrayList<HistoryLocationManualEntity>();
+						for (Object o : objList) {
+							historyLocationManualList
+									.add((HistoryLocationManualEntity) o);
+						}
+						obj.setHistoryLocationManualList(historyLocationManualList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationMoveListShow != null
+						&& historyLocationMoveListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationMoveEntity.class,
+							HistoryLocationMoveEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationMoveEntity> historyLocationMoveList = new ArrayList<HistoryLocationMoveEntity>();
+						for (Object o : objList) {
+							historyLocationMoveList
+									.add((HistoryLocationMoveEntity) o);
+						}
+						obj.setHistoryLocationMoveList(historyLocationMoveList);
+					}
+				}
+				// 查询关联内容
+				if (historyLocationPosListShow != null
+						&& historyLocationPosListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryLocationPosEntity.class,
+							HistoryLocationPosEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryLocationPosEntity> historyLocationPosList = new ArrayList<HistoryLocationPosEntity>();
+						for (Object o : objList) {
+							historyLocationPosList
+									.add((HistoryLocationPosEntity) o);
+						}
+						obj.setHistoryLocationPosList(historyLocationPosList);
+					}
+				}
+				// 查询关联内容
+				if (historyUrineListShow != null
+						&& historyUrineListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryUrineEntity.class,
+							HistoryUrineEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryUrineEntity> historyUrineList = new ArrayList<HistoryUrineEntity>();
+						for (Object o : objList) {
+							historyUrineList.add((HistoryUrineEntity) o);
+						}
+						obj.setHistoryUrineList(historyUrineList);
+					}
+				}
+				// 查询关联内容
+				if (currentIrListShow != null
+						&& currentIrListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentIrEntity.class, CurrentIrEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentIrEntity> currentIrList = new ArrayList<CurrentIrEntity>();
+						for (Object o : objList) {
+							currentIrList.add((CurrentIrEntity) o);
+						}
+						obj.setCurrentIrList(currentIrList);
+					}
+				}
+				// 查询关联内容
+				if (historyIrListShow != null
+						&& historyIrListShow.booleanValue() && obj != null
+						&& obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryIrEntity.class, HistoryIrEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryIrEntity> historyIrList = new ArrayList<HistoryIrEntity>();
+						for (Object o : objList) {
+							historyIrList.add((HistoryIrEntity) o);
+						}
+						obj.setHistoryIrList(historyIrList);
+					}
+				}
+				// 查询关联内容
+				if (currentTizhengBedListShow != null
+						&& currentTizhengBedListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							CurrentTizhengBedEntity.class,
+							CurrentTizhengBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<CurrentTizhengBedEntity> currentTizhengBedList = new ArrayList<CurrentTizhengBedEntity>();
+						for (Object o : objList) {
+							currentTizhengBedList
+									.add((CurrentTizhengBedEntity) o);
+						}
+						obj.setCurrentTizhengBedList(currentTizhengBedList);
+					}
+				}
+				// 查询关联内容
+				if (historyTizhengBedListShow != null
+						&& historyTizhengBedListShow.booleanValue()
+						&& obj != null && obj.getId() > 0) {
+					List<Object> objList = dbManager.searchListByColumn(
+							HistoryTizhengBedEntity.class,
+							HistoryTizhengBedEntity.DEV_ID,
+							String.valueOf(obj.getId()));
+					if (objList != null && objList.size() > 0) {
+						List<HistoryTizhengBedEntity> historyTizhengBedList = new ArrayList<HistoryTizhengBedEntity>();
+						for (Object o : objList) {
+							historyTizhengBedList
+									.add((HistoryTizhengBedEntity) o);
+						}
+						obj.setHistoryTizhengBedList(historyTizhengBedList);
+					}
+				}
+				result.add(obj);
+			}
+			pagelist.setResultList(result);
+		}
 		return pagelist;
 	}
 
