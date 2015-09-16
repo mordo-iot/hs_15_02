@@ -19,6 +19,7 @@ import fly.service.currentLocation.CurrentLocationService;
 import fly.service.currentTizhengBed.CurrentTizhengBedService;
 import fly.service.dev.DevService;
 import fly.socket.DataTcpListener;
+import fly.socket.ReadLocationThread;
 import fly.socket.SendHeartDataThread;
 import fly.socket.TZCDTCPSListener;
 import fly.socket.ZKJATCPSListener;
@@ -35,6 +36,8 @@ public class SystemInit implements ServletContextListener{
 	private  CurrentTizhengBedService currentTizhengBedService=CurrentTizhengBedService.getInstance();
 	private DevService devService=DevService.getInstance();
 	public static String gpskey = "";
+	public static int ap_location_update_time = 0;
+	public static int ap_location_remove = 0;
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		// TODO Auto-generated method stub
@@ -53,10 +56,13 @@ public class SystemInit implements ServletContextListener{
 		TZCDTCPSListener tzcdTCPSListener= new TZCDTCPSListener();
 		tzcdTCPSListener.start();
 		SendHeartDataThread sendHeartDataThread = new SendHeartDataThread();
+		ReadLocationThread readLocationThread = new ReadLocationThread();
+		readLocationThread.start();
 		sendHeartDataThread.start();
 		readConfig();
 		readStatus();
 		readBedStatus();
+		
 	}
 	
 	private void readBedStatus() {
@@ -167,7 +173,11 @@ public class SystemInit implements ServletContextListener{
 	      Properties localProperties = FileUtil.readProperties(localPath);
 	      
 	      gpskey = (String)localProperties.get("gps.key");
+	      ap_location_update_time = Integer.valueOf((String)localProperties.get("ap.location.update.time"));
+	      ap_location_remove = Integer.valueOf((String)localProperties.get("ap.location.remove"));
 	      logger.info("gpskey:" + gpskey);
+	      logger.info("ap_location_update_time:" + ap_location_update_time);
+	      logger.info("ap_location_remove:" + ap_location_remove);
 
 	    }
 	    catch (Exception e) {
