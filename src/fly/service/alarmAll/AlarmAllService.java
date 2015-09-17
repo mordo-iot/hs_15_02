@@ -25,7 +25,7 @@ import com.framework.system.util.StringUtil;
  * @Title: Service
  * @Description: 当天和历史报警信息服务类
  * @author feng.gu
- * @date 2015-09-16 15:25:18
+ * @date 2015-09-17 13:34:38
  * @version V1.0
  * 
  */
@@ -619,7 +619,7 @@ public class AlarmAllService {
 		}
 		list = dbManager.queryByConditions(AlarmAllEntity.class, qc, oc);
 		int a = 0;
-		if (devShow) {
+		if (devShow != null && devShow.booleanValue()) {
 			a++;
 		}
 		if (a > 0 && list != null && list.size() > 0) {
@@ -1127,7 +1127,7 @@ public class AlarmAllService {
 		pagelist = dbManager.queryByConditions(AlarmAllEntity.class, qc, oc,
 				pageno, pagesize);
 		int a = 0;
-		if (devShow) {
+		if (devShow != null && devShow.booleanValue()) {
 			a++;
 		}
 		if (a > 0 && pagelist != null && pagelist.getResultList() != null

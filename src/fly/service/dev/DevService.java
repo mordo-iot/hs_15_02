@@ -47,7 +47,7 @@ import com.framework.system.util.StringUtil;
  * @Title: Service
  * @Description: 设备信息服务类
  * @author feng.gu
- * @date 2015-09-09 13:53:53
+ * @date 2015-09-17 13:34:43
  * @version V1.0
  * 
  */
@@ -1886,70 +1886,81 @@ public class DevService {
 		}
 		list = dbManager.queryByConditions(DevEntity.class, qc, oc);
 		int a = 0;
-		if (positionListShow) {
+		if (positionListShow != null && positionListShow.booleanValue()) {
 			a++;
 		}
-		if (alarmCurrentListShow) {
+		if (alarmCurrentListShow != null && alarmCurrentListShow.booleanValue()) {
 			a++;
 		}
-		if (alarmHistoryListShow) {
+		if (alarmHistoryListShow != null && alarmHistoryListShow.booleanValue()) {
 			a++;
 		}
-		if (currentBedListShow) {
+		if (currentBedListShow != null && currentBedListShow.booleanValue()) {
 			a++;
 		}
-		if (currentDoorListShow) {
+		if (currentDoorListShow != null && currentDoorListShow.booleanValue()) {
 			a++;
 		}
-		if (currentGatewayListShow) {
+		if (currentGatewayListShow != null
+				&& currentGatewayListShow.booleanValue()) {
 			a++;
 		}
-		if (currentKeyalarmListShow) {
+		if (currentKeyalarmListShow != null
+				&& currentKeyalarmListShow.booleanValue()) {
 			a++;
 		}
-		if (currentLocationListShow) {
+		if (currentLocationListShow != null
+				&& currentLocationListShow.booleanValue()) {
 			a++;
 		}
-		if (currentUrineListShow) {
+		if (currentUrineListShow != null && currentUrineListShow.booleanValue()) {
 			a++;
 		}
-		if (currentWandaiListShow) {
+		if (currentWandaiListShow != null
+				&& currentWandaiListShow.booleanValue()) {
 			a++;
 		}
-		if (historyBedListShow) {
+		if (historyBedListShow != null && historyBedListShow.booleanValue()) {
 			a++;
 		}
-		if (historyDoorListShow) {
+		if (historyDoorListShow != null && historyDoorListShow.booleanValue()) {
 			a++;
 		}
-		if (historyKeyalarmListShow) {
+		if (historyKeyalarmListShow != null
+				&& historyKeyalarmListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationBodyListShow) {
+		if (historyLocationBodyListShow != null
+				&& historyLocationBodyListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationManualListShow) {
+		if (historyLocationManualListShow != null
+				&& historyLocationManualListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationMoveListShow) {
+		if (historyLocationMoveListShow != null
+				&& historyLocationMoveListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationPosListShow) {
+		if (historyLocationPosListShow != null
+				&& historyLocationPosListShow.booleanValue()) {
 			a++;
 		}
-		if (historyUrineListShow) {
+		if (historyUrineListShow != null && historyUrineListShow.booleanValue()) {
 			a++;
 		}
-		if (currentIrListShow) {
+		if (currentIrListShow != null && currentIrListShow.booleanValue()) {
 			a++;
 		}
-		if (historyIrListShow) {
+		if (historyIrListShow != null && historyIrListShow.booleanValue()) {
 			a++;
 		}
-		if (currentTizhengBedListShow) {
+		if (currentTizhengBedListShow != null
+				&& currentTizhengBedListShow.booleanValue()) {
 			a++;
 		}
-		if (historyTizhengBedListShow) {
+		if (historyTizhengBedListShow != null
+				&& historyTizhengBedListShow.booleanValue()) {
 			a++;
 		}
 		if (a > 0 && list != null && list.size() > 0) {
@@ -3243,70 +3254,81 @@ public class DevService {
 		pagelist = dbManager.queryByConditions(DevEntity.class, qc, oc, pageno,
 				pagesize);
 		int a = 0;
-		if (positionListShow) {
+		if (positionListShow != null && positionListShow.booleanValue()) {
 			a++;
 		}
-		if (alarmCurrentListShow) {
+		if (alarmCurrentListShow != null && alarmCurrentListShow.booleanValue()) {
 			a++;
 		}
-		if (alarmHistoryListShow) {
+		if (alarmHistoryListShow != null && alarmHistoryListShow.booleanValue()) {
 			a++;
 		}
-		if (currentBedListShow) {
+		if (currentBedListShow != null && currentBedListShow.booleanValue()) {
 			a++;
 		}
-		if (currentDoorListShow) {
+		if (currentDoorListShow != null && currentDoorListShow.booleanValue()) {
 			a++;
 		}
-		if (currentGatewayListShow) {
+		if (currentGatewayListShow != null
+				&& currentGatewayListShow.booleanValue()) {
 			a++;
 		}
-		if (currentKeyalarmListShow) {
+		if (currentKeyalarmListShow != null
+				&& currentKeyalarmListShow.booleanValue()) {
 			a++;
 		}
-		if (currentLocationListShow) {
+		if (currentLocationListShow != null
+				&& currentLocationListShow.booleanValue()) {
 			a++;
 		}
-		if (currentUrineListShow) {
+		if (currentUrineListShow != null && currentUrineListShow.booleanValue()) {
 			a++;
 		}
-		if (currentWandaiListShow) {
+		if (currentWandaiListShow != null
+				&& currentWandaiListShow.booleanValue()) {
 			a++;
 		}
-		if (historyBedListShow) {
+		if (historyBedListShow != null && historyBedListShow.booleanValue()) {
 			a++;
 		}
-		if (historyDoorListShow) {
+		if (historyDoorListShow != null && historyDoorListShow.booleanValue()) {
 			a++;
 		}
-		if (historyKeyalarmListShow) {
+		if (historyKeyalarmListShow != null
+				&& historyKeyalarmListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationBodyListShow) {
+		if (historyLocationBodyListShow != null
+				&& historyLocationBodyListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationManualListShow) {
+		if (historyLocationManualListShow != null
+				&& historyLocationManualListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationMoveListShow) {
+		if (historyLocationMoveListShow != null
+				&& historyLocationMoveListShow.booleanValue()) {
 			a++;
 		}
-		if (historyLocationPosListShow) {
+		if (historyLocationPosListShow != null
+				&& historyLocationPosListShow.booleanValue()) {
 			a++;
 		}
-		if (historyUrineListShow) {
+		if (historyUrineListShow != null && historyUrineListShow.booleanValue()) {
 			a++;
 		}
-		if (currentIrListShow) {
+		if (currentIrListShow != null && currentIrListShow.booleanValue()) {
 			a++;
 		}
-		if (historyIrListShow) {
+		if (historyIrListShow != null && historyIrListShow.booleanValue()) {
 			a++;
 		}
-		if (currentTizhengBedListShow) {
+		if (currentTizhengBedListShow != null
+				&& currentTizhengBedListShow.booleanValue()) {
 			a++;
 		}
-		if (historyTizhengBedListShow) {
+		if (historyTizhengBedListShow != null
+				&& historyTizhengBedListShow.booleanValue()) {
 			a++;
 		}
 		if (a > 0 && pagelist != null && pagelist.getResultList() != null
