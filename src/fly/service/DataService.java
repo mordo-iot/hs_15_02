@@ -571,9 +571,9 @@ public class DataService {
 						int pnum=1;
 						//床垫设备个数
 						int bednum=0;
-						//查询设备编号 type=2,9,10,11,12,13
+						//查询设备编号 type=2,9,10,11,13
 						Map<String, Object> queryMap = new HashMap<String, Object>();
-						queryMap.put("type_in", "2,9,10,11,12,13");
+						queryMap.put("type_in", "2,9,10,11,13");
 						List<Object> list = devService.getListByCondition(queryMap);
 						
 						if(list!=null&&list.size()>0){
