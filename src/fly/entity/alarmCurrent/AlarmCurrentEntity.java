@@ -56,7 +56,7 @@ public class AlarmCurrentEntity implements java.io.Serializable {
 	 * 处理状态 0-未处理 1-已处理 2-手动取消
 	 */
 	@ColumnDescription(name = "HANDLESTATE")
-	private Integer handlestate;
+	private Integer handlestate=0;
     /**
 	 * 处理描述
 	 */
