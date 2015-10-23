@@ -4,15 +4,19 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 
 import com.framework.system.db.manager.DBManager;
+import com.framework.system.db.query.OrderVO;
 
 import fly.entity.alarmCurrent.AlarmCurrentEntity;
 import fly.entity.currentBed.CurrentBedEntity;
@@ -617,20 +621,53 @@ public class DataService {
 								DevEntity dev = (DevEntity)list.get(i);
 								String devCode = dev.getCode().toLowerCase();
 								byte[] devByte = HexString2Bytes(devCode);
+								String jsoninfo = dev.getAttribute();
 								result[a] = (byte)0x04;
 								result[a+1] = (byte)devByte[0];
 								result[a+2] = (byte)devByte[1];
 								result[a+3] = (byte)devByte[2];
 								result[a+4] = (byte)devByte[3];
-								result[a+5] = (byte)0x00;
-								result[a+6] = (byte)0x00;
-								result[a+7] = (byte)0x18;
-								result[a+9] = (byte)0x00;
+								
 								if(dev!=null&&dev.getType()!=null&&"13".equals(dev.getType())){
 									result[a+9] = (byte)0x01;
 								}else{
 									result[a+9] = (byte)0x00;
+								}	
+								
+								//如果是床垫 加配置信息
+								if(dev!=null&&dev.getType()!=null&&"2".equals(dev.getType())&&jsoninfo!=null&&!"".equals(jsoninfo)){
+									JSONObject jobj = JSONObject.fromObject(jsoninfo);
+									String alarmstarttime =  (String)jobj.get("alarmstarttime");
+									String alarmendtime =  (String)jobj.get("alarmendtime");
+									String alarmdelay =  (String)jobj.get("alarmdelay");
+									if(alarmstarttime!=null&&alarmstarttime.length()==4){
+										String a5 = alarmstarttime.substring(0, 2);
+										String a6 = alarmstarttime.substring(2);
+										result[a+5] = (byte)Integer.valueOf(a5).intValue();
+										result[a+6] = (byte)Integer.valueOf(a6).intValue();
+									}else{
+										result[a+5] = (byte)0x00;
+										result[a+6] = (byte)0x00;
+									}
+									if(alarmendtime!=null&&alarmendtime.length()==4){
+										String a7 = alarmendtime.substring(0, 2);
+										String a8 = alarmendtime.substring(2);
+										result[a+7] = (byte)Integer.valueOf(a7).intValue();
+										result[a+8] = (byte)Integer.valueOf(a8).intValue();
+									}else{
+										result[a+7] = (byte)0x18;
+										result[a+8] = (byte)0x00;
+									}									
+									if(alarmdelay!=null&&!"".equals(alarmdelay)){
+										result[a+9] = (byte)Integer.valueOf(alarmdelay).intValue();
+									}
+								}else{
+									result[a+5] = (byte)0x00;
+									result[a+6] = (byte)0x00;
+									result[a+7] = (byte)0x18;
+									result[a+8] = (byte)0x00;
 								}								
+															
 								a=a+10; 
 								//床垫多一位
 								if(dev!=null&&dev.getType()!=null&&"2".equals(dev.getType())){
@@ -728,7 +765,7 @@ public class DataService {
 											
 											historyKeyalarm.setAlarm("Y");
 											historyKeyalarm.setAlarmupdatetime(time);
-											historyKeyalarm.setDevId(dev.getId());																					
+											historyKeyalarm.setDevId(dev.getId());																								
 											
 											alarmCurrent.setCode("E041");
 											alarmCurrent.setContent("一键报警主动报警");
@@ -759,6 +796,24 @@ public class DataService {
 											historyKeyalarm.setAlarm("N");
 											historyKeyalarm.setAlarmupdatetime(time);
 											historyKeyalarm.setDevId(dev.getId());
+											
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}																																	
+											
 											currentKeyalarmService.save(currentKeyalarm);
 											historyKeyalarmService.save(historyKeyalarm);
 //											//----封装发射器应用帧开始 ----
@@ -826,8 +881,27 @@ public class DataService {
 											historyWandai.setAlarm("N");
 											historyWandai.setAlarmupdatetime(time);
 											historyWandai.setDevId(dev.getId());
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
 											currentWandaiService.save(currentWandai);
 											historyWandaiService.save(historyWandai);
+											
+											
 //											//----封装发射器应用帧开始 ----
 //											sendData = new byte[23];											
 //											
@@ -916,6 +990,23 @@ public class DataService {
 											historyDoor.setAlarmupdatetime(time);
 											historyDoor.setLevel(alarmLevel);
 											historyDoor.setDevId(dev.getId());
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
 											currentDoorService.save(currentDoor);
 											historyDoorService.save(historyDoor);
 //											//----封装发射器应用帧开始 ----
@@ -1008,6 +1099,23 @@ public class DataService {
 											historyBed.setAlarmupdatetime(time);
 											historyBed.setLevel(alarmLevel);
 											historyBed.setDevId(dev.getId());
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
 											currentBedService.save(currentBed);
 											historyBedService.save(historyBed);
 //											//----封装发射器应用帧开始 ----
@@ -1078,6 +1186,23 @@ public class DataService {
 											historyIr.setLevel(0);
 											historyIr.setAlarmupdatetime(time);
 											historyIr.setDevId(dev.getId());
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
 											currentIrService.save(currentIr);
 											historyIrService.save(historyIr);
 //											//----封装发射器应用帧开始 ----
@@ -1144,6 +1269,23 @@ public class DataService {
 											historyUrine.setAlarm("N");
 											historyUrine.setAlarmupdatetime(time);
 											historyUrine.setDevId(dev.getId());
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
 											currentUrineService.save(currentUrine);
 											historyUrineService.save(historyUrine);
 //											//----封装发射器应用帧开始 ----
