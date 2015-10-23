@@ -21,10 +21,11 @@ public class SendDataThread extends Thread
     this.data = data;
   }
 
-  public void run(){
+  public synchronized void run(){
     try{
     	OutputStream out = socket.getOutputStream();
     	out.write(data);
+    	Thread.sleep(1000);
     }catch (Exception e) {
    		logger.debug("发送数据到信号发射器:数据处理出错！");
    		logger.error(e);
