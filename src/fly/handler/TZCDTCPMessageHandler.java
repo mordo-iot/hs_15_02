@@ -56,7 +56,7 @@ public class TZCDTCPMessageHandler {
 				DevEntity dev = null;
 				if (devCode != null && !"".equals(devCode)) {
 					Map<String, Object> queryMap3 = new HashMap<String, Object>();
-					queryMap3.put("type", "17");
+					queryMap3.put("type", "16");
 					queryMap3.put("code", devCode.toLowerCase());
 					List<Object> list3 = devService
 							.getListByCondition(queryMap3);
@@ -333,7 +333,7 @@ public class TZCDTCPMessageHandler {
 						}
 						
 					} else {
-						logger.debug("设备数据不存在，type：" + 17 + " code：" + devCode);
+						logger.debug("设备数据不存在，type：" + 16 + " code：" + devCode);
 					}
 				}
 			} else {
