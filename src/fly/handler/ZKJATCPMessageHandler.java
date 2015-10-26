@@ -80,7 +80,7 @@ public class ZKJATCPMessageHandler {
 					QueryCondition qc = new QueryCondition(DevEntity.CODE,
 							QueryCondition.eq, imei);
 					qc.andCondition(new QueryCondition(DevEntity.TYPE,
-							QueryCondition.eq, "16"));
+							QueryCondition.eq, "19"));
 
 					logger.debug("----------------");
 					logger.debug("imei: " + imei);
@@ -237,7 +237,7 @@ public class ZKJATCPMessageHandler {
 					QueryCondition qc = new QueryCondition(DevEntity.CODE,
 							QueryCondition.eq, imei);
 					qc.andCondition(new QueryCondition(DevEntity.TYPE,
-							QueryCondition.eq, "16"));
+							QueryCondition.eq, "19"));
 
 
 					logger.debug("----------------");
