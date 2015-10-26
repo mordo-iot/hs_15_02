@@ -1,10 +1,11 @@
 package fly.socket;
 
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -29,6 +30,7 @@ public class SendHeartDataThread extends Thread{
 	@Override
 	public void run() {
 		logger.debug("发射器心跳定时发送：线程启动，定时间隔："+time+"秒");
+		try {
 		while(true){						
 			Map<String,Socket> socketMap = DataService.socketMap;
 			if(socketMap!=null&&socketMap.entrySet()!=null){
@@ -61,17 +63,17 @@ public class SendHeartDataThread extends Thread{
 						//心跳数据
 						sendData[12]=(byte)0x04;
 				    	sendData = dataService.dataChangeBack(sendData);
-				    	logger.debug("向信号发射器发送【心跳】数据，数据内容："+DataService.printHexString(sendData));											
-						SendDataThread sendDataThread = new SendDataThread(socket,sendData);
-						sendDataThread.start();
+				    	logger.debug("向信号发射器发送【心跳】数据，数据内容："+DataService.printHexString(sendData));	
+				    	OutputStream out = socket.getOutputStream();
+		            	out.write(sendData);
 				    }				  				  
 				} 
 			}
-			try {
-				Thread.sleep(time*1000);
-			} catch (InterruptedException e) {
-				logger.error(e);
-			}
-		}		
+			Thread.sleep(time*1000);
+			
+		}
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 }

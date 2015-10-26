@@ -38,6 +38,7 @@ import fly.entity.historyLocationPos.HistoryLocationPosEntity;
 import fly.entity.historyUrine.HistoryUrineEntity;
 import fly.entity.historyWandai.HistoryWandaiEntity;
 import fly.entity.position.PositionEntity;
+import fly.entity.vo.SocketDataVO;
 import fly.service.alarmCurrent.AlarmCurrentService;
 import fly.service.currentBed.CurrentBedService;
 import fly.service.currentDoor.CurrentDoorService;
@@ -70,6 +71,10 @@ public class DataService {
 	 * 保存信号发射器对应的护工胸牌code,socket
 	 */
 	public static Map<String,Socket> socketMap = new HashMap<String,Socket>();
+	/**
+	 * 保存信号发射器对应的护工胸牌code,信号发射器code
+	 */
+	public static Map<String,String> xinhaoMap = new HashMap<String,String>();
 	
 	public static Map<String,Integer> statusMap = new HashMap<String,Integer>();
 
@@ -173,7 +178,8 @@ public class DataService {
 						//----封装回复帧结束 ----
 					}else if(dataType==(byte)0x02){
 						//应用帧回复
-						logger.debug("数据类型：信号发射器回复帧");
+						//C0 01000000 0A00010D 8ED8020053C0
+						logger.debug("数据类型：信号发射器【"+this.printHexString(data).substring(8,16)+"】回复帧,【信号发射器回复序列号："+this.printHexString(data).substring(16,20)+"】");
 						return null;
 					}
 				}else if(source[0]==(byte)0x05){
@@ -280,6 +286,25 @@ public class DataService {
 											historyLocationBody.setBodyupdatetime(time);
 											historyLocationBody.setDevId(dev.getId());
 											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E022");
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
+											
+											
 											currentLocationService.save(currentLocation);
 											historyLocationBodyService.save(historyLocationBody);
 //											//----封装发射器应用帧开始 ----
@@ -331,6 +356,23 @@ public class DataService {
 											historyLocationManual.setManualalarm("Y");
 											historyLocationManual.setBodyupdatetime(time);
 											historyLocationManual.setDevId(dev.getId());
+											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E023");
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
 											
 											currentLocationService.save(currentLocation);
 											historyLocationManualService.save(historyLocationManual);
@@ -433,6 +475,23 @@ public class DataService {
 											historyLocationMove.setMovingupdatetime(time);
 											historyLocationMove.setDevId(dev.getId());
 											
+											AlarmCurrentEntity ac =null;
+											Map<String, Object> queryMap = new HashMap<String, Object>();
+											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E024");
+											List<OrderVO> orderList = new ArrayList<OrderVO>();
+											OrderVO order = new OrderVO();
+											order.setName("createdate");
+											order.setOrderType(OrderVO.desc);
+											orderList.add(order);
+											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+											if(list!=null&&list.size()>0){
+												ac = (AlarmCurrentEntity)list.get(0);
+												ac.setHandlestate(1);
+												ac.setHandledate(time);
+												alarmCurrentService.save(ac);
+											}
+											
 											currentLocationService.save(currentLocation);
 											historyLocationMoveService.save(historyLocationMove);
 //											//----封装发射器应用帧开始 ----
@@ -459,7 +518,7 @@ public class DataService {
 								DevEntity dev2 = null;
 								if(nowluyoujiedian!=null&&!"".equals(nowluyoujiedian)){
 									Map<String, Object> queryMap4 = new HashMap<String, Object>();
-									queryMap4.put("type", "6");
+									queryMap4.put("type_in", "6,8");
 									queryMap4.put("code", nowluyoujiedian.toLowerCase());
 									List<Object> list4 = devService.getListByCondition(queryMap4);
 									if(list4!=null&&list4.size()>0){
@@ -488,8 +547,61 @@ public class DataService {
 											historyLocationPos.setDevId(dev.getId());
 											historyLocationPos.setLeavedupdatetime(time);
 											
+											
+											
+											
+											//判断是否越界
+											if("8".equals(dev2.getType())&&("Y".equals(currentLocation.getLeaved()))||currentLocation.getLeaved()==null){
+												//这次定位到越界 上次不是越界
+												currentLocation.setLeaved("N");
+												currentLocation.setLeavedupdatetime(time);
+												
+												historyLocationPos.setLeaved("N");
+												historyLocationPos.setLeavedupdatetime(time);
+												
+												alarmCurrent.setCode("E021");
+												alarmCurrent.setContent("一卡通越界报警");												
+												logger.debug("数据类型:【园区一卡通】设备位置【越界报警】");
+												alarmCurrent.setCreatedate(time);
+												alarmCurrent.setDevId(dev.getId());
+												alarmCurrentService.save(alarmCurrent);
+												//----封装发射器应用帧开始 ----
+												sendData = new byte[23];											
+												
+												//报警类型
+												sendData[17]=(byte)0x02;										
+												sendData[18]=(byte)0x00;
+												sendData[19]=(byte)0x20;
+											}else if("6".equals(dev2.getType())&&"N".equals(currentLocation.getLeaved())){
+												//这次定位到不越界 上次越界
+												currentLocation.setLeaved("Y");
+												currentLocation.setLeavedupdatetime(time);
+												logger.debug("数据类型:【园区一卡通】设备位置【越界报警取消】");
+												historyLocationPos.setLeaved("Y");
+												historyLocationPos.setLeavedupdatetime(time);
+												
+												AlarmCurrentEntity ac =null;
+												Map<String, Object> queryMap = new HashMap<String, Object>();
+												queryMap.put("devId", dev.getId());
+												queryMap.put("code", "E021");
+												List<OrderVO> orderList = new ArrayList<OrderVO>();
+												OrderVO order = new OrderVO();
+												order.setName("createdate");
+												order.setOrderType(OrderVO.desc);
+												orderList.add(order);
+												List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+												if(list!=null&&list.size()>0){
+													ac = (AlarmCurrentEntity)list.get(0);
+													ac.setHandlestate(1);
+													ac.setHandledate(time);
+													alarmCurrentService.save(ac);
+												}
+												
+											}
+											
 											currentLocationService.save(currentLocation);
 											historyLocationPosService.save(historyLocationPos);	
+																						
 										}
 									}else{
 										logger.debug("数据类型:【园区一卡通】未找到设备位置信息！："+nowluyoujiedian);
@@ -506,8 +618,9 @@ public class DataService {
 								String[] sage = dev.getAlarmdevid().split(",");
 								if(sage!=null&&sage.length>0){
 									for(int i=0;i<sage.length;i++){
-										Socket devSocket = socketMap.get(sage[i]);
-										if(devSocket!=null&&sage[i].length()==8){
+										if(sage[i].length()==8){
+										    //查询信号发射器
+											
 											//----封装发射器应用帧开始 ----
 											//目的终端												
 											sendData[0]=(byte)0x0a;
@@ -545,13 +658,15 @@ public class DataService {
 												sendData[22]=alarmData[1];
 											}
 											//----封装发射器应用帧结束 ----
-											logger.debug("向信号发射器发送数据，胸牌code："+sage[i]);
+											logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage[i]);
 											sendData = dataService.dataChangeBack(sendData);
 											//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 											//C0 02010399 01000000 EAEE 0A 00 96C0
-											logger.debug("向信号发射器发送数据，数据内容："+this.printHexString(sendData));											
-											SendDataThread sendDataThread = new SendDataThread(devSocket,sendData);
-											sendDataThread.start();
+											logger.debug("向信号发射器发送数据加入发送队列，数据内容："+this.printHexString(sendData));											
+											SocketDataVO sd = new SocketDataVO();
+											sd.setAlarmdevid(sage[i]);
+									    	sd.setData(sendData);
+											SendDataThread.lList.add(sd);
 										}
 									}
 								}
@@ -801,6 +916,7 @@ public class DataService {
 											AlarmCurrentEntity ac =null;
 											Map<String, Object> queryMap = new HashMap<String, Object>();
 											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E041");
 											List<OrderVO> orderList = new ArrayList<OrderVO>();
 											OrderVO order = new OrderVO();
 											order.setName("createdate");
@@ -885,6 +1001,7 @@ public class DataService {
 											AlarmCurrentEntity ac =null;
 											Map<String, Object> queryMap = new HashMap<String, Object>();
 											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E061");
 											List<OrderVO> orderList = new ArrayList<OrderVO>();
 											OrderVO order = new OrderVO();
 											order.setName("createdate");
@@ -994,6 +1111,7 @@ public class DataService {
 											AlarmCurrentEntity ac =null;
 											Map<String, Object> queryMap = new HashMap<String, Object>();
 											queryMap.put("devId", dev.getId());
+											queryMap.put("code_in", "E031,E032");
 											List<OrderVO> orderList = new ArrayList<OrderVO>();
 											OrderVO order = new OrderVO();
 											order.setName("createdate");
@@ -1103,6 +1221,7 @@ public class DataService {
 											AlarmCurrentEntity ac =null;
 											Map<String, Object> queryMap = new HashMap<String, Object>();
 											queryMap.put("devId", dev.getId());
+											queryMap.put("code_in", "E011,E012");
 											List<OrderVO> orderList = new ArrayList<OrderVO>();
 											OrderVO order = new OrderVO();
 											order.setName("createdate");
@@ -1190,6 +1309,7 @@ public class DataService {
 											AlarmCurrentEntity ac =null;
 											Map<String, Object> queryMap = new HashMap<String, Object>();
 											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E071");
 											List<OrderVO> orderList = new ArrayList<OrderVO>();
 											OrderVO order = new OrderVO();
 											order.setName("createdate");
@@ -1273,6 +1393,7 @@ public class DataService {
 											AlarmCurrentEntity ac =null;
 											Map<String, Object> queryMap = new HashMap<String, Object>();
 											queryMap.put("devId", dev.getId());
+											queryMap.put("code", "E051");
 											List<OrderVO> orderList = new ArrayList<OrderVO>();
 											OrderVO order = new OrderVO();
 											order.setName("createdate");
@@ -1659,8 +1780,7 @@ public class DataService {
 									String[] sage = dev.getAlarmdevid().split(",");
 									if(sage!=null&&sage.length>0){
 										for(int i=0;i<sage.length;i++){
-											Socket devSocket = socketMap.get(sage[i]);
-											if(devSocket!=null&&sage[i].length()==8){
+											if(sage[i].length()==8){
 												//----封装发射器应用帧开始 ----
 												//目的终端												
 												sendData[0]=(byte)0x0a;
@@ -1698,13 +1818,15 @@ public class DataService {
 													sendData[22]=alarmData[1];
 												}
 												//----封装发射器应用帧结束 ----
-												logger.debug("向信号发射器发送数据，胸牌code："+sage[i]);
+												logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage[i]);
 												sendData = dataService.dataChangeBack(sendData);
 												//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 												//C0 02010399 01000000 EAEE 0A 00 96C0
-												logger.debug("向信号发射器发送数据，数据内容："+this.printHexString(sendData));											
-												SendDataThread sendDataThread = new SendDataThread(devSocket,sendData);
-												sendDataThread.start();
+												logger.debug("向信号发射器发送数据加入发送队列，数据内容："+this.printHexString(sendData));											
+												SocketDataVO sd = new SocketDataVO();
+												sd.setAlarmdevid(sage[i]);
+										    	sd.setData(sendData);
+												SendDataThread.lList.add(sd);
 											}
 										}
 									}

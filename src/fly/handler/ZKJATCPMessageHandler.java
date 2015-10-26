@@ -31,6 +31,7 @@ import fly.entity.currentLocation.CurrentLocationEntity;
 import fly.entity.dev.DevEntity;
 import fly.entity.historyLocationManual.HistoryLocationManualEntity;
 import fly.entity.historyLocationPos.HistoryLocationPosEntity;
+import fly.entity.vo.SocketDataVO;
 import fly.init.SystemInit;
 import fly.service.DataService;
 import fly.service.alarmCurrent.AlarmCurrentService;
@@ -170,9 +171,8 @@ public class ZKJATCPMessageHandler {
 							if(sendData!=null&&sendData.length>0&&dev.getAlarmdevid()!=null&&!"".equals(dev.getAlarmdevid())&&dev.getAlarmcontent()!=null&&!"".equals(dev.getAlarmcontent())){
 								String[] sage2 = dev.getAlarmdevid().split(",");
 								if(sage2!=null&&sage2.length>0){
-									for(int i=0;i<sage2.length;i++){
-										Socket devSocket = DataService.socketMap.get(sage2[i]);
-										if(devSocket!=null&&sage2[i].length()==8){
+									for(int i=0;i<sage2.length;i++){										
+										if(sage2[i].length()==8){
 											//----封装发射器应用帧开始 ----
 											//目的终端												
 											sendData[0]=(byte)0x0a;
@@ -210,13 +210,15 @@ public class ZKJATCPMessageHandler {
 												sendData[22]=alarmData[1];
 											}
 											//----封装发射器应用帧结束 ----
-											logger.debug("向信号发射器发送数据，胸牌code："+sage2[i]);
+											logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage2[i]);
 											sendData = dataService.dataChangeBack(sendData);
 											//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 											//C0 02010399 01000000 EAEE 0A 00 96C0
-											logger.debug("向信号发射器发送数据，数据内容："+DataService.printHexString(sendData));											
-											SendDataThread sendDataThread = new SendDataThread(devSocket,sendData);
-											sendDataThread.start();
+											logger.debug("向信号发射器发送数据加入发送队列，数据内容："+DataService.printHexString(sendData));											
+											SocketDataVO sd = new SocketDataVO();
+									    	sd.setAlarmdevid(sage2[i]);
+									    	sd.setData(sendData);
+											SendDataThread.lList.add(sd);
 										}
 									}
 								}

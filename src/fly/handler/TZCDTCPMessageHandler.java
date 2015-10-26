@@ -15,6 +15,7 @@ import fly.entity.alarmHistory.AlarmHistoryEntity;
 import fly.entity.currentTizhengBed.CurrentTizhengBedEntity;
 import fly.entity.dev.DevEntity;
 import fly.entity.historyTizhengBed.HistoryTizhengBedEntity;
+import fly.entity.vo.SocketDataVO;
 import fly.service.DataService;
 import fly.service.alarmCurrent.AlarmCurrentService;
 import fly.service.alarmHistory.AlarmHistoryService;
@@ -280,8 +281,7 @@ public class TZCDTCPMessageHandler {
 							String[] sage = dev.getAlarmdevid().split(",");
 							if(sage!=null&&sage.length>0){
 								for(int i=0;i<sage.length;i++){
-									Socket devSocket = DataService.socketMap.get(sage[i]);
-									if(devSocket!=null&&sage[i].length()==8){
+									if(sage[i].length()==8){
 										//----封装发射器应用帧开始 ----
 										//目的终端												
 										sendData[0]=(byte)0x0a;
@@ -319,13 +319,15 @@ public class TZCDTCPMessageHandler {
 											sendData[22]=alarmData[1];
 										}
 										//----封装发射器应用帧结束 ----
-										logger.debug("向信号发射器发送数据，胸牌code："+sage[i]);
+										logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage[i]);
 										sendData = dataService.dataChangeBack(sendData);
 										//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 										//C0 02010399 01000000 EAEE 0A 00 96C0
-										logger.debug("向信号发射器发送数据，数据内容："+DataService.printHexString(sendData));											
-										SendDataThread sendDataThread = new SendDataThread(devSocket,sendData);
-										sendDataThread.start();
+										logger.debug("向信号发射器发送数据加入发送队列，数据内容："+DataService.printHexString(sendData));											
+										SocketDataVO sd = new SocketDataVO();
+										sd.setAlarmdevid(sage[i]);
+								    	sd.setData(sendData);
+										SendDataThread.lList.add(sd);
 									}
 								}
 							}

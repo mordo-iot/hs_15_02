@@ -20,6 +20,7 @@ import fly.service.currentTizhengBed.CurrentTizhengBedService;
 import fly.service.dev.DevService;
 import fly.socket.DataTcpListener;
 import fly.socket.ReadLocationThread;
+import fly.socket.SendDataThread;
 import fly.socket.SendHeartDataThread;
 import fly.socket.TZCDTCPSListener;
 import fly.socket.ZKJATCPSListener;
@@ -55,6 +56,8 @@ public class SystemInit implements ServletContextListener{
 		zkjaTCPSListener.start();
 		TZCDTCPSListener tzcdTCPSListener= new TZCDTCPSListener();
 		tzcdTCPSListener.start();
+		SendDataThread sendDataThread = new SendDataThread();
+		sendDataThread.start();
 		SendHeartDataThread sendHeartDataThread = new SendHeartDataThread();
 		ReadLocationThread readLocationThread = new ReadLocationThread();
 		readLocationThread.start();
@@ -62,9 +65,11 @@ public class SystemInit implements ServletContextListener{
 		readConfig();
 		readStatus();
 		readBedStatus();
-		
+	
 	}
 	
+	
+
 	private void readBedStatus() {
 		try {
 		     //读取CurrentTizhengBedEntity为type为17 体征床垫
