@@ -508,18 +508,16 @@ public class DataService {
 								}																					
 							}else if(data[10]==(byte)0x09&&data[11]==(byte)0x01&&data[12]==(byte)0x51){
 								//定位应用帧C0 01000000 05000469 07D0 09 01 51 060003A9 A2 E9C0
-								logger.debug("数据类型:【园区一卡通】定位应用帧："+dev.getCode());
+								logger.debug("数据类型:【园区一卡通】："+dev.getCode());
 								byte[] luyoujiedian={data[13],data[14],data[15],data[16]};
 								//根据类型和编号查询设备是否存在
 								String luyoujiedianStr = printHexString(luyoujiedian);
-								//计算路由节点
-								String nowluyoujiedian = this.getluyoujiedian(dev.getCode(),luyoujiedianStr,data[17]);
-								logger.debug("数据类型:【园区一卡通】经过计算最近路由节点code："+nowluyoujiedian);
+								logger.debug("数据类型:【园区一卡通】路由节点code："+luyoujiedianStr);
 								DevEntity dev2 = null;
-								if(nowluyoujiedian!=null&&!"".equals(nowluyoujiedian)){
+								if(luyoujiedianStr!=null&&!"".equals(luyoujiedianStr)){
 									Map<String, Object> queryMap4 = new HashMap<String, Object>();
 									queryMap4.put("type_in", "6,8");
-									queryMap4.put("code", nowluyoujiedian.toLowerCase());
+									queryMap4.put("code", luyoujiedianStr.toLowerCase());
 									List<Object> list4 = devService.getListByCondition(queryMap4);
 									if(list4!=null&&list4.size()>0){
 										dev2 = (DevEntity)list4.get(0);
@@ -534,10 +532,14 @@ public class DataService {
 										PositionEntity pos = (PositionEntity)list3.get(0);
 										if(pos!=null){
 											logger.debug("数据类型:【园区一卡通】设备位置信息："+pos.getName());
+											//计算路由节点
+											String nowluyoujiedian = this.getluyoujiedian(dev.getCode(),luyoujiedianStr,data[17]);
+											logger.debug("数据类型:【园区一卡通】经过计算最近路由节点code："+nowluyoujiedian);
+											
 											currentLocation.setDevId(dev.getId());
 											currentLocation.setCurrlat(BigDecimal.valueOf(0));
 											currentLocation.setCurrlog(BigDecimal.valueOf(0));
-											currentLocation.setPositionId(pos.getId());
+											currentLocation.setPositionId(pos.getId());																						
 											currentLocation.setLeavedupdatetime(time);
 											
 											
@@ -599,15 +601,23 @@ public class DataService {
 												
 											}
 											
+											if("8".equals(dev2.getType())){
+												currentLocation.setLeaved("N");
+												historyLocationPos.setLeaved("N");
+											}else if("6".equals(dev2.getType())){
+												currentLocation.setLeaved("Y");
+												historyLocationPos.setLeaved("N");
+											}
+											
 											currentLocationService.save(currentLocation);
 											historyLocationPosService.save(historyLocationPos);	
 																						
 										}
 									}else{
-										logger.debug("数据类型:【园区一卡通】未找到设备位置信息！："+nowluyoujiedian);
+										logger.debug("数据类型:【园区一卡通】未找到设备位置信息！："+luyoujiedianStr);
 									}
 								}else{
-									logger.debug("数据类型:【园区一卡通】未找到路由节点数据！："+nowluyoujiedian);
+									logger.debug("数据类型:【园区一卡通】未找到路由节点数据！："+luyoujiedianStr);
 								}
 								
 								
@@ -686,24 +696,39 @@ public class DataService {
 						logger.debug("数据类型:报警终端问询帧");
 						//01000000 02010399 132F 07 010201A1					
 						//问询帧
+						String devCode2 = printHexString(source).toLowerCase();
 						//参数个数
 						int pnum=1;
 						//床垫设备个数
 						int bednum=0;
-						//查询设备编号 type=2,9,10,11,13
-						Map<String, Object> queryMap = new HashMap<String, Object>();
-						queryMap.put("type_in", "2,9,10,11,13");
-						List<Object> list = devService.getListByCondition(queryMap);
-						
-						if(list!=null&&list.size()>0){
-							for(Object obj:list){
-								DevEntity dev = (DevEntity)obj;
-								if(dev!=null&&dev.getType()!=null&&"2".equals(dev.getType())){
-									bednum++;
+						//查询是否有此报警器
+						Map<String, Object> queryMap2 = new HashMap<String, Object>();
+						queryMap2.put("type", "7");
+						queryMap2.put("code", devCode2);
+						List<Object> list2 = devService.getListByCondition(queryMap2);
+						List<Object> list = null;
+						if(list2!=null&&list2.size()>0){
+							DevEntity dev2 = (DevEntity)list2.get(0);
+							if(dev2!=null){
+								//查询设备编号 type=2,9,10,11,13
+								Map<String, Object> queryMap = new HashMap<String, Object>();
+								queryMap.put("type_in", "2,9,10,11,13");
+								queryMap.put("parentId", dev2.getId());
+								list = devService.getListByCondition(queryMap);
+								
+								if(list!=null&&list.size()>0){
+									for(Object obj:list){
+										DevEntity dev = (DevEntity)obj;
+										if(dev!=null&&dev.getType()!=null&&"2".equals(dev.getType())){
+											bednum++;
+										}
+									}
+									pnum+=list.size();
 								}
 							}
-							pnum+=list.size();
 						}
+						
+						
 						//----封装回复帧开始 ----
 						result = new byte[17+10*(pnum-1)+bednum];
 						//目的终端
@@ -750,7 +775,7 @@ public class DataService {
 								}	
 								
 								//如果是床垫 加配置信息
-								if(dev!=null&&dev.getType()!=null&&"2".equals(dev.getType())&&jsoninfo!=null&&!"".equals(jsoninfo)){
+								if(dev!=null&&dev.getType()!=null&&jsoninfo!=null&&!"".equals(jsoninfo)){
 									JSONObject jobj = JSONObject.fromObject(jsoninfo);
 									String alarmstarttime =  (String)jobj.get("alarmstarttime");
 									String alarmendtime =  (String)jobj.get("alarmendtime");
@@ -1149,28 +1174,31 @@ public class DataService {
 											currentBed = new CurrentBedEntity();
 										}
 										HistoryBedEntity historyBed = new HistoryBedEntity();
-										//bit[0]=1有人, bit[0]=0无人
-										int temp = this.readBit(data[zhizhen+5], 0);
-										//bit[1]=1预警
-										int temp2 = this.readBit(data[zhizhen+5], 1);
-										//bit[2]=1报警
-										int temp3 = this.readBit(data[zhizhen+5], 2);
+//										//bit[0]=1有人, bit[0]=0无人
+//										int temp = this.readBit(data[zhizhen+5], 0);
+//										//bit[1]=1预警
+//										int temp2 = this.readBit(data[zhizhen+5], 1);
+//										//bit[2]=1报警
+//										int temp3 = this.readBit(data[zhizhen+5], 2);
 										String alarmType = "";
 										int alarmLevel=0;
 										String alarmCode="";
-										if(temp2==1){
+										if(data[zhizhen+5]==(byte)0x02){
 											alarmType="离床预警";
 											alarmLevel=1;
 											alarmCode="E011";
-										}else if(temp3==1){
+										}else if(data[zhizhen+5]==(byte)0x04){
 											alarmType="离床报警";
 											alarmLevel=2;
 											alarmCode="E012";
-										}else if(temp==1){
-											alarmType="床垫有人";
+										}else if(data[zhizhen+5]==(byte)0x01){
+											alarmType="有人";
+											alarmLevel=0;
+										}else if(data[zhizhen+5]==(byte)0x00){
+											alarmType="无人";
 											alarmLevel=0;
 										}
-										if(temp==0){
+										if(alarmLevel>0){
 											//无人
 											logger.debug("数据类型:报警终端应用帧：【床垫设备："+alarmType+"】："+dev.getCode());
 											//报警mordo_state_current_Bed,mordo_state_history_Bed,mordo_alarm_current,mordo_alarm_history
@@ -1204,36 +1232,44 @@ public class DataService {
 													
 											//----封装发射器应用帧结束 ----
 											
-										}else if(temp==1){
-											//有人
+										}else if(alarmLevel==0){
+											//有人或无人
 											logger.debug("数据类型:报警终端应用帧：【床垫设备："+alarmType+"】:"+dev.getCode());
 											//取消报警mordo_state_current_Bed,mordo_state_history_Bed
-											currentBed.setHavingbody("Y");
+											String havingBody="Y";
+											if("无人".equals(alarmType)){
+												havingBody="N";
+											}
+											currentBed.setHavingbody(havingBody);
 											currentBed.setAlarmupdatetime(time);
 											currentBed.setLevel(alarmLevel);
 											currentBed.setDevId(dev.getId());
 											
-											historyBed.setHavingbody("Y");
+											historyBed.setHavingbody(havingBody);
 											historyBed.setAlarmupdatetime(time);
 											historyBed.setLevel(alarmLevel);
 											historyBed.setDevId(dev.getId());
 											
-											AlarmCurrentEntity ac =null;
-											Map<String, Object> queryMap = new HashMap<String, Object>();
-											queryMap.put("devId", dev.getId());
-											queryMap.put("code_in", "E011,E012");
-											List<OrderVO> orderList = new ArrayList<OrderVO>();
-											OrderVO order = new OrderVO();
-											order.setName("createdate");
-											order.setOrderType(OrderVO.desc);
-											orderList.add(order);
-											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
-											if(list!=null&&list.size()>0){
-												ac = (AlarmCurrentEntity)list.get(0);
-												ac.setHandlestate(1);
-												ac.setHandledate(time);
-												alarmCurrentService.save(ac);
+											
+											if("Y".equals(havingBody)){
+												AlarmCurrentEntity ac =null;
+												Map<String, Object> queryMap = new HashMap<String, Object>();
+												queryMap.put("devId", dev.getId());
+												queryMap.put("code_in", "E011,E012");
+												List<OrderVO> orderList = new ArrayList<OrderVO>();
+												OrderVO order = new OrderVO();
+												order.setName("createdate");
+												order.setOrderType(OrderVO.desc);
+												orderList.add(order);
+												List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+												if(list!=null&&list.size()>0){
+													ac = (AlarmCurrentEntity)list.get(0);
+													ac.setHandlestate(1);
+													ac.setHandledate(time);
+													alarmCurrentService.save(ac);
+												}
 											}
+											
 											
 											currentBedService.save(currentBed);
 											historyBedService.save(historyBed);
