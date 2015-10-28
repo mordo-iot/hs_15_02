@@ -669,13 +669,13 @@ public class DataService {
 											}
 											//----封装发射器应用帧结束 ----
 											logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage[i]);
-											sendData = dataService.dataChangeBack(sendData);
+											byte[] sendDatabyte = dataService.dataChangeBack(sendData);
 											//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 											//C0 02010399 01000000 EAEE 0A 00 96C0
-											logger.debug("向信号发射器发送数据加入发送队列，数据内容："+this.printHexString(sendData));											
+											logger.debug("向信号发射器发送数据加入发送队列，数据内容："+this.printHexString(sendDatabyte));											
 											SocketDataVO sd = new SocketDataVO();
 											sd.setAlarmdevid(sage[i]);
-									    	sd.setData(sendData);
+									    	sd.setData(sendDatabyte);
 											SendDataThread.lList.add(sd);
 										}
 									}
@@ -1066,28 +1066,31 @@ public class DataService {
 											currentDoor = new CurrentDoorEntity();
 										}
 										HistoryDoorEntity historyDoor = new HistoryDoorEntity();
-										//bit[0]=1门关, bit[0]=0门开
-										int temp = this.readBit(data[zhizhen+5], 0);
-										//bit[1]=1预警
-										int temp2 = this.readBit(data[zhizhen+5], 1);
-										//bit[2]=1报警
-										int temp3 = this.readBit(data[zhizhen+5], 2);
+//										//bit[0]=1门关, bit[0]=0门开
+//										int temp = this.readBit(data[zhizhen+5], 0);
+//										//bit[1]=1预警
+//										int temp2 = this.readBit(data[zhizhen+5], 1);
+//										//bit[2]=1报警
+//										int temp3 = this.readBit(data[zhizhen+5], 2);
 										String alarmType = "";
 										int alarmLevel=0;
 										String alarmCode="";
-										if(temp2==1){
+										if(data[zhizhen+5]==(byte)0x02){
 											alarmType="预警";
 											alarmLevel=1;
 											alarmCode="E031";
-										}else if(temp3==1){
+										}else if(data[zhizhen+5]==(byte)0x04){
 											alarmType="报警";
 											alarmLevel=2;
 											alarmCode="E032";
-										}else if(temp==1){
+										}else if(data[zhizhen+5]==(byte)0x01){
 											alarmType="门已关";
 											alarmLevel=0;
+										}else if(data[zhizhen+5]==(byte)0x00){
+											alarmType="门已开";
+											alarmLevel=0;
 										}
-										if(temp==0){
+										if(alarmLevel>0){
 											//门开
 											logger.debug("数据类型:报警终端应用帧：【无线门磁终端："+alarmType+"】："+dev.getCode());
 											//报警mordo_state_current_Door,mordo_state_history_Door,mordo_alarm_current,mordo_alarm_history
@@ -1120,36 +1123,46 @@ public class DataService {
 													
 											//----封装发射器应用帧结束 ----
 											
-										}else if(temp==1){
+										}else if(alarmLevel==0){
 											logger.debug("数据类型:报警终端应用帧：【无线门磁终端："+alarmType+"】:"+dev.getCode());
 											//取消报警mordo_state_current_Door,mordo_state_history_Door
-											currentDoor.setOpenclose("Y");
+											
+											//门已关或门已开
+											//取消报警mordo_state_current_Bed,mordo_state_history_Bed
+											String openclose="Y";
+											if("门已开".equals(alarmType)){
+												openclose="N";
+											}
+											
+											currentDoor.setOpenclose(openclose);
 											currentDoor.setAlarmupdatetime(time);
 											currentDoor.setLevel(alarmLevel);
 											currentDoor.setDevId(dev.getId());
 											
-											historyDoor.setOpenclose("Y");
+											historyDoor.setOpenclose(openclose);
 											historyDoor.setAlarmupdatetime(time);
 											historyDoor.setLevel(alarmLevel);
 											historyDoor.setDevId(dev.getId());
 											
-											AlarmCurrentEntity ac =null;
-											Map<String, Object> queryMap = new HashMap<String, Object>();
-											queryMap.put("devId", dev.getId());
-											queryMap.put("code_in", "E031,E032");
-											List<OrderVO> orderList = new ArrayList<OrderVO>();
-											OrderVO order = new OrderVO();
-											order.setName("createdate");
-											order.setOrderType(OrderVO.desc);
-											orderList.add(order);
-											List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
-											if(list!=null&&list.size()>0){
-												ac = (AlarmCurrentEntity)list.get(0);
-												ac.setHandlestate(1);
-												ac.setHandledate(time);
-												alarmCurrentService.save(ac);
-											}
 											
+											if("Y".equals(openclose)){
+												AlarmCurrentEntity ac =null;
+												Map<String, Object> queryMap = new HashMap<String, Object>();
+												queryMap.put("devId", dev.getId());
+												queryMap.put("code_in", "E031,E032");
+												List<OrderVO> orderList = new ArrayList<OrderVO>();
+												OrderVO order = new OrderVO();
+												order.setName("createdate");
+												order.setOrderType(OrderVO.desc);
+												orderList.add(order);
+												List<Object> list = alarmCurrentService.getListByCondition(queryMap,orderList,false);
+												if(list!=null&&list.size()>0){
+													ac = (AlarmCurrentEntity)list.get(0);
+													ac.setHandlestate(1);
+													ac.setHandledate(time);
+													alarmCurrentService.save(ac);
+												}
+											}																					
 											currentDoorService.save(currentDoor);
 											historyDoorService.save(historyDoor);
 //											//----封装发射器应用帧开始 ----
@@ -1855,13 +1868,13 @@ public class DataService {
 												}
 												//----封装发射器应用帧结束 ----
 												logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage[i]);
-												sendData = dataService.dataChangeBack(sendData);
+												byte[] sendDatabyte = dataService.dataChangeBack(sendData);
 												//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 												//C0 02010399 01000000 EAEE 0A 00 96C0
-												logger.debug("向信号发射器发送数据加入发送队列，数据内容："+this.printHexString(sendData));											
+												logger.debug("向信号发射器发送数据加入发送队列，数据内容："+this.printHexString(sendDatabyte));											
 												SocketDataVO sd = new SocketDataVO();
 												sd.setAlarmdevid(sage[i]);
-										    	sd.setData(sendData);
+										    	sd.setData(sendDatabyte);
 												SendDataThread.lList.add(sd);
 											}
 										}

@@ -320,13 +320,13 @@ public class TZCDTCPMessageHandler {
 										}
 										//----封装发射器应用帧结束 ----
 										logger.debug("向信号发射器发送数据加入发送队列，胸牌code："+sage[i]);
-										sendData = dataService.dataChangeBack(sendData);
+										byte[] sendDatabyte = dataService.dataChangeBack(sendData);
 										//C0 0A000000 01000000 52EA 010301 0B0101D3 020040 03000128C0
 										//C0 02010399 01000000 EAEE 0A 00 96C0
-										logger.debug("向信号发射器发送数据加入发送队列，数据内容："+DataService.printHexString(sendData));											
+										logger.debug("向信号发射器发送数据加入发送队列，数据内容："+DataService.printHexString(sendDatabyte));											
 										SocketDataVO sd = new SocketDataVO();
 										sd.setAlarmdevid(sage[i]);
-								    	sd.setData(sendData);
+								    	sd.setData(sendDatabyte);
 										SendDataThread.lList.add(sd);
 									}
 								}
