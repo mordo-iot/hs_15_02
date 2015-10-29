@@ -18,17 +18,23 @@ Integer role = (Integer)session.getAttribute("role");
   <head>
     <title>历史报警</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="style/jquery.datetimepicker.css"/>
     <link href="style/style.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
     <script type="text/javascript" src="js/tipswindown.js"></script>
-    <script type="text/javascript" src="js/date.js"></script>
-    <script type="text/javascript" src="js/js-temporary.js"></script>
+    <script type="text/javascript" src="js/jquery.datetimepicker.full.js"></script>
     <script>
       $(document).ready(function() {
-        $("input.mh_date").manhuaDate();  //取相同class调用函数，id会重复显示年月！
         searchButtonClicked(1);
         getCurrentAlarmInfo();
         setInterval(getCurrentAlarmInfo, 5000);  //每隔一段时间获取一次报警数据，看看有没有新报警
+        
+        $.datetimepicker.setLocale('ch');
+        $("input.mh_date").datetimepicker({
+          formatDate:'Y.m.d',
+          defaultDate:'',
+          defaultTime:'00:00'
+        });
       });
       
       function showTipsWindown(title,id,width,height){
@@ -52,7 +58,6 @@ Integer role = (Integer)session.getAttribute("role");
           type:"post",
           url:"<%=path %>/currentAlarm.do?show",
           dataType:"text",
-          async:false,
           data:{},
           success:function(data){
             var d = $.parseJSON(data);
@@ -68,10 +73,16 @@ Integer role = (Integer)session.getAttribute("role");
       }
       
       function searchButtonClicked(pagenumber) {
-        var begindate = $("#begin_date").val();
-        var beginhour = $("#begin_hour option:selected").val();
-        var enddate = $("#end_date").val();
-        var endhour = $("#end_hour option:selected").val();
+        var begintime = $("#begin_date").val();
+        var endtime = $("#end_date").val();
+        if (begintime != null && begintime != "" && endtime != null && endtime != "") {
+          var begin = begintime.substr(0,4) + begintime.substr(5,2) + begintime.substr(8,2) + begintime.substr(11,2);
+          var end = endtime.substr(0,4) + endtime.substr(5,2) + endtime.substr(8,2) + endtime.substr(11,2);
+          if (parseInt(begin, "10") >= parseInt(end, "10")) {
+        	alert("结束时间应该晚于开始时间");
+            return;
+          }
+        }
         var alarmtype = $("#alarmTypeSelector option:selected").val();
         var handlestatus = $("#handleStatusSelector option:selected").val();
         var devid = $("#devid").val();
@@ -81,7 +92,7 @@ Integer role = (Integer)session.getAttribute("role");
           url:"<%=path %>/hisalarm.do?query",
           dataType:"text",
           async:false,
-          data:{begindate:begindate, beginhour:beginhour, enddate:enddate, endhour:endhour, devid:devid, positionid:positionid, alarmtype:alarmtype, handlestatus:handlestatus, pagenumber:pagenumber},
+          data:{begintime:begintime, endtime:endtime, devid:devid, positionid:positionid, alarmtype:alarmtype, handlestatus:handlestatus, pagenumber:pagenumber},
           success:function(data){
             var d = $.parseJSON(data);
             $("#warningHistory").html("");
@@ -204,6 +215,35 @@ Integer role = (Integer)session.getAttribute("role");
           });
           showTipsWindown('所属设备选择','equipmentBelong',590,480);
         }
+      
+      function changePW() {
+        showTipsWindown('修改密码', 'pwchange', 340, 175);
+      }
+      
+      function checkNewPasswd() {
+        var passwd = $("#windown-box").find('input[id="newpasswd"]').val();
+        if (passwd == null || passwd =="") {
+          alert("请输入密码");
+        } else {
+          if ($("#windown-box").find('input[id="repeatpasswd"]').val() == passwd) {
+            $.ajax({
+              type:"post",
+              url:"<%=path %>/user.do?passwdchange",
+              dataType:"text",
+              async:false,
+              data:{newpassword:passwd},
+              success:function(data){
+                alert(data);
+                if (data=="操作成功") {
+              	  closeIt();
+                }
+              }
+            });
+          } else {
+            alert("两次输入的密码不一致");
+          }
+        }
+      }
     </script>
   </head>
   
@@ -215,7 +255,7 @@ Integer role = (Integer)session.getAttribute("role");
       <div></div>
       <div></div>
       <div class="regards">
-        <span>您好</span>&nbsp;<span><%=username %></span>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
+        <span>您好</span>&nbsp;<span id="currentusername"><%=username %></span>&nbsp;丨<a onclick="changePW();">修改密码</a>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
       </div>
     </div>
     
@@ -239,6 +279,15 @@ Integer role = (Integer)session.getAttribute("role");
         </ul>
         
         <div style="display:none;"><!-- 弹出框聚集地 -->
+        <div id="pwchange" ><!--密码修改弹出-->
+          <div class="editUser-content">
+            <p>新密码　<input id="newpasswd" name="newpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <p>重复密码<input id="repeatpasswd" name="repeatpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <input type="button" value="更新" onClick="checkNewPasswd();" class="firstButton" style="margin-left: 60px;"/>
+            <input type="button" value="取消" onClick="closeIt();" style="margin-left: 10px"/>
+          </div>
+        </div><!--密码修改结束-->
+        
           <div id="Processing-instructions" ><!--处理说明弹出框开始-->
             <div class="resetPassword-content">
               <textarea id="des2update" style="width:250px;height:180px;max-width:250px;max-height:180px;margin:20px 0 0 30px;line-height:20px;"></textarea>
@@ -322,19 +371,13 @@ Integer role = (Integer)session.getAttribute("role");
         <!-- 历史报警开始 -->
         <div id="Caution_2">
           <ul class="HistoryRefer">
-            <li>&nbsp;&nbsp;日期&nbsp;<input type="text" id="begin_date" class="mh_date" readonly="readonly" />
-              <select id="begin_hour" class="date-hour">
-                <c:forEach begin="0" end="24" step="1" varStatus="status">
-                  <option value="${status.index}">${status.index}</option>
-                </c:forEach>
-              </select>&nbsp;时&nbsp;—&nbsp;
+            <li>
+              &nbsp;&nbsp;时段&nbsp;
+              <input type="text" id="begin_date" class="mh_date" readonly="readonly" style="width: 180px;background-image: url('./images/usernamebg.png');"/>
+              &nbsp;—&nbsp;
             </li>
-            <li><input type="text" id="end_date" class="mh_date" readonly="readonly" onClick="manhuaDate()"/>
-              <select id="end_hour" class="date-hour">
-                <c:forEach begin="0" end="24" step="1" varStatus="status">
-                  <option value="${status.index}">${status.index}</option>
-                </c:forEach>
-              </select>&nbsp;时
+            <li>
+              <input type="text" id="end_date" class="mh_date" readonly="readonly" style="width: 180px;background-image: url('./images/usernamebg.png');"/>
             </li>
             <li style="margin-left:30px;">
               设备位置：&nbsp;<label id="devpostionname">未选择</label><button type="button" class="newaddbutton" onclick="getPositionInfo('', '1')";>选择</button>
@@ -348,7 +391,7 @@ Integer role = (Integer)session.getAttribute("role");
             <li style="background-color:#34a1f0;color:#fff;font-weight:bold;">
               <span>报警时间</span>
               <span>
-                <select id="alarmTypeSelector" class="select-style">
+                <select id="alarmTypeSelector" class="select-style" onchange="searchButtonClicked(1)">
                   <option value="">报警类型</option>
                   <option value="E001">设备离线</option>
                   <option value="E002">设备低电压</option>
@@ -369,10 +412,10 @@ Integer role = (Integer)session.getAttribute("role");
                   <option value="E081">体征床垫离床</option>
                 </select>
               </span>
-              <span>报警事件</span>
+              <span>报警内容</span>
               <span>报警对象</span>
               <span>
-                <select id="handleStatusSelector" class="select-style1">
+                <select id="handleStatusSelector" class="select-style1" onchange="searchButtonClicked(1)">
                   <option value="">处理状态</option>
                   <option value="0">待处理</option>
                   <option value="1">已处理</option>

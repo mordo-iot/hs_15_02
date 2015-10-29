@@ -104,7 +104,6 @@ if (username == null) {
         type:"post",
         url:"<%=path %>/currentAlarm.do?show",
         dataType:"text",
-        async:false,
         data:{},
         success:function(data){
           var d = $.parseJSON(data);
@@ -231,6 +230,35 @@ if (username == null) {
         }
       });
     }
+    
+    function changePW() {
+      showTipsWindown('修改密码', 'pwchange', 340, 175);
+    }
+    
+    function checkNewPasswd() {
+      var passwd = $("#windown-box").find('input[id="newpasswd"]').val();
+      if (passwd == null || passwd =="") {
+        alert("请输入密码");
+      } else {
+        if ($("#windown-box").find('input[id="repeatpasswd"]').val() == passwd) {
+          $.ajax({
+            type:"post",
+            url:"<%=path %>/user.do?passwdchange",
+            dataType:"text",
+            async:false,
+            data:{newpassword:passwd},
+            success:function(data){
+              alert(data);
+              if (data=="操作成功") {
+            	  closeIt();
+              }
+            }
+          });
+        } else {
+          alert("两次输入的密码不一致");
+        }
+      }
+    }
   </script>
   
   <body>
@@ -238,7 +266,7 @@ if (username == null) {
       <div></div>
       <div></div>
       <div class="regards">
-        <span>您好</span>&nbsp;<span><%=username %></span>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
+        <span>您好</span>&nbsp;<span id="currentusername"><%=username %></span>&nbsp;丨<a onclick="changePW();">修改密码</a>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
       </div>
     </div>
     
@@ -278,6 +306,15 @@ if (username == null) {
             <input type="hidden" id="userid2edit" name="userid" value="">
           </div>
         </div><!--编辑用户结束-->
+        
+        <div id="pwchange" ><!--密码修改弹出-->
+          <div class="editUser-content">
+            <p>新密码　<input id="newpasswd" name="newpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <p>重复密码<input id="repeatpasswd" name="repeatpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <input type="button" value="更新" onClick="checkNewPasswd();" class="firstButton" style="margin-left: 60px;"/>
+            <input type="button" value="取消" onClick="closeIt();" style="margin-left: 10px"/>
+          </div>
+        </div><!--密码修改结束-->
         
         <div id="addUser" ><!--新增用户弹出框开始-->
           <div class="editUser-content">

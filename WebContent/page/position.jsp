@@ -52,7 +52,6 @@ if (username == null) {
         type:"post",
         url:"<%=path %>/currentAlarm.do?show",
         dataType:"text",
-        async:false,
         data:{},
         success:function(data){
           var d = $.parseJSON(data);
@@ -104,7 +103,7 @@ if (username == null) {
             html2content += "<img src=\"images/building.png\" alt=\"" + item.positionName + "\" title=\"" + item.positionName + "\" onclick=\"getPositionInfo('" + item.positionId + "');\"/>";
             html2content += "<div class=\"images-delete\" onclick=\"delposition('" + item.positionId + "');\"></div>";
             html2content += "<div class=\"images-content\">";
-            html2content += "<input value=\"" + item.positionName + "\" maxlength=\"200\" onkeydown=\"if(event.keyCode==13){updatePosition('" + item.positionId + "', this.value)}\"/>";
+            html2content += "<input value=\"" + item.positionName + "\" maxlength=\"200\" onchange=\"updatePosition('" + item.positionId + "', this.value)\" onkeydown=\"if(event.keyCode==13){updatePosition('" + item.positionId + "', this.value);)}\"/>";
             html2content += "<p class=\"input-tips\">提示:点击位置名称可进行重命名!</p>";
             html2content += "</div>";
             html2content += "</div>";
@@ -196,11 +195,12 @@ if (username == null) {
           async:false,
           data:{positionId:id,positionName:name},
           success:function(data){
-            alert(data);
             if (data == "更新成功") {
               var parentid = $("#currentPositionId").val();
               closeIt();
               getPositionInfo(parentid);
+            } else {
+              alert(data);
             }
           }
         });
@@ -252,6 +252,35 @@ if (username == null) {
         }
       });
     }
+    
+    function changePW() {
+      showTipsWindown('修改密码', 'pwchange', 340, 175);
+    }
+    
+    function checkNewPasswd() {
+      var passwd = $("#windown-box").find('input[id="newpasswd"]').val();
+      if (passwd == null || passwd =="") {
+        alert("请输入密码");
+      } else {
+        if ($("#windown-box").find('input[id="repeatpasswd"]').val() == passwd) {
+          $.ajax({
+            type:"post",
+            url:"<%=path %>/user.do?passwdchange",
+            dataType:"text",
+            async:false,
+            data:{newpassword:passwd},
+            success:function(data){
+              alert(data);
+              if (data=="操作成功") {
+            	  closeIt();
+              }
+            }
+          });
+        } else {
+          alert("两次输入的密码不一致");
+        }
+      }
+    }
   </script>
   
   <body>
@@ -261,7 +290,7 @@ if (username == null) {
       <div></div>
       <div></div>
       <div class="regards">
-        <span>您好</span>&nbsp;<span><%=username %></span>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
+        <span>您好</span>&nbsp;<span id="currentusername"><%=username %></span>&nbsp;丨<a onclick="changePW();">修改密码</a>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
       </div>
     </div>
     
@@ -277,6 +306,15 @@ if (username == null) {
     
     <div class="Contentbox">
       <div style="display:none;">  <!-- 弹出框聚集地 -->
+        <div id="pwchange" ><!--密码修改弹出-->
+          <div class="editUser-content">
+            <p>新密码　<input id="newpasswd" name="newpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <p>重复密码<input id="repeatpasswd" name="repeatpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <input type="button" value="更新" onClick="checkNewPasswd();" class="firstButton" style="margin-left: 60px;"/>
+            <input type="button" value="取消" onClick="closeIt();" style="margin-left: 10px"/>
+          </div>
+        </div><!--密码修改结束-->
+        
         <div id="deleteUser" ><!--删除位置弹出框开始-->
           <div class="deleteUser-content">
             <p style="line-height:50px;font-size:18px;">确定删除此位置？</p>
@@ -356,11 +394,11 @@ if (username == null) {
           
           <div class="currentDistribution">
             <div class="distributionBanner" style="background-color:#34a1f0;">当前位置设备信息</div>
-            <div class="currentDistributionContent" id="devContent">
+            <div class="currentDistributionContent" id="devContent" style="height: 640px;">
               <!-- 各类设备 -->
             </div>
-            <div class="newEquipment">
-              <input type="button" value="安装设备" onclick="getParentDevInfo('', '1');"/>
+            <div class="newEquipment" style="text-align: center;">
+              <input type="button" value="安装设备" onclick="getParentDevInfo('', '1');" style="margin-top: 22px; float: none;"/>
             </div>
           </div>
         </div>

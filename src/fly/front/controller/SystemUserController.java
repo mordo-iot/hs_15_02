@@ -326,4 +326,60 @@ public class SystemUserController {
 		
 		return operresult;
 	}
+	
+	/**
+	 * 更新密码信息
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(params="passwdchange")
+	@ResponseBody
+	public String updatePasswd(HttpServletRequest request) {
+		String operresult = "";
+		
+		String username = (String) request.getSession().getAttribute("username");
+		String passwd = request.getParameter("newpassword");
+		
+		if (username == null || username.trim().length() == 0) {
+			operresult = "获取用户名失败";
+		} else {
+			if (passwd == null || passwd.trim().length() == 0) {
+				operresult = "请填写密码";
+			} else {
+				UserService service = UserService.getInstance();
+				Map<String, Object> queryMap = new HashMap<String, Object>();
+				queryMap.put("name", username);
+				List<Object> infos = service.getListByCondition(queryMap);
+				if (infos != null && infos.size() > 0) {
+					if (infos.size() == 1) {
+						UserEntity userinfo = (UserEntity) infos.get(0);
+						if (userinfo != null) {
+							userinfo.setPassword(Md5Utils.MD5(passwd));
+							boolean saveResult = service.save(userinfo);
+							if (saveResult) {
+								operresult = "操作成功";
+							} else {
+								operresult = "密码修改失败";
+							}
+						} else {
+							operresult = "用户信息不存在";
+						}
+					} else {
+						operresult = "重复的用户名";
+					}
+				} else {
+					operresult = "用户信息不存在";
+				}
+			}
+		}
+		
+		
+		try {
+			operresult = new String(operresult.getBytes("utf-8"), "iso-8859-1");
+		} catch (UnsupportedEncodingException e) {
+
+		}
+		
+		return operresult;
+	}
 }

@@ -66,7 +66,6 @@ Integer role = (Integer)session.getAttribute("role");
         type:"post",
         url:"<%=path %>/currentAlarm.do?show",
         dataType:"text",
-        async:false,
         data:{alarmType:alarmType},
         success:function(data){
           var d = $.parseJSON(data);
@@ -88,6 +87,35 @@ Integer role = (Integer)session.getAttribute("role");
         }
       });
     }
+    
+    function changePW() {
+      showTipsWindown('修改密码', 'pwchange', 340, 175);
+    }
+    
+    function checkNewPasswd() {
+      var passwd = $("#windown-box").find('input[id="newpasswd"]').val();
+      if (passwd == null || passwd =="") {
+        alert("请输入密码");
+      } else {
+        if ($("#windown-box").find('input[id="repeatpasswd"]').val() == passwd) {
+          $.ajax({
+            type:"post",
+            url:"<%=path %>/user.do?passwdchange",
+            dataType:"text",
+            async:false,
+            data:{newpassword:passwd},
+            success:function(data){
+              alert(data);
+              if (data=="操作成功") {
+            	  closeIt();
+              }
+            }
+          });
+        } else {
+          alert("两次输入的密码不一致");
+        }
+      }
+    }
   </script>
   
   <body>&nbsp; 
@@ -96,7 +124,7 @@ Integer role = (Integer)session.getAttribute("role");
       <div></div>
       <div></div>
       <div class="regards">
-        <span>您好</span>&nbsp;<span><%=username %></span>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
+        <span>您好</span>&nbsp;<span id="currentusername"><%=username %></span>&nbsp;丨<a onclick="changePW();">修改密码</a>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
       </div>
     </div>
     
@@ -162,6 +190,15 @@ Integer role = (Integer)session.getAttribute("role");
                 <input type="hidden" id="alarmid4del" name="alarmid4del"/>
               </div>
             </div>
+        
+        <div id="pwchange" ><!--密码修改弹出-->
+          <div class="editUser-content">
+            <p>新密码　<input id="newpasswd" name="newpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <p>重复密码<input id="repeatpasswd" name="repeatpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <input type="button" value="更新" onClick="checkNewPasswd();" class="firstButton" style="margin-left: 60px;"/>
+            <input type="button" value="取消" onClick="closeIt();" style="margin-left: 10px"/>
+          </div>
+        </div><!--密码修改结束-->
           </div>
         </div>
       </div>

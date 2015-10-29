@@ -105,7 +105,7 @@ public class CurrentLocationController {
 									} else {
 										if (pos.getParentId() > 0) {
 											result = temp;
-											temp = pos.getId();
+											temp = pos.getParentId();
 										} else {
 											break;
 										}
@@ -122,7 +122,7 @@ public class CurrentLocationController {
 										break;
 									} else {
 										if (pos.getParentId() > 0) {
-											temp = pos.getId();
+											temp = pos.getParentId();
 										} else {
 											break;
 										}

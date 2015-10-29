@@ -29,9 +29,11 @@ import fly.entity.historyBed.HistoryBedEntity;
 import fly.entity.historyDoor.HistoryDoorEntity;
 import fly.entity.historyIr.HistoryIrEntity;
 import fly.entity.historyKeyalarm.HistoryKeyalarmEntity;
+import fly.entity.historyLocation.HistoryLocationEntity;
 import fly.entity.historyLocationBody.HistoryLocationBodyEntity;
 import fly.entity.historyLocationManual.HistoryLocationManualEntity;
 import fly.entity.historyLocationMove.HistoryLocationMoveEntity;
+import fly.entity.historyTizhengAll.HistoryTizhengAllEntity;
 import fly.entity.historyTizhengBed.HistoryTizhengBedEntity;
 import fly.entity.historyUrine.HistoryUrineEntity;
 import fly.entity.historyWandai.HistoryWandaiEntity;
@@ -48,9 +50,11 @@ import fly.service.historyBed.HistoryBedService;
 import fly.service.historyDoor.HistoryDoorService;
 import fly.service.historyIr.HistoryIrService;
 import fly.service.historyKeyalarm.HistoryKeyalarmService;
+import fly.service.historyLocation.HistoryLocationService;
 import fly.service.historyLocationBody.HistoryLocationBodyService;
 import fly.service.historyLocationManual.HistoryLocationManualService;
 import fly.service.historyLocationMove.HistoryLocationMoveService;
+import fly.service.historyTizhengAll.HistoryTizhengAllService;
 import fly.service.historyTizhengBed.HistoryTizhengBedService;
 import fly.service.historyUrine.HistoryUrineService;
 import fly.service.historyWandai.HistoryWandaiService;
@@ -192,7 +196,7 @@ public class DeviceController {
 					info.setAlarmDev(dev.getParentDev().getName());
 				} else {
 					info.setParentDevid(0);
-					info.setAlarmDev("无");
+					info.setAlarmDev("请选择");
 				}
 				
 				if (dev.getAttribute() != null && dev.getAttribute().length() > 0) {
@@ -235,18 +239,18 @@ public class DeviceController {
 						info.setPosition(pe.getName());
 						info.setPositionId(pe.getId());
 					} else {
-						info.setPosition("未选择");
+						info.setPosition("请选择");
 						info.setPositionId(0);
 					}
 				} else {
-					info.setPosition("未选择");
+					info.setPosition("请选择");
 					info.setPositionId(0);
 				}
 			} else {
-				info = new DeviceInfo(0, "", "", "", "未选择", "无", "", "", "", "", "", "", "", "", "");
+				info = new DeviceInfo(0, "", "", "", "请选择", "请选择", "", "", "", "", "", "", "", "", "");
 			}
 		} else {
-			info = new DeviceInfo(0, "", "", "", "", "未选择", "无", "", "", "", "", "", "", "", "");
+			info = new DeviceInfo(0, "", "", "", "", "请选择", "请选择", "", "", "", "", "", "", "", "");
 		}
 		
 		String json2return = JSONObject.fromObject(info).toString();
@@ -1026,9 +1030,7 @@ public class DeviceController {
 		
 		String deviceId = request.getParameter("deviceid");
 		String begindate = request.getParameter("begindate");
-		String beginhour = request.getParameter("beginhour");
 		String enddate = request.getParameter("enddate");
-		String endhour = request.getParameter("endhour");
 		String pagenumber = request.getParameter("pagenumber");
 		String subtype = request.getParameter("subtype");
 		
@@ -1055,36 +1057,8 @@ public class DeviceController {
 		}
 		
 		if (begindate != null && begindate.length() > 0) {
-			String[] templist = begindate.split("-");
-			if (templist.length == 3) {
-				if (templist[0].length() == 4) {
-					timestart += templist[0];  //年份
-					if (templist[1].length() == 1 || templist[1].length() == 2) {
-						if (templist[1].length() == 1) {
-							timestart += "0";
-						}
-						timestart += templist[1];  //月份
-						
-						if (templist[2].length() == 1) {
-							timestart += "0" + templist[2];
-						} else if (templist[2].length() == 2) {
-							timestart += templist[2];
-						}
-					}
-				}
-			}
-			
-			if (timestart.length() == 8 && beginhour != null) {
-				if (beginhour.length() == 1) {
-					timestart += "0" + beginhour;
-				} else if (beginhour.length() == 2) {
-					timestart += beginhour;
-				} else {
-					timestart += "00";
-				}
-			}
-			
-			timestart += "0000";  //分钟及秒数
+			timestart = begindate.replace("/", "").replace(":", "").replace(" ", "");
+			timestart += "00";  //秒数
 			
 			if (timestart.length() != 14) {
 				timestart = "";
@@ -1092,37 +1066,8 @@ public class DeviceController {
 		}
 		
 		if (enddate != null && enddate.length() > 0) {
-			
-			String[] templist = enddate.split("-");
-			if (templist.length == 3) {
-				if (templist[0].length() == 4) {
-					timeend += templist[0];  //年份
-					if (templist[1].length() == 1 || templist[1].length() == 2) {
-						if (templist[1].length() == 1) {
-							timeend += "0";
-						}
-						timeend += templist[1];  //月份
-						
-						if (templist[2].length() == 1) {
-							timeend += "0" + templist[2];
-						} else if (templist[2].length() == 2) {
-							timeend += templist[2];
-						}
-					}
-				}
-			}
-			
-			if (timeend.length() == 8 && endhour != null) {
-				if (endhour.length() == 1) {
-					timeend += "0" + endhour;
-				} else if (endhour.length() == 2) {
-					timeend += endhour;
-				} else {
-					timeend += "00";
-				}
-			}
-			
-			timeend += "0000";  //分钟及秒数
+			timeend = enddate.replace("/", "").replace(":", "").replace(" ", "");
+			timeend += "00";  //分钟及秒数
 			
 			if (timeend.length() != 14) {
 				timeend = "";
@@ -1175,7 +1120,57 @@ public class DeviceController {
 					}
 					result.setResult("获取成功");
 				} else if("4".equals(devEntity.getType())) {  //园区内定位
-					if ("人卡分离".equals(subtype)) {
+					if ("全部".equals(subtype)) {
+						HistoryLocationService service = HistoryLocationService.getInstance();
+						Map<String, Object> queryMap = new HashMap<String, Object>();
+						if (timestart.length() > 0) {
+							queryMap.put("time_ge", timestart);
+						}
+						if (timeend.length() > 0) {
+							queryMap.put("time_lt", timeend);
+						}
+						queryMap.put("devId", devId);
+						List<OrderVO> orderList = new ArrayList<OrderVO>();
+						OrderVO vo = new OrderVO();
+						vo.setName("time");
+						vo.setOrderType(OrderVO.desc);
+						orderList.add(vo);
+						PageList pl = service.getListByCondition(queryMap, orderList, pageno, pagesize, false);
+						if (pl != null) {
+							totalpage = pl.getPageCount();
+							totalitem = pl.getRecordCount();
+							if (pl.getResultList() != null && pl.getResultList().size() > 0) {
+								for (Object obj : pl.getResultList()) {
+									HistoryLocationEntity temp = (HistoryLocationEntity) obj;
+									if (temp != null) {
+										HistoryData data = new HistoryData();
+										data.setUpdateDate(Datetools.formateDate(temp.getTime()));
+										if (temp.getMoving() != null) {
+											if ("Y".equalsIgnoreCase(temp.getMoving())) {
+												data.setValue("未人卡分离");
+											} else {
+												data.setValue("人卡分离");
+											}
+										} else if (temp.getBodystate() != null) {
+											if ("Y".equalsIgnoreCase(temp.getBodystate())) {
+												data.setValue("未摔倒");
+											} else {
+												data.setValue("摔倒");
+											}
+										} else if (temp.getManualalarm() != null) {
+											if ("Y".equalsIgnoreCase(temp.getManualalarm())) {
+												data.setValue("未报警");
+											} else {
+												data.setValue("手动报警");
+											}
+										}
+										list.add(data);
+									}
+								}
+							}
+						}
+						result.setResult("获取成功");
+					} else if ("人卡分离".equals(subtype)) {
 						HistoryLocationMoveService service = HistoryLocationMoveService.getInstance();
 						Map<String, Object> queryMap = new HashMap<String, Object>();
 						if (timestart.length() > 0) {
@@ -1275,7 +1270,7 @@ public class DeviceController {
 										if ("Y".equalsIgnoreCase(temp.getManualalarm())) {
 											data.setValue("正常");
 										} else {
-											data.setValue("摔倒");
+											data.setValue("手动报警");
 										}
 										list.add(data);
 									}
@@ -1467,9 +1462,50 @@ public class DeviceController {
 					}
 					result.setResult("获取成功");
 				} else if("16".equals(devEntity.getType())) {  //心率床垫
-					HistoryTizhengBedService service = HistoryTizhengBedService.getInstance();
 					Map<String, Object> queryMap = new HashMap<String, Object>();
-					if ("床垫状态".equals(subtype)) {
+					if ("全部".equals(subtype)) {
+						HistoryTizhengAllService service = HistoryTizhengAllService.getInstance();
+						if (timestart.length() > 0) {
+							queryMap.put("time_ge", timestart);
+						}
+						if (timeend.length() > 0) {
+							queryMap.put("time_lt", timeend);
+						}
+						queryMap.put("devId", devId);
+						List<OrderVO> orderList = new ArrayList<OrderVO>();
+						OrderVO vo = new OrderVO();
+						vo.setName("time");
+						vo.setOrderType(OrderVO.desc);
+						orderList.add(vo);
+						PageList pl = service.getListByCondition(queryMap, orderList, pageno, pagesize, false);
+						if (pl != null) {
+							totalpage = pl.getPageCount();
+							totalitem = pl.getRecordCount();
+							if (pl.getResultList() != null && pl.getResultList().size() > 0) {
+								for (Object obj : pl.getResultList()) {
+									HistoryTizhengAllEntity temp = (HistoryTizhengAllEntity) obj;
+									if (temp != null) {
+										HistoryData data = new HistoryData();
+										data.setUpdateDate(Datetools.formateDate(temp.getTime()));
+										if (temp.getHavingbody() != null) {
+											if ("Y".equalsIgnoreCase(temp.getHavingbody())) {
+												data.setValue("有人");
+											} else {
+												data.setValue("无人");
+											}
+										} else if (temp.getBreath() != null && temp.getBreath() > 0) {
+											data.setValue("心跳：" + temp.getBreath().toString() + "次/分钟");
+										} else if (temp.getHeart() != null && temp.getHeart() > 0) {
+											data.setValue("呼吸：" + temp.getHeart().toString() + "次/分钟");
+										}
+										list.add(data);
+									}
+								}
+							}
+						}
+						result.setResult("获取成功");
+					} else if ("床垫状态".equals(subtype)) {
+						HistoryTizhengBedService service = HistoryTizhengBedService.getInstance();
 						if (timestart.length() > 0) {
 							queryMap.put("alarmupdatetime_ge", timestart);
 						}
@@ -1477,6 +1513,7 @@ public class DeviceController {
 							queryMap.put("alarmupdatetime_lt", timeend);
 						}
 						queryMap.put("devId", devId);
+						queryMap.put("havingbody_isNotNull", 0);  //有床垫状态数据
 						List<OrderVO> orderList = new ArrayList<OrderVO>();
 						OrderVO vo = new OrderVO();
 						vo.setName("alarmupdatetime");
@@ -1504,6 +1541,7 @@ public class DeviceController {
 						}
 						result.setResult("获取成功");
 					} else if ("心跳".equals(subtype)) {
+						HistoryTizhengBedService service = HistoryTizhengBedService.getInstance();
 						if (timestart.length() > 0) {
 							queryMap.put("devupdatetime_ge", timestart);
 						}
@@ -1511,6 +1549,7 @@ public class DeviceController {
 							queryMap.put("devupdatetime_lt", timeend);
 						}
 						queryMap.put("devId", devId);
+						queryMap.put("heart_gt", 0);  //有心跳数据，且大于0
 						List<OrderVO> orderList = new ArrayList<OrderVO>();
 						OrderVO vo = new OrderVO();
 						vo.setName("devupdatetime");
@@ -1534,6 +1573,7 @@ public class DeviceController {
 						}
 						result.setResult("获取成功");
 					} else if ("呼吸".equals(subtype)) {
+						HistoryTizhengBedService service = HistoryTizhengBedService.getInstance();
 						if (timestart.length() > 0) {
 							queryMap.put("devupdatetime_ge", timestart);
 						}
@@ -1541,6 +1581,7 @@ public class DeviceController {
 							queryMap.put("devupdatetime_lt", timeend);
 						}
 						queryMap.put("devId", devId);
+						queryMap.put("breath_gt", 0);  //有呼吸数据，且大于0
 						List<OrderVO> orderList = new ArrayList<OrderVO>();
 						OrderVO vo = new OrderVO();
 						vo.setName("devupdatetime");

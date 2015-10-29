@@ -47,10 +47,8 @@ public class HistoryAlarmController {
 	@RequestMapping(params="query")
 	@ResponseBody
 	public String queryHistoryAlarmInfos(HttpServletRequest request) {
-		String begindate = request.getParameter("begindate");
-		String beginhour = request.getParameter("beginhour");
-		String enddate = request.getParameter("enddate");
-		String endhour = request.getParameter("endhour");
+		String begintime = request.getParameter("begintime");
+		String endtime = request.getParameter("endtime");
 		String alarmtype = request.getParameter("alarmtype");
 		String handlestatus = request.getParameter("handlestatus");
 		String devidString = request.getParameter("devid");
@@ -61,79 +59,19 @@ public class HistoryAlarmController {
 		Map<String, Object> querymap = new HashMap<String, Object>();
 		
 		
-		if (begindate != null && begindate.length() > 0) {
+		if (begintime != null && begintime.length() > 0) {
 			String timestart = "";
-			
-			String[] templist = begindate.split("-");
-			if (templist.length == 3) {
-				if (templist[0].length() == 4) {
-					timestart += templist[0];  //年份
-					if (templist[1].length() == 1 || templist[1].length() == 2) {
-						if (templist[1].length() == 1) {
-							timestart += "0";
-						}
-						timestart += templist[1];  //月份
-						
-						if (templist[2].length() == 1) {
-							timestart += "0" + templist[2];
-						} else if (templist[2].length() == 2) {
-							timestart += templist[2];
-						}
-					}
-				}
-			}
-			
-			if (timestart.length() == 8 && beginhour != null) {
-				if (beginhour.length() == 1) {
-					timestart += "0" + beginhour;
-				} else if (beginhour.length() == 2) {
-					timestart += beginhour;
-				} else {
-					timestart += "00";
-				}
-			}
-			
-			timestart += "0000";  //分钟及秒数
-			
+			timestart = begintime.replace("/", "").replace(":", "").replace(" ", "");  //把“年年年年/月月/日日 时时:分分”转换成“年年年年月月日日时时分分”
+			timestart += "00";  //秒数
 			if (timestart.length() == 14) {
 				querymap.put("createdate_ge", timestart);
 			}
 		}
 		
-		if (enddate != null && enddate.length() > 0) {
+		if (endtime != null && endtime.length() > 0) {
 			String timeend = "";
-			
-			String[] templist = enddate.split("-");
-			if (templist.length == 3) {
-				if (templist[0].length() == 4) {
-					timeend += templist[0];  //年份
-					if (templist[1].length() == 1 || templist[1].length() == 2) {
-						if (templist[1].length() == 1) {
-							timeend += "0";
-						}
-						timeend += templist[1];  //月份
-						
-						if (templist[2].length() == 1) {
-							timeend += "0" + templist[2];
-						} else if (templist[2].length() == 2) {
-							timeend += templist[2];
-						}
-					}
-				}
-			}
-			
-			if (timeend.length() == 8 && endhour != null) {
-				if (endhour.length() == 1) {
-					timeend += "0" + endhour;
-				} else if (endhour.length() == 2) {
-					timeend += endhour;
-				} else {
-					timeend += "00";
-				}
-			}
-			
-			timeend += "0000";  //分钟及秒数
-			
+			timeend = endtime.replace("/", "").replace(":", "").replace(" ", "");  //把“年年年年/月月/日日 时时:分分”转换成“年年年年月月日日时时分分”
+			timeend += "00";  //秒数
 			if (timeend.length() == 14) {
 				querymap.put("createdate_le", timeend);
 			}

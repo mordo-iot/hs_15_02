@@ -20,12 +20,12 @@ if (username == null) {
   <head>
     <base href="<%=basePath%>">
     <title>设备信息</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <link href="style/style.css" rel="stylesheet" type="text/css"/>
-  <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
-  <script type="text/javascript" src="js/tipswindown.js"></script>
-    <script type="text/javascript" src="js/date.js"></script>
-  <script type="text/javascript" src="js/js-temporary.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="style/jquery.datetimepicker.css"/>
+    <link href="style/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
+    <script type="text/javascript" src="js/tipswindown.js"></script>
+    <script type="text/javascript" src="js/jquery.datetimepicker.full.js"></script>
   </head>
 
   <script type="text/javascript">
@@ -41,13 +41,20 @@ if (username == null) {
       document.getElementById(objname).style.display="block";
     }
     
-    function closeDiv(objname) {  //关闭编辑框
-      document.getElementById(objname).style.display="none";
+    function closeHistoryInfo() {  //关闭编辑框
+      $("#begin_date").val("");
+      $("#end_date").val("");
+      document.getElementById('historyLocation').style.display="none";
     }
     
     $(document).ready(function() {
       getDevListByType();
-      $("input.mh_date").manhuaDate();  //取相同class调用函数，id会重复显示年月！
+      $.datetimepicker.setLocale('ch');  //初始化日期控件
+      $("input.mh_date").datetimepicker({  //初始化日期控件
+        formatDate:'Y.m.d',
+        defaultDate:'',
+        defaultTime:'00:00'
+      });
       getCurrentAlarmInfo();
       setInterval(getCurrentAlarmInfo, 5000);  //每隔一段时间获取一次报警数据，看看有没有新报警
     });
@@ -59,7 +66,6 @@ if (username == null) {
         type:"post",
         url:"<%=path %>/currentAlarm.do?show",
         dataType:"text",
-        async:false,
         data:{},
         success:function(data){
           var d = $.parseJSON(data);
@@ -90,6 +96,7 @@ if (username == null) {
           });
           
           $(".mattress-head").click(function() {
+            closeHistoryInfo();
             $(this).parent().siblings().children("div.mattress-content").css({"display":"none"});
             $(this).parent().siblings().children("div.mattress-head").css({"background":"url(images/closed.png) 160px 8px no-repeat"});  //关闭其他展开项，并把icon变为+
            var brother=$(this).next();  //同胞元素
@@ -172,7 +179,7 @@ if (username == null) {
         data:{devicename:devicename,devicetype:devicetype,devicemac:devicemac,devicepostionid:devicepostionid,parentdeviceid:parentdeviceid,alarmstarttime:alarmstarttime,alarmendtime:alarmendtime,alarmdelay:alarmdelay,alarmcardmac:alarmcardmac,doorlightmac:doorlightmac,ledmac:ledmac,eboardmac:eboardmac,eboardcontent:eboardcontent,alarmcardcontent:alarmcardcontent,deviceid:deviceid},
         success:function(data){
           alert(data);
-          if (data != "保存失败" && deviceid == "") {
+          if (data == "设备信息保存成功" || data== "设备信息保存成功，位置信息保存失败") {
             addDevicePreWork();
             getDevListByType();
           }
@@ -220,11 +227,11 @@ if (username == null) {
           } else if (item.devType == "4") {
             $("#viewDeviceHistoryButton").css("display", "inline");
             $("#subtypeselector").css("display", "inline");
-            $("#subtypeselector").html("<option value=\"人卡分离\" selected=\"selected\">人卡分离</option><option value=\"摔倒\">摔倒</option><option value=\"手动报警\">手动报警</option>");
+            $("#subtypeselector").html("<option value=\"全部\" selected=\"selected\">全部</option><option value=\"人卡分离\">人卡分离</option><option value=\"摔倒\">摔倒</option><option value=\"手动报警\">手动报警</option>");
           } else if (item.devType == "16") {
             $("#viewDeviceHistoryButton").css("display", "inline");
             $("#subtypeselector").css("display", "inline");
-            $("#subtypeselector").html("<option value=\"床垫状态\" selected=\"selected\">床垫状态</option><option value=\"心跳\">心跳</option><option value=\"呼吸\">呼吸</option>");
+            $("#subtypeselector").html("<option value=\"全部\" selected=\"selected\">全部</option><option value=\"床垫状态\">床垫状态</option><option value=\"心跳\">心跳</option><option value=\"呼吸\">呼吸</option>");
           } else {
             $("#viewDeviceHistoryButton").css("display", "none");
             $("#subtypeselector").html("");
@@ -266,7 +273,7 @@ if (username == null) {
     }
     
     function getParentDevInfo(devname, pageNumber) {
-      $("#devselectbox").attr("value", devname);
+      $("#devsearchbox").attr("value", devname);
       $.ajax({
         type:"post",
         url:"<%=path %>/dev.do?choose",
@@ -327,17 +334,25 @@ if (username == null) {
     
     function getHistoryData(pagenumber) {
       var deviceid = $("#deviceid").val();
-      var begindate = $("#begin_date").val();
-      var beginhour = $("#begin_hour option:selected").val();
-      var enddate = $("#end_date").val();
-      var endhour = $("#end_hour option:selected").val();
+      var begintime = $("#begin_date").val();
+      var endtime = $("#end_date").val();
+      
+      if (begintime != null && begintime != "" && endtime != null && endtime != "") {
+        var begin = begintime.substr(0,4) + begintime.substr(5,2) + begintime.substr(8,2) + begintime.substr(11,2);
+        var end = endtime.substr(0,4) + endtime.substr(5,2) + endtime.substr(8,2) + endtime.substr(11,2);
+        if (parseInt(begin, "10") >= parseInt(end, "10")) {
+          alert("结束时间应该晚于开始时间");
+          return;
+        }
+      }
+      
       var subtype = $("#subtypeselector option:selected").val();
       $.ajax({
         type:"post",
         url:"<%=path %>/dev.do?history",
         dataType:"text",
         async:true,
-        data:{deviceid:deviceid, pagenumber:pagenumber, subtype:subtype, endhour:endhour, enddate:enddate, beginhour:beginhour, begindate:begindate},
+        data:{deviceid:deviceid, pagenumber:pagenumber, subtype:subtype, enddate:endtime, begindate:begintime},
         success:function(data) {
           var d = $.parseJSON(data);
           if (d.result != "获取成功") {
@@ -361,6 +376,43 @@ if (username == null) {
         getHistoryData(pagenum);
       }
     }
+    
+    function changePW() {
+      showTipsWindown('修改密码', 'pwchange', 340, 175);
+    }
+    
+    function checkNewPasswd() {
+      var passwd = $("#windown-box").find('input[id="newpasswd"]').val();
+      if (passwd == null || passwd =="") {
+        alert("请输入密码");
+      } else {
+        if ($("#windown-box").find('input[id="repeatpasswd"]').val() == passwd) {
+          $.ajax({
+            type:"post",
+            url:"<%=path %>/user.do?passwdchange",
+            dataType:"text",
+            async:false,
+            data:{newpassword:passwd},
+            success:function(data){
+              alert(data);
+              if (data=="操作成功") {
+                closeIt();
+              }
+            }
+          });
+        } else {
+          alert("两次输入的密码不一致");
+        }
+      }
+    }
+    
+    function getPositionInfo4selector() {
+      getPositionInfo($("#windown-box").find('input[id="positionsearchbox"]').val(), '1');
+    }
+    
+    function getDeviceInfo4selector() {
+      getParentDevInfo($("#windown-box").find('input[id="devsearchbox"]').val(), '1');
+    }
   </script>
   
   <body>
@@ -368,7 +420,7 @@ if (username == null) {
       <div></div>
       <div></div>
       <div class="regards">
-        <span>您好</span>&nbsp;<span><%=username %></span>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
+        <span>您好</span>&nbsp;<span id="currentusername"><%=username %></span>&nbsp;丨<a onclick="changePW();">修改密码</a>&nbsp;丨<a onclick="window.location.href='page/login.jsp'">注销</a>
       </div>
     </div>
     
@@ -387,7 +439,8 @@ if (username == null) {
         <div id="installationLocation"><!--设备安装位置开始-->
           <div class="six-six">
             <span style="margin-left: 80px;">设备位置选择:</span>
-            <input id="positionsearchbox" placeholder="位置搜索" style="margin-left:30px;" onkeydown="if(event.keyCode==13){closeIt();getPositionInfo(this.value, '1');}"/>
+            <input id="positionsearchbox" placeholder="位置搜索" style="margin-left:30px;background: transparent url('./images/usernamebg.png') no-repeat scroll 0% 0%;" onkeydown="if(event.keyCode==13){closeIt();getPositionInfo4selector();}"/>
+            <button type="button" class="newaddbutton" onclick="getPositionInfo4selector()">搜索</button>
             <table id="positionselecttable" border="1" cellspacing="0">
               <tr>
                 <th>位置</th>
@@ -417,10 +470,20 @@ if (username == null) {
           </div>
         </div><!--设备安装位置结束-->
         
+        <div id="pwchange" ><!--密码修改弹出-->
+          <div class="editUser-content">
+            <p>新密码　<input id="newpasswd" name="newpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <p>重复密码<input id="repeatpasswd" name="repeatpasswd" maxlength="32">&nbsp;&nbsp;(<label style="color:red;">*</label>必填)</p>
+            <input type="button" value="更新" onClick="checkNewPasswd();" class="firstButton" style="margin-left: 60px;"/>
+            <input type="button" value="取消" onClick="closeIt();" style="margin-left: 10px"/>
+          </div>
+        </div><!--密码修改结束-->
+        
         <div id="equipmentBelong" ><!--所属设备开始-->
           <div class="six-eight">
             <span style="margin-left: 80px;">所属设备选择:</span>
-            <input id="devsearchbox" type="text" placeholder="设备搜索" style="margin-left:30px;" onkeydown="if(event.keyCode==13){closeIt();getParentDevInfo(this.value, '1');}"/>
+            <input id="devsearchbox" type="text" placeholder="设备搜索" style="margin-left:30px;background: transparent url('./images/usernamebg.png') no-repeat scroll 0% 0%;" onkeydown="if(event.keyCode==13){closeIt();getDeviceInfo4selector();}"/>
+            <button type="button" class="newaddbutton" onclick="getDeviceInfo4selector()">搜索</button>
             <table id="parentdevselecttable" border="1" cellspacing="0">
               <tr>
                 <th>名称</th>
@@ -507,34 +570,22 @@ if (username == null) {
             <div style="background-color:#2e94e3;height:50px;">设备信息</div>
               <div class="assessment-edit-pos1" style="width:0;height:0;left:0;top:0;position:relative;"> <!-- 父元素相对定位 -->
                 <!--设备安装位置开始-->
-                <div id="historyLocation" style="width:600px;height:520px;top:30px;left:50px;display:none;background-color:#fff;z-index:98;position:absolute;-webkit-box-shadow:0 0 10px 2px #888;box-shadow:0 0 10px 2px #888;">
+                <div id="historyLocation" style="width:700px;height:520px;top:30px;left:50px;display:none;background-color:#fff;z-index:98;position:absolute;-webkit-box-shadow:0 0 10px 2px #888;box-shadow:0 0 10px 2px #888;">
                   <!-- 标题头部及关闭按钮 -->
                   <div style="width:100%;height:35px;line-height:35px;background-color:#2e94e3">
-                    <span style="width:565px;text-align:center;line-height:35px;display:block;float:left;font-weight:bold;color:#fff;">历史数据</span>
-                    <span onclick="closeDiv('historyLocation')"  style="width:35px;display:block;float:left;">
+                    <span style="width:665px;text-align:center;line-height:35px;display:block;float:left;font-weight:bold;color:#fff;">历史数据</span>
+                    <span onclick="closeHistoryInfo()"  style="width:35px;display:block;float:left;">
                       <img src="images/tipbg.png" style="margin-top:8px;margin-left:5px;">
                     </span>
                   </div>
                   
-                  <div class="six-six">
+                  <div class="six-six" style="text-align: center;">
                     <span>
-                    <input type="text" id="begin_date" class="mh_date" readonly="readonly" style="text-indent: 10px;" onchange="getHistoryData('1');"/>
-                    <select id="begin_hour" class="date-hour" style="width:48px;height:30px;border:0; background:url(./images/selectsmallest.png) no-repeat;text-indent:7px;margin-top:-3px;margin-left:10px;-moz-appearance: none;">
-                      <c:forEach begin="0" end="24" step="1" varStatus="status">
-                        <option value="${status.index}">${status.index}</option>
-                      </c:forEach>
-                    </select>
-                    &nbsp;时&nbsp;—&nbsp;&nbsp;
-                    <input type="text" id="end_date" class="mh_date" readonly="readonly" style="text-indent: 10px;" onchange="getHistoryData('1');"/>
-                    <select id="end_hour" class="date-hour" style="width:48px;height:30px;border:0; background:url(./images/selectsmallest.png) no-repeat;text-indent:7px;margin-top:-3px;margin-left:10px;-moz-appearance: none;">
-                      <c:forEach begin="0" end="24" step="1" varStatus="status">
-                        <option value="${status.index}">${status.index}</option>
-                      </c:forEach>
-                    </select>
-                    &nbsp;时
-                    <button type="button" class="newaddbutton" onclick="getHistoryData('1')";>搜索</button>
+                    <input type="text" id="begin_date" class="mh_date" readonly="readonly" style="width: 180px;background-image: url('./images/usernamebg.png');">
+                    &nbsp;—&nbsp;&nbsp;
+                    <input type="text" id="end_date" class="mh_date" readonly="readonly" style="width: 180px;background-image: url('./images/usernamebg.png');">
                     </span>
-                    <select id="subtypeselector" onchange="getHistoryData('1');" style="width:89px;background:transparent url(./images/selectsmall.png) no-repeat scroll 0% 0%;-moz-appearance: none;text-indent:7px;margin-top:-3px;margin-left:5px;">
+                    <select id="subtypeselector" style="width:88px;background:transparent url(./images/selectsmall.png) no-repeat scroll 0% 0%;-moz-appearance: none;text-indent:7px;margin-top:-3px;margin-left:10px;">
                       <option value="人卡分离">人卡分离</option>
                       <option value="摔倒">摔倒</option>
                       <option value="手动报警">手动报警</option>
@@ -542,6 +593,7 @@ if (username == null) {
                       <option value="心跳">心跳</option>
                       <option value="呼吸">呼吸</option>
                     </select>
+                    <button type="button" class="newaddbutton" onclick="getHistoryData('1')"; style="margin-top:-2px;">搜索</button>
                     
                     <table id="historydatatable" border="1" cellspacing="0">
                       <tr>
@@ -620,7 +672,9 @@ if (username == null) {
                     <button type="button" onclick="getPositionInfo('', '1')";>选择</button>
                     <input id="devicepostionid" name="devicepositionid" type="hidden">
                   </span>
-                  <span>&nbsp;&nbsp;</span>
+                  <span>
+                    <button type="button" style="float:left;margin-left: 12px;" onclick="selectPostion('0', '请选择')";>清除</button>
+                  </span>
                 </li>
                 <li>
                   <span>所属设备：</span>
@@ -629,7 +683,9 @@ if (username == null) {
                     <button type="button" onclick="getParentDevInfo('', '1')";>选择</button>
                     <input id="parentdeviceid" name="parentdeviceid" type="hidden">
                   </span>
-                  <span>&nbsp;&nbsp;</span>
+                  <span>
+                    <button type="button" style="float:left;margin-left: 12px;" onclick="selectDev('0', '请选择')";>清除</button>
+                  </span>
                 </li>
                 <li>
                   <span>报警开始时间：</span>

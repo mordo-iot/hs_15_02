@@ -16,17 +16,16 @@ session.invalidate();
     <link href="style/style.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="js/jquery-1.7.min.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
-	<script type="text/javascript" src="js/js-temporary.js"></script>
 	<script type="text/javascript">
 	  $(document).ready(function() {
 	    $("#username").focus();
 
-	    if ($.cookie("rememberUsername") == "true") {
+	    if ($.cookie("rememberUsername") != null && $.cookie("rememberUsername") == "true") {
 	      $("#rememberUsername").prop("checked", true);
 	      $("#username").val($.cookie("username"));
 	    }
 
-	    if ($.cookie("rememberPasswd") == "true") {
+	    if ($.cookie("rememberPasswd") != null && $.cookie("rememberPasswd") == "true") {
 	      $("#rememberPasswd").prop("checked", true);
 	      $("#password").val($.cookie("password"));
 	    }
