@@ -23,8 +23,10 @@ public class SendDataThread extends Thread
     try{
     	logger.debug("发送数据到信号发射器线程启动！");
     	while (true) {
+    		logger.debug("发送队列长度："+lList.size());
     		if(lList.size()>0){
     			SocketDataVO sd = lList.getFirst();
+    			logger.debug("发送队列第一个胸牌code："+sd.getAlarmdevid());
         		if(sd!=null&&sd.getAlarmdevid()!=null&&!"".equals(sd.getAlarmdevid())&&sd.getData()!=null){
         					Socket devSocket = DataService.socketMap.get(sd.getAlarmdevid());
         					if(devSocket!=null&&sd.getAlarmdevid().length()==8){

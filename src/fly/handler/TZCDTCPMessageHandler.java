@@ -179,12 +179,7 @@ public class TZCDTCPMessageHandler {
 								alarmCurrent.setCode("E081");
 								alarmCurrent.setContent("体征床垫离床报警");
 								alarmCurrent.setCreatedate(time);
-								alarmCurrent.setDevId(dev.getId());
-								
-								alarmHistory.setCode("E081");
-								alarmHistory.setContent("体征床垫离床报警");
-								alarmHistory.setCreatedate(time);
-								alarmHistory.setDevId(dev.getId());
+								alarmCurrent.setDevId(dev.getId());								
 								
 								currentTizhengBedSave = true;
 								historyTizhengBedSave = true;

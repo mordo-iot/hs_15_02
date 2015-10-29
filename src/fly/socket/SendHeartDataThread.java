@@ -62,10 +62,10 @@ public class SendHeartDataThread extends Thread{
 						sendData[11]=(byte)0x01;
 						//心跳数据
 						sendData[12]=(byte)0x04;
-				    	sendData = dataService.dataChangeBack(sendData);
-				    	logger.debug("向信号发射器发送【心跳】数据，数据内容："+DataService.printHexString(sendData));	
+				    	byte[] sendDatabyte = dataService.dataChangeBack(sendData);
+				    	logger.debug("向信号发射器发送【心跳】数据，数据内容："+DataService.printHexString(sendDatabyte));	
 				    	OutputStream out = socket.getOutputStream();
-		            	out.write(sendData);
+		            	out.write(sendDatabyte);
 				    }				  				  
 				} 
 			}
