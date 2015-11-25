@@ -210,18 +210,4 @@ public class CurrentLocationController {
 		return json2return;
 	}
 	
-//	@RequestMapping(params="floorDetail")
-//	@ResponseBody
-//	public String getFloorDetail(HttpServletRequest request) {
-//		String floorIdString = request.getParameter("floorId");
-//		int floorId = 0;
-//		try {
-//			floorId = Integer.parseInt(floorIdString);
-//		} catch (NumberFormatException e) {
-//			
-//		}
-//		if (floorId > 0) {
-//			
-//		}
-//	}
 }

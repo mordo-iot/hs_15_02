@@ -11,6 +11,11 @@
         <listener-class>fly.init.SystemInit</listener-class>
     </listener>
     
+    <!-- 初始化寻路逻辑 -->
+    <listener>
+        <listener-class>fly.front.RoadMapInit</listener-class>
+    </listener>
+    
     <!-- 监听spring上下文容器 -->
     <listener>
         <listener-class>
@@ -60,7 +65,17 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<filter>
+		<description>权限过滤器</description>
+		<filter-name>loginFilter</filter-name>
+		<filter-class>fly.front.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>loginFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+
     <welcome-file-list>
-        <welcome-file>./page/login.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 </web-app>

@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONObject;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.framework.system.util.Md5Utils;
 
@@ -28,13 +31,26 @@ import fly.service.user.UserService;
 public class LoginController {
 
 	@RequestMapping(params="login")
+	public ModelAndView loginpage() {
+		ModelAndView mav = new ModelAndView("login");
+		return mav;
+	}
+	
+	@RequestMapping(params="logout")
+	public ModelAndView logout(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.removeAttribute("username");
+		session.removeAttribute("role");
+		session.invalidate();
+		return loginpage();
+	}
+	
+	@RequestMapping(params="doLogin")
 	@ResponseBody
-	public String login(HttpServletRequest request) {
+	public String login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletRequest request) {
 		LoginResult result;
 		
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		
+		System.out.println("longinController login: username:" + username + ", password:" + password);
 		if (isInsertInlaw(username, password)) {
 			password = Md5Utils.MD5(password);
 			UserService service = UserService.getInstance();
@@ -54,6 +70,11 @@ public class LoginController {
 					result = new LoginResult(false, "用户名或密码错误", username, 0);
 				}
 			} else {
+				if (results == null) {
+					System.out.println("用户名、密码相符的数据条数为0");
+				} else {
+					System.out.println("用户名、密码相符的数据条目数为" + results.size());
+				}
 				result = new LoginResult(false, "用户名或密码错误", username, 0);
 			}
 		} else {

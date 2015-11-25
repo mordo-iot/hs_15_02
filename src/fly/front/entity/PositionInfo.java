@@ -11,10 +11,19 @@ public class PositionInfo {
 		this.positionId = positionId;
 		this.positionName = positionName;
 	}
+	
+	public PositionInfo(Integer positionId, String positionName, String photo) {
+		super();
+		this.positionId = positionId;
+		this.positionName = positionName;
+		this.setPhoto(photo);
+	}
 
 	private Integer positionId;
 	
 	private String positionName;
+	
+	private String photo;
 
 	public Integer getPositionId() {
 		return positionId;
@@ -30,6 +39,14 @@ public class PositionInfo {
 
 	public void setPositionName(String positionName) {
 		this.positionName = positionName;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getPhoto() {
+		return photo;
 	}
 	
 }

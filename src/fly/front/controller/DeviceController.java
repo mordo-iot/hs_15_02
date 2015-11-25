@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.framework.system.db.query.OrderVO;
 import com.framework.system.db.query.PageList;
-import com.sun.faces.facelets.util.DevTools;
 
 import fly.entity.dev.DevEntity;
 import fly.entity.devLeftJionMap.DevLeftJionMapEntity;
@@ -66,9 +65,13 @@ import fly.service.position.PositionService;
 public class DeviceController {
 
 	@RequestMapping(params="show")
-	public ModelAndView getDevList() {
-		ModelAndView mav = new ModelAndView("device");
-		return mav;
+	public ModelAndView getDevList(HttpServletRequest request) {
+		Integer role = (Integer) request.getSession().getAttribute("role");
+		if (role == null || role != 1) {
+			return new ModelAndView("currentAlarm");
+		} else {
+			return new ModelAndView("device");
+		}
 	}
 	
 	@RequestMapping(params="type")
@@ -1309,7 +1312,7 @@ public class DeviceController {
 									if ("Y".equalsIgnoreCase(temp.getAlarm())) {
 										data.setValue("报警");
 									} else {
-										data.setValue("无报警");
+										data.setValue("正常");
 									}
 									list.add(data);
 								}
@@ -1381,7 +1384,7 @@ public class DeviceController {
 									if ("Y".equalsIgnoreCase(temp.getAlarm())) {
 										data.setValue("报警");
 									} else {
-										data.setValue("无报警");
+										data.setValue("正常");
 									}
 									list.add(data);
 								}

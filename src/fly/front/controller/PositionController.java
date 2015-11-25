@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,8 +36,17 @@ import fly.service.position.PositionService;
 public class PositionController {
 
 	@RequestMapping(params="show")
-	public ModelAndView showPositionpage() {
-		return new ModelAndView("position");
+	public ModelAndView showPositionpage(HttpServletRequest request, HttpServletResponse response, String positionId) {
+		Integer role = (Integer) request.getSession().getAttribute("role");
+		if (role == null || role != 1) {
+			return new ModelAndView("currentAlarm");
+		} else {
+			ModelAndView mav = new ModelAndView("position");
+			if (positionId != null && positionId.length() > 0) {
+				mav.addObject("positionId", positionId);
+			}
+			return mav;
+		}
 	}
 	
 	@RequestMapping(params="position")
@@ -508,13 +518,28 @@ public class PositionController {
 						PositionService service = PositionService.getInstance();
 						PositionEntity entity = service.getById(posId, false, false);
 						if (entity != null) {
-							entity.setName(posName);
-							entity.setUpdatedate(Datetools.getCurrentDate());
-							boolean update = service.save(entity);
-							if (update) {
-								result = "更新成功";
-							} else {
-								result = "更新失败";
+							//校验该层的同名位置
+							Map<String, Object> queryMap = new HashMap<String, Object>();
+							queryMap.put("parentId", entity.getParentId());
+							List<Object> posInfos = service.getListByCondition(queryMap);
+							if (posInfos != null && posInfos.size() > 0) {
+								for (Object obj : posInfos) {
+									PositionEntity pos = (PositionEntity) obj;
+									if (pos != null && posName.equals(pos.getName()) && posId.intValue() != pos.getId().intValue()) {
+										result = "该层已有同名位置";
+										break;
+									}
+								}
+							}
+							if ("".equals(result)) {
+								entity.setName(posName);
+								entity.setUpdatedate(Datetools.getCurrentDate());
+								boolean update = service.save(entity);
+								if (update) {
+									result = "更新成功";
+								} else {
+									result = "更新失败";
+								}
 							}
 						} else {
 							result = "要更新的位置信息不存在";
@@ -530,7 +555,6 @@ public class PositionController {
 			result = "错误的位置ID";
 		}
 		
-		
 		try {
 			result = new String(result.getBytes("utf-8"), "iso-8859-1");
 		} catch (UnsupportedEncodingException e) {
@@ -539,4 +563,5 @@ public class PositionController {
 		
 		return result;
 	}
+	
 }

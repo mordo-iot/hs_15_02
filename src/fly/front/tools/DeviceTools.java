@@ -172,7 +172,7 @@ public class DeviceTools {
 	public static String checkDevMac(Integer devtype, String devMac) {
 		String result = null;
 		
-		if (devMac != null || devMac.length() > 0) {
+		if (devMac != null && devMac.length() > 0) {
 			if (devtype == wenshidu) {
 				if (!devMac.matches(wenshiduPatten)) {
 					result = wenshiduName + "的MAC地址应为04000000-04FFFFFF";

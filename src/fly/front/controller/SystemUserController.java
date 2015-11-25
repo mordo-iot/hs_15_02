@@ -39,8 +39,13 @@ public class SystemUserController {
 	 * @return 对应视图
 	 */
 	@RequestMapping(params="list")
-	public ModelAndView listUsers() {
-		return new ModelAndView("userManager");
+	public ModelAndView listUsers(HttpServletRequest request) {
+		Integer role = (Integer) request.getSession().getAttribute("role");
+		if (role == null || role != 1) {
+			return new ModelAndView("currentAlarm");
+		} else {
+			return new ModelAndView("userManager");
+		}
 	}
 	
 	@RequestMapping(params="page")

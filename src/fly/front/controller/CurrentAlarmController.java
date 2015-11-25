@@ -84,6 +84,7 @@ public class CurrentAlarmController {
 		result.setList(alarminfos);
 		
 		String json2return = JSONObject.fromObject(result).toString();
+
 		try {
 			json2return = new String(json2return.getBytes("utf-8"), "iso-8859-1");
 		} catch (UnsupportedEncodingException e) {
